@@ -1,5 +1,5 @@
 """
-setup.py for nosedbreport
+setup.py for holmium.core
 
 
 """

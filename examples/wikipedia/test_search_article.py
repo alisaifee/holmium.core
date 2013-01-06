@@ -15,4 +15,4 @@ class TextSearchArticle(unittest.TestCase):
             assert self.page.article_title.text == "Google", self.page.article_title.text
 
     def tearDown(self):
-        pass
+        self.driver.quit()

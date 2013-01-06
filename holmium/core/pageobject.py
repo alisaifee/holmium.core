@@ -173,6 +173,8 @@ class PageElementMap(PageElements):
     Used to create dynamic dictionaries based on an element locator specified by one of
     :class:`holmium.core.Locators`.
 
+    The wrapped dictionary is an :class:`collections.OrderedDict` instance.
+
     :param lambda key: transform function for mapping a key to a WebElement in the collection
     :param lambda value: transform function for the value when accessed via the key.
     """
