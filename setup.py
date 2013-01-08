@@ -9,7 +9,7 @@ __copyright__ = "Copyright 2013, ProjectGoth"
 
 from setuptools import setup
 import codecs
-import holmium.core
+__version__ = "0.1"
 setup(
     name='holmium.core',
     author = __author__,
@@ -17,7 +17,7 @@ setup(
     license = "MIT",
     url="https://holmiumcore.readthedocs.org/en/latest/",
     zip_safe = False,
-    version=holmium.core.__version__,
+    version=__version__,
     include_package_data = True,
     description='selenium page objects and other utilities for test creation',
     long_description=codecs.open('README.rst').read(),

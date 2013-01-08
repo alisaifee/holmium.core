@@ -1,4 +1,3 @@
-__version__ = 0.1
 from logger import log
 from holmium.core.testcase import HolmiumTestCase
 from holmium.core.pageobject import Locators, PageObject, PageElement, PageElements
