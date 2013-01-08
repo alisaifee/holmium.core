@@ -3,7 +3,7 @@
 
 import sys, os
 sys.path.insert(0, os.path.abspath('../../'))
-import holmium.core
+import holmium.version
 
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.autosummary','sphinx.ext.doctest', 'sphinx.ext.intersphinx', 'sphinx.ext.todo', 'sphinx.ext.pngmath', 'sphinx.ext.ifconfig', 'sphinx.ext.viewcode']
 templates_path = ['_templates']
@@ -11,7 +11,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 project = u'holmium.core'
 copyright = u'2013, Projectgoth Inc.'
-version = release = holmium.core.__version__
+version = release = holmium.version.__version__
 
 exclude_patterns = []
 #add_module_names = True
