@@ -3,12 +3,10 @@ Introduction
 ============
 holmium.core provides utility classes to simplify writing pageobjects for webpages using selenium.
 
-Nothing beats an example. Conventionally unit tests integrating with python-selenium are written similarly to the following code block:
+Nothing beats an example. Conventionally unit tests integrating with python-selenium are written similarly to the following code block
 
-.. code-block:: python 
-    :emphasize-lines: 7, 10,11,14, 15,17,18,19,20,22
+.. code:: python
 
-    # -*- coding: utf-8 -*-
     import selenium.webdriver
     import unittest
 
@@ -41,11 +39,10 @@ The above example suffers from the typical web development problem of coupling t
 The concept of `PageObjects`_ reduces this coupling and allow for test authors to separate the layout of the page under test and the functional behavior being tested. This separation also results 
 in more maintainable test code (i.e. if an element name changes - all tests dont have to be updated, just the pageobject).
 
-Lets take the above test case for a spin with holmium:
+Lets take the above test case for a spin with holmium
 
-.. code-block:: python
-    :emphasize-lines: 5-9,13, 16, 17, 19, 23,24
-    
+.. code:: python
+
     # -*- coding: utf-8 -*-
     from holmium.core import HolmiumTestCase, PageObject, PageElement, PageElementMap, PageElements, Locators
 
