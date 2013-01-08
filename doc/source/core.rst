@@ -16,5 +16,5 @@ Page Objects
 
 Utilities
 ---------
-.. autoclass:: SimpleSeleniumTestCase
+.. autoclass:: HolmiumTestCase
 .. autofunction:: repeat 

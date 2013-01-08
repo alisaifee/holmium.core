@@ -6,7 +6,7 @@ import imp
 import holmium
 
 
-class SimpleSeleniumTestCase(unittest.TestCase):
+class HolmiumTestCase(unittest.TestCase):
     """
     """
     #:
