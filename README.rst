@@ -4,41 +4,38 @@ Introduction
 ============
 holmium.core provides utility classes to simplify writing pageobjects for webpages using selenium.
 
-Nothing beats an example. Conventionally unit tests integrating with python-selenium are written similarly to the following code block.
+Nothing beats an example. Conventionally unit tests integrating with python-selenium are written similarly to the following code block (using seleniumhq.org).
 
 ::
 
-    # -*- coding: utf-8 -*-
     import selenium.webdriver
     import unittest
 
 
 
-    class PythonOrgTest(unittest.TestCase):
+    class SeleniumHQTest(unittest.TestCase):
         def setUp(self):
             self.driver = selenium.webdriver.Firefox()
+            self.url = "http://seleniumhq.org"
+        def test_header_links(self):
+            self.driver.get(self.url)
+            elements = self.driver.find_elements_by_css_selector("div#header ul>li")
+            self.assertTrue(len(elements) > 0)
+            expected_link_list = ["Projects", "Download", "Documentation", "Support", "About"]
+            actual_link_list = [el.text for el in elements]
+            self.assertEquals( sorted(expected_link_list), sorted(actual_link_list))
 
-        def test_links(self):
-            self.driver.get("http://www.python.org")
-            elements = self.driver.find_elements_by_css_selector("ul.level-one li>a")
-            assert len(elements) > 0
-            link_list = [u"ABOUT", u"NEWS", u"DOCUMENTATION"
-                        , u"DOWNLOAD", u"下载", u"COMMUNITY"
-                        , u"FOUNDATION", u"CORE DEVELOPMENT"]
-            for element in zip(elements, link_list):
-                assert element[0].text == element[1], element[0].text
-
-        def test_about_python_heading(self):
-            self.driver.get("http://www.python.org")
-            elements = self.driver.find_elements_by_css_selector("ul.level-one li>a")
-            about_link = [ k for k in elements if k.text == u"ABOUT"][0]
+        def test_about_selenium_heading(self):
+            self.driver.get(self.url)
+            about_link = self.driver.find_element_by_css_selector("div#header ul>li#menu_about>a")
             about_link.click()
-            h1_title = self.driver.find_element_by_css_selector("h1.title")
-            assert h1_title.text == u"About Python"
+            heading = self.driver.find_element_by_css_selector("#mainContent>h2")
+            self.assertEquals(heading.text, "About Selenium")
 
         def tearDown(self):
             if self.driver:
                 self.driver.quit()
+
 
 The above example does what most selenium tests do:
 
@@ -59,31 +56,30 @@ Lets take the above test case for a spin with holmium. Take note of the followin
 
 ::
   
-    # -*- coding: utf-8 -*-
-    from holmium.core import HolmiumTestCase, PageObject, PageElement, PageElementMap, PageElements, Locators
+    from holmium.core import HolmiumTestCase, PageObject, PageElement, Locators, PageElementMap
 
-    class PythonOrgPage(PageObject):
-        side_bar_links = PageElementMap( Locators.CSS_SELECTOR
-                                            , "ul.level-one li"
+
+    class SeleniumHQPage(PageObject):
+        nav_links = PageElementMap( Locators.CSS_SELECTOR
+                                            , "div#header ul>li"
                                             , key = lambda element : element.find_element_by_tag_name("a").text
                                             , value = lambda element: element.find_element_by_tag_name("a") )
-        header_text = PageElement(Locators.CSS_SELECTOR, "h1.title")
 
-    class PythonOrgTest(HolmiumTestCase):
+        header_text = PageElement(Locators.CSS_SELECTOR, "#mainContent>h2")
+
+
+    class SeleniumHQTest(HolmiumTestCase):
         def setUp(self):
-            self.page = PythonOrgPage(self.driver, "http://www.python.org")
+            self.page = SeleniumHQPage(self.driver, "http://seleniumhq.org")
 
-        def test_links(self):
-            self.page.go_home()
-            assert len(self.page.side_bar_links) > 0
-            link_list = [u"ABOUT", u"NEWS", u"DOCUMENTATION"
-                        , u"DOWNLOAD", u"下载", u"COMMUNITY"
-                        , u"FOUNDATION", u"CORE DEVELOPMENT"]
-            assert self.page.side_bar_links.keys() == link_list
+        def test_header_links(self):
+            self.assertTrue( len(self.page.nav_links) > 0 )
+            self.assertEquals( sorted(["Projects", "Download", "Documentation", "Support", "About"])
+                            ,  sorted(self.page.nav_links.keys() ) )
 
-        def test_about_python_heading(self):
-            self.page.go_home()
-            self.page.side_bar_links[u"ABOUT"].click()
-            assert self.page.header_text.text == u"About Python"
+        def test_about_selenium_heading(self):
+            self.page.nav_links["About"].click()
+            self.assertEquals(self.page.header_text.text, "About Selenium")
+
 
 
