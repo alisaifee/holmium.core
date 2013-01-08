@@ -6,7 +6,7 @@ holmium.core provides utility classes to simplify writing pageobjects for webpag
 
 Nothing beats an example. Conventionally unit tests integrating with python-selenium are written similarly to the following code block (using seleniumhq.org).
 
-::
+.. code:: python
 
     import selenium.webdriver
     import unittest
@@ -54,7 +54,7 @@ Lets take the above test case for a spin with holmium. Take note of the followin
 * the page elements are accessed in the test only via PageElement & PageElementMap.
 
 
-::
+.. code:: python
   
     from holmium.core import HolmiumTestCase, PageObject, PageElement, Locators, PageElementMap
 
