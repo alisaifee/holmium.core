@@ -17,7 +17,7 @@ exclude_patterns = []
 #add_module_names = True
 pygments_style = 'sphinx'
 
-html_theme = 'sphinxdoc'
+html_theme = 'pyramid'
 #html_theme_options = {}
 #html_theme_path = []
 html_title = "holmium"
