@@ -21,6 +21,6 @@ setup(
     include_package_data = True,
     description='selenium page objects and other utilities for test creation',
     long_description=codecs.open('README.rst').read(),
-    packages = ['holmium.core'],
+    packages = ['holmium','holmium.core'],
 )
 
