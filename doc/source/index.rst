@@ -6,8 +6,8 @@ For more detailed examples refer to the :doc:`examples` page.
    :maxdepth: 5
    :hidden:
 
-   core
    examples 
+   core
    internals
    development 
    license 

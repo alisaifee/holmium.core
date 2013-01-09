@@ -1,3 +1,6 @@
+.. |travis-ci| image:: https://secure.travis-ci.org/mig33/holmium.core.png
+    :target: https://travis-ci.org/#!/mig33/holmium.core 
+
 Development
 ===========
 .. _github: http://github.com/mig33/holmium.core/
@@ -7,11 +10,15 @@ Contributors
 ~~~~~~~~~~~~
 .. include:: ../../CONTRIBUTORS.rst
 
-Bugs & Feature Request
-~~~~~~~~~~~~~~~~~~~~~~
-* .. image:: https://secure.travis-ci.org/mig33/holmium.core.png
-    :target: https://travis-ci.org/#!/mig33/holmium.core
-* The project is hosted on `github`_. Pull requests and bug fixes can be sent via pull requests.
-* Feature requests and bugs can be logged at the `issue tracker`_.
+Project Resources
+~~~~~~~~~~~~~~~~~
+Continuous Integration
+    The project is being continuously built with Travis-CI against python 2.6 & 2.7. |travis-ci|
+
+Code
+    The code is hosted on `github`_.
+
+Bugs, Feature Requests
+    Tracked at the `issue tracker`_.
 
 
