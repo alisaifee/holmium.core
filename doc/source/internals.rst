@@ -6,3 +6,8 @@ Internal Classes
 .. autoclass:: PageElementList
 .. autoclass:: ElementGetter
 .. autofunction:: enhanced
+
+.. automodule:: holmium.core 
+
+.. autoclass:: HolmiumNose
+

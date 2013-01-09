@@ -8,6 +8,7 @@ For more detailed examples refer to the :doc:`examples` page.
 
    examples 
    core
+   unittest 
    internals
    development 
    license 

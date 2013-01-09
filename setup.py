@@ -22,5 +22,9 @@ setup(
     description='selenium page objects and other utilities for test creation',
     long_description=codecs.open('README.rst').read(),
     packages = ['holmium','holmium.core'],
+    entry_points = {
+        'nose.plugins.0.10': [
+            'holmium = holmium.core:HolmiumNose']
+        },
 )
 
