@@ -2,7 +2,7 @@ unit test integration
 =====================
 .. automodule:: holmium.core 
 
-Holmium provides two utilities to ease integration with unit tests. 
+Holmium provides two utilities to ease integration with automated tests. 
 
 The :class:`HolmiumTestCase` base class. 
 ----------------------------------------

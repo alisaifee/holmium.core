@@ -4,7 +4,7 @@ Introduction
 ============
 holmium.core provides utility classes to simplify writing pageobjects for webpages using selenium.
 
-Nothing beats an example. Conventionally unit tests integrating with python-selenium are written similarly to the following code block (using seleniumhq.org).
+Nothing beats an example. Conventionally automated tests integrating with python-selenium are written similarly to the following code block (using seleniumhq.org).
 
 .. code-block:: python
 
