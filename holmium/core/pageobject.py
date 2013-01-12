@@ -7,6 +7,7 @@ import inspect
 import weakref
 import types
 import collections
+from functools import wraps
 class Locators(selenium.webdriver.common.by.By):
     """
     proxy class to access locator types
@@ -58,11 +59,29 @@ class PageElementDict(dict):
 class PageObject(object):
     """
     Base class for all page objects to extend from.
+    void Instance methods implemented by subclasses are provisioned
+    with fluent wrappers to facilitate with writing code such as::
+
+        class Google(PageObject):
+            def enter_query(self):
+                ....
+
+            def submit_search(self):
+                ....
+
+            def get_results(self):
+                ....
+
+        assert len(Google().enter_query("page objects").submit_search().get_results() > 0)
+
     """
 
     def __init__(self, driver, url=None, iframe=None):
         self.driver = driver
-        self.home = url
+        if url:
+            self.home = url
+        elif driver.current_url:
+            self.home = driver.current_url
         def update_element(el):
             if issubclass(el.__class__, ElementGetter):
                 el.driver = self.driver
@@ -90,6 +109,27 @@ class PageObject(object):
         """
         self.driver.get(self.home)
 
+    def __getattribute__(self, key):
+        """
+        to enable fluent access to page objects, instance methods that
+        don't return a value, instead return the page object instance.
+        """
+        attr = object.__getattribute__(self, key)
+        # check if home url is set, else update.
+        if not object.__getattribute__(self, "home"):
+            holmium.core.log.debug("home url not set, attempting to update.")
+            object.__setattr__(self, "home", object.__getattribute__(self,"driver").current_url)
+
+        if isinstance(attr, types.MethodType):
+            @wraps(attr)
+            def wrap(*args, **kwargs):
+                resp = attr(*args, **kwargs)
+                if not resp:
+                    holmium.core.log.debug("method %s returned None, using fluent response" % attr.func_name)
+                    resp = self
+                return resp
+            return wrap
+        return attr
 
 class ElementGetter(object):
     """
