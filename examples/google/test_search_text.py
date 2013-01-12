@@ -8,8 +8,7 @@ class TextSearchTest(unittest.TestCase):
         self.page = pages.GoogleMain(self.driver, "http://www.google.com")
 
     def test_text_search(self):
-        self.page.search("selenium") # execute the page object method search
-        assert len(self.page.search_results) > 0
+        self.assertTrue(len(self.page.search("selenium").search_results) > 0)
 
     def test_text_search_first_result(self):
         self.page.search("selenium") # execute the page object method search
