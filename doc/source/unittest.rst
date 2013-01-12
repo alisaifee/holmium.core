@@ -50,7 +50,7 @@ This plugin registers the following command line options to nose:~
 option                description
 ===================== =============================
 ``--with-holmium``    to enable the use of the holmium plugin
-``--holmium-browser`` one of chrome,firefox,opera,ie 
+``--holmium-browser`` one of chrome,firefox,opera,ie,phantomjs 
 ``--holmium-remote``  the full qualified url of the selenium server. If not provided the browsers will be attempted to be launched using the built in webdrivers.
 ===================== =============================
 

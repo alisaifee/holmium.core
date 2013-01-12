@@ -9,13 +9,15 @@ browser_mapping = {"firefox": webdriver.Firefox,
                     "chrome": webdriver.Chrome,
                     "ie": webdriver.Ie,
                     "opera" : webdriver.Opera,
-                    "remote": webdriver.Remote}
+                    "remote": webdriver.Remote,
+                    "phantomjs": webdriver.PhantomJS}
 
 #:
 capabilities = {"firefox": webdriver.DesiredCapabilities.FIREFOX,
                 "chrome": webdriver.DesiredCapabilities.CHROME,
                 "ie": webdriver.DesiredCapabilities.INTERNETEXPLORER,
-                "opera": webdriver.DesiredCapabilities.OPERA}
+                "opera": webdriver.DesiredCapabilities.OPERA,
+                "phantomjs":webdriver.DesiredCapabilities.PHANTOMJS}
 
 
 class HolmiumTestCase(unittest.TestCase):
