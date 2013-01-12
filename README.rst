@@ -35,6 +35,10 @@ Nothing beats an example. Conventionally unit tests integrating with python-sele
         def tearDown(self):
             if self.driver:
                 self.driver.quit()
+    
+    if __name__ == "__main__":
+        unittest.main()
+
 
 
 The above example does what most selenium tests do:
@@ -50,7 +54,7 @@ in more maintainable test code (i.e. if an element name changes - all tests dont
 
 Lets take the above test case for a spin with holmium. Take note of the following:
 
-* The initialization and reset of the webdriver is delegated to the HolmiumTestCase base class
+* The initialization and reset of the webdriver is delegated to the HolmiumTestCase base class (alternatively the class could subclass unittest.TestCase and be run with the holmium nose plugin.
 * the page elements are accessed in the test only via PageElement & PageElementMap.
 
 
@@ -80,6 +84,20 @@ Lets take the above test case for a spin with holmium. Take note of the followin
         def test_about_selenium_heading(self):
             self.page.nav_links["About"].click()
             self.assertEquals(self.page.header_text.text, "About Selenium")
+
+    if __name__ == "__main__":
+        unittest.main()
+
+Which can then be executed in a few different ways as shown below.
+
+.. code-block:: bash
+
+    # if using HolmiumTestCase as the base class run as:
+    export HO_BROWSER=firefox;nosetests test_selenium_hq.py 
+    # or..
+    export HO_BROWSER=firefox;python test_selenium_hq.py 
+    # if using unittest.TestCase as the base class run as:
+    nosetests test_selenium_hq.py --holmium-browser=firefox 
 
 
 
