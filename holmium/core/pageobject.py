@@ -139,13 +139,14 @@ class ElementGetter(object):
     & :class:`holmium.core.PageElements`
     """
 
-    def __init__(self, locator_type, query_string, base_element=None, timeout=1):
+    def __init__(self, locator_type, query_string, base_element=None, timeout=1, value=lambda el:el):
         self.query_string = query_string
-        self.type = locator_type
+        self.locator_type = locator_type
         self.timeout = timeout
         self.driver = None
         self.iframe = None
         self.base_element = base_element
+        self.value_mapper = value
         holmium.core.log.debug("locator:%s, query_string:%s, timeout:%d" %
                               (locator_type, query_string, timeout))
 
@@ -163,10 +164,10 @@ class ElementGetter(object):
         else:
             _meth = method
         holmium.core.log.debug("looking up locator:%s, query_string:%s, timeout:%d" %
-                              (self.type, self.query_string, self.timeout))
+                              (self.locator_type, self.query_string, self.timeout))
         if self.timeout:
             try:
-                WebDriverWait(self.driver, self.timeout).until(lambda _: _meth(self.type, self.query_string))
+                WebDriverWait(self.driver, self.timeout).until(lambda _: _meth(self.locator_type, self.query_string))
             except TimeoutException:
                 holmium.core.log.debug("unable to find element %s after waiting for %d seconds" % (self.query_string, self.timeout))
 
@@ -176,14 +177,8 @@ class ElementGetter(object):
         if self.driver and self.iframe:
             self.driver.switch_to_default_content()
             self.driver.switch_to_frame(self.iframe)
+        return _meth(self.locator_type, self.query_string)
 
-        return _meth(self.type, self.query_string)
-
-    def extract( self ):
-        """
-        Extracts the :class:`selenium.webdriver.remote.webelement.WebElement`
-        """
-        return self.get_element()
 
 class PageElement(ElementGetter):
     """
@@ -195,7 +190,7 @@ class PageElement(ElementGetter):
         if not instance:
             return self
         try:
-            return enhanced(self.get_element(self.driver.find_element))
+            return self.value_mapper(enhanced(self.get_element(self.driver.find_element)))
         except NoSuchElementException:
             return None
 
@@ -212,7 +207,7 @@ class PageElements(ElementGetter):
         if not instance:
             return self
         try:
-            return [enhanced(el) for el in self.get_element(self.driver.find_elements)]
+            return [self.value_mapper(enhanced(el)) for el in self.get_element(self.driver.find_elements)]
         except NoSuchElementException:
             return []
 

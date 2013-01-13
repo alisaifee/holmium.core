@@ -4,7 +4,10 @@ from holmium.core import PageObject, PageElement, PageElements, Locators, PageEl
 class GoogleMain(PageObject):
     search_box = PageElement( Locators.NAME, "q", timeout = 1)
     google_buttons = PageElementMap ( Locators.CLASS_NAME, "gbts" , timeout = 1 )
-    search_results = PageElements( Locators.CSS_SELECTOR, "li.g", timeout = 1)
+    search_results = PageElements( Locators.CSS_SELECTOR, "li.g", timeout = 1, value = lambda el : {
+        "link":el.find_element_by_css_selector("h3.r>a").get_attribute("href"),
+        "title":el.find_element_by_css_selector("h3.r>a").text
+        })
 
     def search ( self, query ):
         self.google_buttons["Search"].click() # self.google_buttons behaves just like a dictionary
