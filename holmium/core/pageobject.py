@@ -82,10 +82,11 @@ class PageObject(object):
             self.home = url
         elif driver.current_url:
             self.home = driver.current_url
+        self.iframe = iframe
         def update_element(el):
             if issubclass(el.__class__, ElementGetter):
                 el.driver = self.driver
-
+                el.iframe = self.iframe
         for el in inspect.getmembers(self.__class__):
             if issubclass(el[1].__class__, list):
                 for item in el[1]:
@@ -143,6 +144,7 @@ class ElementGetter(object):
         self.type = locator_type
         self.timeout = timeout
         self.driver = None
+        self.iframe = None
         self.base_element = base_element
         holmium.core.log.debug("locator:%s, query_string:%s, timeout:%d" %
                               (locator_type, query_string, timeout))
@@ -167,6 +169,13 @@ class ElementGetter(object):
                 WebDriverWait(self.driver, self.timeout).until(lambda _: _meth(self.type, self.query_string))
             except TimeoutException:
                 holmium.core.log.debug("unable to find element %s after waiting for %d seconds" % (self.query_string, self.timeout))
+
+        # if the parent page object specified an iframe, thats the context
+        # this element will be queried from. the switch_to_default_content
+        # is to ensure a double switch doesn't occur.
+        if self.driver and self.iframe:
+            self.driver.switch_to_default_content()
+            self.driver.switch_to_frame(self.iframe)
 
         return _meth(self.type, self.query_string)
 
