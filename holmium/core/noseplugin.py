@@ -26,14 +26,14 @@ class HolmiumNose(Plugin):
         """
         parser.add_option("", "--with-holmium", dest="ho_enabled", action="store_true", help="use holmium to setup test case environment")
         parser.add_option("", "--holmium-environment", dest="ho_env", help = "environment to pass to holmium test case configuration")
-        parser.add_option("", "--holmium-browser", dest="ho_browser", type = "choice", choices = holmium.core.browser_mapping.keys(), help="the selenium driver to invoke")
+        parser.add_option("", "--holmium-browser", dest="ho_browser", type = "choice", choices = list(holmium.core.browser_mapping.keys()), help="the selenium driver to invoke")
         parser.add_option("", "--holmium-remote", dest="ho_remote", help = "full url to remote selenium instance")
 
     def configure( self, options, conf ):
         if options.ho_enabled:
-            browser = options.ho_browser or (os.environ.has_key("HO_BROWSER") and os.environ["HO_BROWSER"] )
-            self.environment = options.ho_env or (os.environ.has_key("HO_ENVIRONMENT") and os.environ["HO_ENVIRONMENT"])
-            remote_url = options.ho_remote or (os.environ.has_key("HO_REMOTE") and os.environ["HO_REMOTE"])
+            browser = options.ho_browser or ("HO_BROWSER" in os.environ and os.environ["HO_BROWSER"] )
+            self.environment = options.ho_env or ("HO_ENVIRONMENT" in os.environ and os.environ["HO_ENVIRONMENT"])
+            remote_url = options.ho_remote or ("HO_REMOTE" in os.environ and os.environ["HO_REMOTE"])
             args = {}
             if remote_url:
                 args.update( {"command_executor": remote_url,
@@ -47,7 +47,7 @@ class HolmiumNose(Plugin):
         try:
             if not self.driver:
                 self.driver = self.driver_initializer_fn()
-        except Exception, e:
+        except Exception as e:
             self.logger.error("failed to initialize selenium driver %s" % e)
             raise SkipTest("holmium could not be initialized due to a problem with the required selenium driver")
         base_file = test.address()[0]
@@ -55,7 +55,7 @@ class HolmiumNose(Plugin):
         try:
             config = imp.load_source("config", config_path)
             setattr(test.test, "config",  config.config[self.environment])
-        except Exception, e:
+        except Exception as e:
             self.logger.debug("config.py not found for %s" % base_file)
 
     def startTest(self, test):
@@ -63,7 +63,7 @@ class HolmiumNose(Plugin):
             try:
                 setattr(test.test, "driver", self.driver)
                 self.driver.delete_all_cookies()
-            except Exception, e:
+            except Exception as e:
                 self.logger.error("error clearing cookies %s" % e)
 
     def finalize(self, result):

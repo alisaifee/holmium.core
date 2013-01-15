@@ -6,7 +6,11 @@ import holmium
 import inspect
 import weakref
 import types
-import ordereddict
+try:
+    from ordereddict import OrderedDict
+except ImportError:
+    from collections import OrderedDict
+
 from functools import wraps
 class Locators(selenium.webdriver.common.by.By):
     """
@@ -232,7 +236,7 @@ class PageElementMap(PageElements):
         if not instance:
             return self
         try:
-            return ordereddict.OrderedDict((self.key_mapper(el), self.value_mapper(enhanced(el))) for el in self.get_element(self.driver.find_elements))
+            return OrderedDict((self.key_mapper(el), self.value_mapper(enhanced(el))) for el in self.get_element(self.driver.find_elements))
         except NoSuchElementException:
             return {}
 
