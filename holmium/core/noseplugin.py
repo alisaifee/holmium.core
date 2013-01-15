@@ -26,7 +26,7 @@ class HolmiumNose(Plugin):
         """
         parser.add_option("", "--with-holmium", dest="ho_enabled", action="store_true", help="use holmium to setup test case environment")
         parser.add_option("", "--holmium-environment", dest="ho_env", help = "environment to pass to holmium test case configuration")
-        parser.add_option("", "--holmium-browser", dest="ho_browser", type = "choice", choices = holmium.core.browser_mapping.keys())
+        parser.add_option("", "--holmium-browser", dest="ho_browser", type = "choice", choices = holmium.core.browser_mapping.keys(), help="the selenium driver to invoke")
         parser.add_option("", "--holmium-remote", dest="ho_remote", help = "full url to remote selenium instance")
 
     def configure( self, options, conf ):
