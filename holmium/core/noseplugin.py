@@ -1,6 +1,6 @@
-import inspect
 import imp
 import os
+import json
 from nose.plugins.base import Plugin
 from nose.plugins.skip import SkipTest
 import holmium.core
@@ -29,6 +29,7 @@ class HolmiumNose(Plugin):
         parser.add_option("", "--holmium-environment", dest="ho_env", help = "environment to pass to holmium test case configuration")
         parser.add_option("", "--holmium-browser", dest="ho_browser", type = "choice", choices = list(holmium.core.browser_mapping.keys()), help="the selenium driver to invoke")
         parser.add_option("", "--holmium-remote", dest="ho_remote", help = "full url to remote selenium instance")
+        parser.add_option("", "--holmium-capabilities", dest="ho_cap", help = "json dictionary of extra capabilities")
         parser.add_option("", "--holmium-useragent", dest="ho_ua", help="User-agent string to use. Only available for firefox & chrome")
 
     def configure( self, options, conf ):
@@ -58,7 +59,14 @@ class HolmiumNose(Plugin):
                 args.update( {"command_executor": remote_url,
                         "desired_capabilities": caps})
                 browser = "remote"
-
+            if options.ho_cap:
+                try:
+                    cap = json.loads( options.ho_cap  )
+                    if args.has_key("desired_capabilities"):
+                        args["desired_capabilities"].update(cap)
+                except Exception as e:
+                    self.logger.error("unable to load capabilities")
+                    raise SkipTest("holmium could not be initialized due to a problem with the provided capabilities " + str(e))
             self.driver_initializer_fn = lambda:holmium.core.browser_mapping[browser](**args)
             self.enabled = True
 
