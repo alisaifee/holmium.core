@@ -44,11 +44,25 @@ class HolmiumTestCase(unittest.TestCase):
             holmium.core.log.debug("config.py not found for TestClass %s at %s" %
                                            (self, config_path))
 
+        args = {}
+        cap = {}
         driver = os.environ.get("HO_BROWSER", "firefox").lower()
         remote_url = os.environ.get("HO_REMOTE", "").lower()
-        args = {}
+        if os.environ.get("HO_USERAGENT", ""):
+            if driver not in ["chrome","firefox"]:
+                raise SystemExit("useragent string can only be overridden for chrome & firefox")
+            else:
+                if driver == "chrome":
+                    cap.update({"chrome.switches":["--user-agent=%s" % os.environ.get("HO_USERAGENT")]})
+                elif driver  == "firefox":
+                    ffopts = webdriver.FirefoxProfile()
+                    ffopts.set_preference("general.useragent.override", os.environ.get("HO_USERAGENT"))
+                    if remote_url:
+                        args.update({"browser_profile":ffopts})
+                    else:
+                        args.update({"firefox_profile":ffopts})
         if remote_url:
-            cap = capabilities[driver]
+            cap.update(capabilities[driver])
             args = {"command_executor": remote_url,
                      "desired_capabilities": cap}
             driver = "remote"

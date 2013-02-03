@@ -4,6 +4,7 @@ import os
 from nose.plugins.base import Plugin
 from nose.plugins.skip import SkipTest
 import holmium.core
+import selenium.webdriver
 
 class HolmiumNose(Plugin):
     """
@@ -28,6 +29,7 @@ class HolmiumNose(Plugin):
         parser.add_option("", "--holmium-environment", dest="ho_env", help = "environment to pass to holmium test case configuration")
         parser.add_option("", "--holmium-browser", dest="ho_browser", type = "choice", choices = list(holmium.core.browser_mapping.keys()), help="the selenium driver to invoke")
         parser.add_option("", "--holmium-remote", dest="ho_remote", help = "full url to remote selenium instance")
+        parser.add_option("", "--holmium-useragent", dest="ho_ua", help="User-agent string to use. Only available for firefox & chrome")
 
     def configure( self, options, conf ):
         if options.ho_enabled:
@@ -35,9 +37,26 @@ class HolmiumNose(Plugin):
             self.environment = options.ho_env or ("HO_ENVIRONMENT" in os.environ and os.environ["HO_ENVIRONMENT"])
             remote_url = options.ho_remote or ("HO_REMOTE" in os.environ and os.environ["HO_REMOTE"])
             args = {}
+            caps = {}
+            if options.ho_ua:
+                if browser not in ["chrome","firefox"]:
+                    raise SkipTest("useragent string can only be overridden for chrome & firefox")
+                else:
+                    if browser == "chrome":
+                        caps.update({"chrome.switches":["--user-agent=%s" % options.ho_ua]})
+                    elif browser == "firefox":
+                        ffopts = selenium.webdriver.FirefoxProfile()
+                        ffopts.set_preference("general.useragent.override", options.ho_ua)
+                        ffopts.update_preferences()
+                        if options.ho_remote:
+                            args.update({"browser_profile":ffopts})
+                        else:
+                            args.update({"firefox_profile":ffopts})
+
             if remote_url:
+                caps.update(holmium.core.capabilities[browser])
                 args.update( {"command_executor": remote_url,
-                        "desired_capabilities": holmium.core.capabilities[browser]})
+                        "desired_capabilities": caps})
                 browser = "remote"
 
             self.driver_initializer_fn = lambda:holmium.core.browser_mapping[browser](**args)
