@@ -1,1 +1,1 @@
-* Sajnikanth Suriyanarayanan  sajnikanth@mig33global.com, Testing and initial integration and evaluation.
+* Sajnikanth Suriyanarayanan  sajnikanth@gmail.com, Testing and initial integration and evaluation.
