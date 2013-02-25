@@ -3,12 +3,6 @@ python:
     - "2.6"
     - "2.7"
 
-before_install:
-    - wget http://phantomjs.googlecode.com/files/phantomjs-1.8.1-linux-i686.tar.bz2
-    - tar -xf phantomjs-1.8.1-linux-i686.tar.bz2 -C /tmp
-    - sudo rm -rf /usr/local/phantomjs 
-    - sudo mv /tmp/phantomjs-1.8.1-linux-i686 /usr/local/phantomjs
-
 install:
     - pip install . --use-mirrors
     - pip install -r requirements.txt --use-mirrors
