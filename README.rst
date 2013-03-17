@@ -11,8 +11,6 @@ Nothing beats an example. Conventionally automated tests integrating with python
     import selenium.webdriver
     import unittest
 
-
-
     class SeleniumHQTest(unittest.TestCase):
         def setUp(self):
             self.driver = selenium.webdriver.Firefox()
@@ -61,7 +59,7 @@ Lets take the above test case for a spin with holmium. Take note of the followin
 .. code-block:: python
   
     from holmium.core import HolmiumTestCase, PageObject, PageElement, Locators, PageElementMap
-
+    import unittest
 
     class SeleniumHQPage(PageObject):
         nav_links = PageElementMap( Locators.CSS_SELECTOR
