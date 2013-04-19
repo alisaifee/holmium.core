@@ -1,4 +1,11 @@
 .. _PageObjects: http://code.google.com/p/selenium/wiki/PageObjects
+.. |travis-ci| image:: https://secure.travis-ci.org/mig33/holmium.core.png
+    :target: https://travis-ci.org/#!/mig33/holmium.core 
+.. |coverall| image:: https://coveralls.io/repos/mig33/holmium.core/badge.png?branch=master
+    :target: https://coveralls.io/r/mig33/holmium.core
+
+holmium.core |travis-ci| |coverall| 
+-----------------------------------
 
 Introduction
 ============
