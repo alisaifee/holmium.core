@@ -12,7 +12,7 @@ Contributors
 Project Resources
 ~~~~~~~~~~~~~~~~~
 Continuous Integration
-    The project is being continuously built with `travis`_ against python 2.6 & 2.7. Code coverage details can be viewed at `coverall`_
+    The project is being continuously built with `travis`_ against python 2.6 & 2.7. Code coverage details can be viewed at `coveralls`_
 
 Code
     The code is hosted on `github`_.
