@@ -23,4 +23,5 @@ Code
 Bugs, Feature Requests
     Tracked at the `issue tracker`_.
 
-
+Questions
+    Freenode irc server : #holmium
