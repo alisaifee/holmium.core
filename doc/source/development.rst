@@ -1,13 +1,9 @@
-.. |travis-ci| image:: https://secure.travis-ci.org/alisaifee/holmium.core.png
-    :target: https://travis-ci.org/#!/alisaifee/holmium.core 
-.. |coverall| image:: https://coveralls.io/repos/alisaifee/holmium.core/badge.png?branch=master
-    :target: https://coveralls.io/r/alisaifee/holmium.core
-
 Development
 ===========
 .. _github: http://github.com/alisaifee/holmium.core/
 .. _issue tracker: http://github.com/alisaifee/holmium.core/issues
 .. _travis: https:/travis-ci.org/#!/alisaifee/holmium.core 
+.. _coveralls: https://coveralls.io/r/alisaifee/holmium.core
 
 Contributors
 ~~~~~~~~~~~~
@@ -16,7 +12,7 @@ Contributors
 Project Resources
 ~~~~~~~~~~~~~~~~~
 Continuous Integration
-    The project is being continuously built with `travis`_ against python 2.6 & 2.7. |travis-ci|. Code coverage details can be viewed at |coverall|
+    The project is being continuously built with `travis`_ against python 2.6 & 2.7. Code coverage details can be viewed at `coverall`_
 
 Code
     The code is hosted on `github`_.
