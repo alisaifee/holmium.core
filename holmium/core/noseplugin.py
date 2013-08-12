@@ -17,6 +17,7 @@ class HolmiumNose(Plugin):
     def __init__(self):
         Plugin.__init__(self)
         self.driver = None
+        self.config = {} 
         self.environment = None
         self.driver_initializer_fn = lambda _:None
         self.logger = holmium.core.log
@@ -81,12 +82,14 @@ class HolmiumNose(Plugin):
         config_path = os.path.join(os.path.split(base_file)[0], "config.py")
         try:
             config = imp.load_source("config", config_path)
-            setattr(test.test, "config",  config.config[self.environment])
+            self.config = config.config[self.environment]
         except IOError as e:
             self.logger.debug("config.py not found at %s" % config_path)
+        except KeyError as e:
+            self.logger.warn("unable to find environment %s in %s" % (self.environment, config_path))
         except Exception as e:
             self.logger.exception("unable to load %s" % config_path)
-
+        setattr(test.test, "config", self.config)
     def startTest(self, test):
         if self.driver:
             try:
