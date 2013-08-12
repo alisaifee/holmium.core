@@ -29,7 +29,7 @@ setup(
     include_package_data = True,
     install_requires = REQUIREMENTS,
     description='selenium page objects and other utilities for test creation',
-    long_description=open('README.rst').read(),
+    long_description=open('README.rst').read() + open('HISTORY.rst').read(),
     packages = find_packages(),
     entry_points = {
         'nose.plugins.0.10': ['holmium = holmium.core:HolmiumNose',]
