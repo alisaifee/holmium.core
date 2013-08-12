@@ -82,8 +82,10 @@ class HolmiumNose(Plugin):
         try:
             config = imp.load_source("config", config_path)
             setattr(test.test, "config",  config.config[self.environment])
+        except IOError as e:
+            self.logger.debug("config.py not found at %s" % config_path)
         except Exception as e:
-            self.logger.debug("config.py not found for %s" % base_file)
+            self.logger.exception("unable to load %s" % config_path)
 
     def startTest(self, test):
         if self.driver:
