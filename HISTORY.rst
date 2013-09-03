@@ -3,6 +3,11 @@
 History
 -------
 
+0.1.8.4 2013-09-04
+==================
+
+* Bug Fix : installation via pip was failing due to missing HISTORY.rst file.
+
 0.1.8.3 2013-08-12
 ==================
 
@@ -17,6 +22,7 @@ History
 * Bug fix 
   
   - fixed phantomjs build in travis
+
 
 
 
