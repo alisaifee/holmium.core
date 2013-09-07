@@ -3,18 +3,18 @@ import holmium.core
 import selenium.webdriver
 
 
-class PageElementMapTest(unittest.TestCase):
+class ElementMapTest(unittest.TestCase):
     def setUp(self):
         self.driver = selenium.webdriver.PhantomJS()
 
     def test_basic_element(self):
-        class SimplePage(holmium.core.PageObject):
-            el_map_default = holmium.core.PageElementMap(holmium.core.Locators.CLASS_NAME, "simple_class")
-            el_map_keymapper = holmium.core.PageElementMap(holmium.core.Locators.CLASS_NAME, "simple_class"
+        class SimplePage(holmium.core.Page):
+            el_map_default = holmium.core.ElementMap(holmium.core.Locators.CLASS_NAME, "simple_class")
+            el_map_keymapper = holmium.core.ElementMap(holmium.core.Locators.CLASS_NAME, "simple_class"
                                                             , key = lambda el: el.find_element_by_tag_name("a").text)
-            el_map_valuemapper = holmium.core.PageElementMap(holmium.core.Locators.CLASS_NAME, "simple_class"
+            el_map_valuemapper = holmium.core.ElementMap(holmium.core.Locators.CLASS_NAME, "simple_class"
                                                             , value = lambda el: el.find_element_by_tag_name("a").text)
-            el_map_keyvaluemapper = holmium.core.PageElementMap(holmium.core.Locators.CLASS_NAME, "simple_class"
+            el_map_keyvaluemapper = holmium.core.ElementMap(holmium.core.Locators.CLASS_NAME, "simple_class"
                                                             , key = lambda el: el.find_element_by_tag_name("a").text
                                                             , value = lambda el: el.find_element_by_tag_name("a").get_attribute("href"))
 

@@ -4,7 +4,7 @@ unit test integration
 
 Holmium provides two utilities to ease integration with automated tests. 
 
-The :class:`HolmiumTestCase` base class. 
+The :class:`TestCase` base class. 
 ----------------------------------------
 This base class extends :class:`unittest.TestCase` and adds the following functionality:
     
@@ -21,7 +21,7 @@ Example test case
     import unittest 
     import holmium.core
 
-    class SimpleTest(holmium.core.HolmiumTestCase):
+    class SimpleTest(holmium.core.TestCase):
         def setUp(self):
             self.driver.get("http://www.google.com")
 

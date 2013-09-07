@@ -6,15 +6,15 @@ Page Objects
 .. automodule:: holmium.core 
     :members:
 
-.. autoclass:: PageObject
-.. autoclass:: PageElement
-.. autoclass:: PageElements 
-.. autoclass:: PageElementMap
+.. autoclass:: Page
+.. autoclass:: Element
+.. autoclass:: Elements 
+.. autoclass:: ElementMap
 .. autoclass:: Locators
     :undoc-members:
     :inherited-members:
 
 Utilities
 ---------
-.. autoclass:: HolmiumTestCase
+.. autoclass:: TestCase
 .. autofunction:: repeat 

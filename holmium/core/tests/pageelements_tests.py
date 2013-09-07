@@ -3,20 +3,20 @@ import holmium.core
 import selenium.webdriver
 
 
-class PageElementsTest(unittest.TestCase):
+class ElementsTest(unittest.TestCase):
     def setUp(self):
         self.driver = selenium.webdriver.PhantomJS()
 
     def test_basic_element(self):
-        class SimplePage(holmium.core.PageObject):
-            el_list_default = holmium.core.PageElements(holmium.core.Locators.CLASS_NAME, "simple_class")
-            el_list_valuemapper = holmium.core.PageElements(holmium.core.Locators.CLASS_NAME, "simple_class"
+        class SimplePage(holmium.core.Page):
+            el_list_default = holmium.core.Elements(holmium.core.Locators.CLASS_NAME, "simple_class")
+            el_list_valuemapper = holmium.core.Elements(holmium.core.Locators.CLASS_NAME, "simple_class"
                                                             , value = lambda el: el.find_element_by_tag_name("a").text)
-            el_list_valuemapper_complex = holmium.core.PageElements(holmium.core.Locators.CLASS_NAME, "simple_class"
+            el_list_valuemapper_complex = holmium.core.Elements(holmium.core.Locators.CLASS_NAME, "simple_class"
                                                                     , value = lambda el : {
                                                                         "link":el.find_element_by_tag_name("a").get_attribute("href")
                                                                         ,"text" : el.find_element_by_tag_name("a").text } )
-            first_el = holmium.core.PageElement( holmium.core.Locators.TAG_NAME, "a" , base_element = el_list_default[0] )
+            first_el = holmium.core.Element( holmium.core.Locators.TAG_NAME, "a" , base_element = el_list_default[0] )
 
         self.driver.execute_script("document.write('%s')" % """
             <body>

@@ -26,7 +26,7 @@ capabilities = {"firefox": webdriver.DesiredCapabilities.FIREFOX,
                 "android":webdriver.DesiredCapabilities.ANDROID}
 
 
-class HolmiumTestCase(unittest.TestCase):
+class TestCase(unittest.TestCase):
     """
     """
     #:

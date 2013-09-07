@@ -22,7 +22,7 @@ class Locators(selenium.webdriver.common.by.By):
 def enhanced (web_element):
     """
     incase a higher level abstraction for a WebElement is available
-    we will use that in PageObjects. (e.g. a select element is converted into
+    we will use that in Pages. (e.g. a select element is converted into
     :class:`selenium.webdriver.support.ui.Select`)
     """
     abstraction_mapping = {'select': Select}
@@ -31,10 +31,10 @@ def enhanced (web_element):
     return web_element
 
 
-class PageElementList(list):
+class ElementList(list):
     """
     proxy to a standard list which would be stored in
-    a :class:`holmium.core.PageObject`.
+    a :class:`holmium.core.Page`.
     """
 
     def __init__(self, instance, *args, **kwargs):
@@ -45,10 +45,10 @@ class PageElementList(list):
         return list.__getitem__(self, index).__get__(self.instance(),
                                                      self.instance().__class__)
 
-class PageElementDict(dict):
+class ElementDict(dict):
     """
     proxy to a standard dict which would be stored in
-    a :class:`holmium.core.PageObject`.
+    a :class:`holmium.core.Page`.
     """
 
     def __init__(self, instance, *args, **kwargs):
@@ -60,13 +60,13 @@ class PageElementDict(dict):
                                                    self.instance().__class__)
 
 
-class PageObject(object):
+class Page(object):
     """
     Base class for all page objects to extend from.
     void Instance methods implemented by subclasses are provisioned
     with fluent wrappers to facilitate with writing code such as::
 
-        class Google(PageObject):
+        class Google(Page):
             def enter_query(self):
                 ....
 
@@ -95,11 +95,11 @@ class PageObject(object):
             if issubclass(el[1].__class__, list):
                 for item in el[1]:
                     update_element(item)
-                self.__setattr__(el[0], PageElementList(self, el[1]))
+                self.__setattr__(el[0], ElementList(self, el[1]))
             elif issubclass(el[1].__class__, dict):
                 for item in el[1].values():
                     update_element(item)
-                self.__setattr__(el[0], PageElementDict(self, el[1]))
+                self.__setattr__(el[0], ElementDict(self, el[1]))
             else:
                 update_element(el[1])
 
@@ -139,8 +139,8 @@ class PageObject(object):
 class ElementGetter(object):
     """
     internal class to encapsulate the logic used by
-    :class:`holmium.core.PageElement`
-    & :class:`holmium.core.PageElements`
+    :class:`holmium.core.Element`
+    & :class:`holmium.core.Elements`
     """
 
     def __init__(self, locator_type, query_string, base_element=None, timeout=1, value=lambda el:el):
@@ -159,7 +159,7 @@ class ElementGetter(object):
             if isinstance(self.base_element, types.LambdaType):
                 el = self.base_element()
                 _meth = getattr(el, method.im_func.func_name)
-            elif isinstance(self.base_element, PageElement):
+            elif isinstance(self.base_element, Element):
                 _meth = getattr(self.base_element.__get__(self, self.__class__), method.im_func.func_name)
             elif isinstance(self.base_element, WebElement):
                 _meth = getattr(self.base_element, "find_element")
@@ -184,7 +184,7 @@ class ElementGetter(object):
         return _meth(self.locator_type, self.query_string)
 
 
-class PageElement(ElementGetter):
+class Element(ElementGetter):
     """
     Utility class to get a :class:`selenium.webdriver.remote.webelement.WebElement`
     by querying via one of :class:`holmium.core.Locators`
@@ -198,7 +198,7 @@ class PageElement(ElementGetter):
         except NoSuchElementException:
             return None
 
-class PageElements(ElementGetter):
+class Elements(ElementGetter):
     """
     Utility class to get a collection of :class:`selenium.webdriver.remote.webelement.WebElement`
     objects by querying via one of :class:`holmium.core.Locators`
@@ -216,7 +216,7 @@ class PageElements(ElementGetter):
             return []
 
 
-class PageElementMap(PageElements):
+class ElementMap(Elements):
     """
     Used to create dynamic dictionaries based on an element locator specified by one of
     :class:`holmium.core.Locators`.
@@ -228,7 +228,7 @@ class PageElementMap(PageElements):
     """
     def __init__(self, locator_type, query_string=None, base_element=None, timeout =1
             , key  = lambda el:el.text, value = lambda el:el):
-        PageElements.__init__(self, locator_type, query_string, base_element, timeout)
+        Elements.__init__(self, locator_type, query_string, base_element, timeout)
         self.key_mapper = key
         self.value_mapper = value
 

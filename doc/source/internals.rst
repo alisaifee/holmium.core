@@ -2,8 +2,8 @@ Internal Classes
 ================
 .. automodule:: holmium.core.pageobject 
 
-.. autoclass:: PageElementDict
-.. autoclass:: PageElementList
+.. autoclass:: ElementDict
+.. autoclass:: ElementList
 .. autoclass:: ElementGetter
 .. autofunction:: enhanced
 
