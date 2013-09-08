@@ -131,25 +131,23 @@ the text attribute of the element. The same type of lookup functions are used in
 More Examples
 *************
 
-Page objects
-============ 
-
-google search
-------------- 
+google search 
+=============
+Page Object
+----------- 
 .. literalinclude:: ../../examples/google/pages.py 
 
-wikipedia 
+Test Case
 --------- 
-.. literalinclude:: ../../examples/wikipedia/pages.py
-
-
-Test cases
-========== 
-Google plain text search example
--------------------------------- 
 .. literalinclude:: ../../examples/google/test_search_text.py 
 
 Wikipedia text search example 
------------------------------
+============================= 
+Page Object
+----------- 
+.. literalinclude:: ../../examples/wikipedia/pages.py
+
+Test Case
+--------- 
 .. literalinclude:: ../../examples/wikipedia/test_search_article.py
 
