@@ -54,5 +54,4 @@ texinfo_documents = [
    u'Ali-Akber Saifee', 'holmiumcore', 'One line description of project.',
    'Miscellaneous'),
 ]
-autodoc_default_flags = ["undoc-members","show-inheritance"]
 intersphinx_mapping = {'http://docs.python.org/': None, "http://selenium-python.readthedocs.org/en/latest":None}

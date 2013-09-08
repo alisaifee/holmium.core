@@ -1,4 +1,4 @@
-unit test integration
+Unit Test Integration
 =====================
 .. automodule:: holmium.core 
 

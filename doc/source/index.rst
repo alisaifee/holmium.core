@@ -6,7 +6,7 @@ For more detailed examples refer to the :doc:`examples` page.
    :maxdepth: 5
    :hidden: 
 
-   examples 
+   usage 
    core
    unittest 
    internals

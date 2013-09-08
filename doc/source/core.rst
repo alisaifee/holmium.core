@@ -1,4 +1,4 @@
-Utility Classes
+Holmium Classes
 ===============
 
 Page Objects
@@ -13,6 +13,13 @@ Page Objects
 .. autoclass:: Locators
     :undoc-members:
     :inherited-members:
+
+Deprecated Classes 
+------------------
+.. autoclass:: PageObject
+.. autoclass:: PageElement
+.. autoclass:: PageElements 
+.. autoclass:: PageElementMap
 
 Utilities
 ---------
