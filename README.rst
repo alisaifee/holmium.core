@@ -1,4 +1,4 @@
-.. _Pages: http://code.google.com/p/selenium/wiki/PageObjects
+.. _PageObjects: http://code.google.com/p/selenium/wiki/PageObjects
 .. |travis-ci| image:: https://secure.travis-ci.org/alisaifee/holmium.core.png
     :target: https://travis-ci.org/#!/alisaifee/holmium.core 
 .. |coverall| image:: https://coveralls.io/repos/alisaifee/holmium.core/badge.png?branch=master
@@ -54,7 +54,7 @@ The above example does what most selenium tests do:
 * tear down the webdriver after each test case 
 
 It suffers from the typical web development problem of coupling the test case with the HTML plumbing of the page its testing rather than the functionality its meant to excercise.
-The concept of `Pages`_ reduces this coupling and allow for test authors to separate the layout of the page under test and the functional behavior being tested. This separation also results 
+The concept of `PageObjects`_ reduces this coupling and allow for test authors to separate the layout of the page under test and the functional behavior being tested. This separation also results 
 in more maintainable test code (i.e. if an element name changes - all tests dont have to be updated, just the pageobject).
 
 Lets take the above test case for a spin with holmium. Take note of the following:
