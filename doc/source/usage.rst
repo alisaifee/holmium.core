@@ -41,12 +41,12 @@ the example below in an python repl.
 
 .. code-block:: python
 
-    from homlium.core import Page,Element,Elements,ElementMap,Locators 
+    from holmium.core import Page,Element,Elements,ElementMap,Locators 
     import selenium.webdriver 
     driver = selenium.webdriver.Firefox()
-    class GooglePage(holmium.core.Page):
-         search_box = holmium.core.Element( holmium.core.Locators.NAME, "q", timeout = 1)
-         google_footer = holmium.core.ElementMap ( holmium.core.Locators.CSS_SELECTOR, "#fll>div>a" , timeout = 1 ) 
+    class GooglePage(Page):
+        search_box = Element( Locators.NAME, "q", timeout = 1)
+        google_footer = ElementMap ( Locators.CSS_SELECTOR, "#fll>div>a" , timeout = 1 ) 
 
     g = GooglePage(driver, url="http://www.google.com")
     g.search_box 
