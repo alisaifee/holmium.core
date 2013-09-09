@@ -17,7 +17,7 @@ class HolmiumNose(Plugin):
     def __init__(self):
         Plugin.__init__(self)
         self.driver = None
-        self.config = {} 
+        self.config = {}
         self.environment = None
         self.driver_initializer_fn = lambda _:None
         self.logger = holmium.core.log
@@ -35,31 +35,32 @@ class HolmiumNose(Plugin):
 
     def configure( self, options, conf ):
         if options.ho_enabled:
-            browser = options.ho_browser or ("HO_BROWSER" in os.environ and os.environ["HO_BROWSER"] )
+            self.browser = options.ho_browser or ("HO_BROWSER" in os.environ and os.environ["HO_BROWSER"] )
             self.environment = options.ho_env or ("HO_ENVIRONMENT" in os.environ and os.environ["HO_ENVIRONMENT"])
-            remote_url = options.ho_remote or ("HO_REMOTE" in os.environ and os.environ["HO_REMOTE"])
+            self.remote_url = options.ho_remote or ("HO_REMOTE" in os.environ and os.environ["HO_REMOTE"])
+            self.user_agent = options.ho_ua or ("HO_USERAGENT" in os.environ and os.environ["HO_USERAGENT"])
             args = {}
             caps = {}
-            if options.ho_ua:
-                if browser not in ["chrome","firefox"]:
+            if self.user_agent:
+                if self.browser not in ["chrome","firefox"]:
                     raise SkipTest("useragent string can only be overridden for chrome & firefox")
                 else:
-                    if browser == "chrome":
-                        caps.update({"chrome.switches":["--user-agent=%s" % options.ho_ua]})
-                    elif browser == "firefox":
+                    if self.browser == "chrome":
+                        caps.update({"chrome.switches":["--user-agent=%s" % self.user_agent]})
+                    elif self.browser == "firefox":
                         ffopts = selenium.webdriver.FirefoxProfile()
-                        ffopts.set_preference("general.useragent.override", options.ho_ua)
+                        ffopts.set_preference("general.useragent.override", self.user_agent)
                         ffopts.update_preferences()
                         if options.ho_remote:
                             args.update({"browser_profile":ffopts})
                         else:
                             args.update({"firefox_profile":ffopts})
 
-            if remote_url:
-                caps.update(holmium.core.capabilities[browser])
-                args.update( {"command_executor": remote_url,
+            if self.remote_url:
+                caps.update(holmium.core.capabilities[self.browser])
+                args.update( {"command_executor": self.remote_url,
                         "desired_capabilities": caps})
-                browser = "remote"
+                self.browser = "remote"
             if options.ho_cap:
                 try:
                     cap = json.loads( options.ho_cap  )
@@ -68,7 +69,7 @@ class HolmiumNose(Plugin):
                 except Exception as e:
                     self.logger.error("unable to load capabilities")
                     raise SkipTest("holmium could not be initialized due to a problem with the provided capabilities " + str(e))
-            self.driver_initializer_fn = lambda:holmium.core.browser_mapping[browser](**args)
+            self.driver_initializer_fn = lambda:holmium.core.browser_mapping[self.browser](**args)
             self.enabled = True
 
     def beforeTest(self, test):
@@ -79,14 +80,21 @@ class HolmiumNose(Plugin):
             self.logger.error("failed to initialize selenium driver %s" % e)
             raise SkipTest("holmium could not be initialized due to a problem with the required selenium driver")
         base_file = test.address()[0]
-        config_path = os.path.join(os.path.split(base_file)[0], "config.py")
+        holmium_vars = {
+                "holmium.environment": self.environment,
+                "holmium.browser": self.browser,
+                "holmium.user_agent": self.user_agent,
+                "holmium.remote": self.remote_url
+        }
+        config_path = os.path.join(os.path.split(base_file)[0], "config")
         try:
-            config = imp.load_source("config", config_path)
-            self.config = config.config[self.environment]
-        except IOError as e:
-            self.logger.debug("config.py not found at %s" % config_path)
-        except KeyError as e:
-            self.logger.warn("unable to find environment %s in %s" % (self.environment, config_path))
+            config = None
+            if os.path.isfile(config_path+".json"):
+                config = json.loads(open(config_path+".json").read())
+            elif os.path.isfile(config_path+".py"):
+                config = imp.load_source("config", config_path+".py").config
+            if config:
+                self.config = holmium.core.Config(config, holmium_vars)
         except Exception as e:
             self.logger.exception("unable to load %s" % config_path)
         setattr(test.test, "config", self.config)

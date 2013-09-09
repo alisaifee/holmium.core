@@ -42,10 +42,22 @@ class TestCase(unittest.TestCase):
         """
         self.driver = None
         base_file = inspect.getfile(self)
-        config_path = os.path.join(os.path.split(base_file)[0], "config.py")
+        config_path = os.path.join(os.path.split(base_file)[0], "config")
+        holmium_vars = {
+                "holmium.environment": os.environ.get("HO_ENV", "development"),
+                "holmium.browser": os.environ.get("HO_BROSER", "firefox"),
+                "holmium.user_agent": os.environ.get("HO_USERAGENT", "").lower(),
+                "holmium.remote": os.environ.get("HO_REMOTE", ""),
+        }
+
         try:
-            config = imp.load_source("config", config_path)
-            self.config = config.config[os.environ.get("HO_ENV", "prod")]
+            config = None
+            if os.path.isfile(config_path+".json"):
+                config = json.loads(open(config_path+".json").read())
+            elif os.path.isfile(config.pat+".py"):
+                config = imp.load_source("config", config_path+".py").config
+            if config:
+                self.config = holmium.core.Config(config, holmium_vars)
         except IOError:
             holmium.core.log.debug("config.py not found for TestClass %s at %s" %
                                            (self, config_path))

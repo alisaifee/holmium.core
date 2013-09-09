@@ -54,4 +54,4 @@ texinfo_documents = [
    u'Ali-Akber Saifee', 'holmiumcore', 'One line description of project.',
    'Miscellaneous'),
 ]
-intersphinx_mapping = {'http://docs.python.org/': None, "http://selenium-python.readthedocs.org/en/latest":None}
+intersphinx_mapping = {'http://docs.python.org/': None, "http://selenium-python.readthedocs.org/en/latest":None, "http://jinja.pocoo.org/docs/" : None}

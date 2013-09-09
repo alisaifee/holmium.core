@@ -10,4 +10,5 @@ Internal Classes
 .. automodule:: holmium.core 
 
 .. autoclass:: HolmiumNose
+.. autoclass:: Config
 

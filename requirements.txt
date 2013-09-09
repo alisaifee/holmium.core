@@ -2,4 +2,5 @@ selenium
 ordereddict
 nose
 coverage
+jinja2 
 python-coveralls
