@@ -133,21 +133,9 @@ More Examples
 
 google search 
 =============
-Page Object
------------ 
-.. literalinclude:: ../../examples/google/pages.py 
-
-Test Case
---------- 
 .. literalinclude:: ../../examples/google/test_search_text.py 
 
 Wikipedia text search example 
 ============================= 
-Page Object
------------ 
-.. literalinclude:: ../../examples/wikipedia/pages.py
-
-Test Case
---------- 
 .. literalinclude:: ../../examples/wikipedia/test_search_article.py
 
