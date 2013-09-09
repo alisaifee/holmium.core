@@ -12,7 +12,7 @@ class TextSearchTest(unittest.TestCase):
     def test_text_search_first_result(self):
         self.page.search("selenium") # execute the page object method search
         self.assertEquals( self.page.search_results[0]["title"], "Selenium - Web Browser Automation")
-        self.assertEquals( self.page.search_results[0]["link"], "http://seleniumhq.org/")
+        self.assertEquals( self.page.search_results[0]["link"], "http://docs.seleniumhq.org/")
 
     def tearDown(self):
         self.driver.quit()
