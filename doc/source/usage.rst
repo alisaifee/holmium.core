@@ -37,11 +37,11 @@ The ``webdriver`` that is supplied to a :class:`Page` is used when looking up an
 that is declared as a static member. 
 
 To understand the wiring between a :class:`Page` and its elements try out 
-the example below in an python repl.
+the example below in a python repl.
 
 .. code-block:: python
 
-    from holmium.core import Page,Element,Elements,ElementMap,Locators 
+    from holmium.core import Page, Element, Elements, ElementMap, Locators 
     import selenium.webdriver 
     driver = selenium.webdriver.Firefox()
     class GooglePage(Page):
