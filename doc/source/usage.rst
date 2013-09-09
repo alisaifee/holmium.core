@@ -33,7 +33,7 @@ invocation of :meth:`selenium.webdriver.remote.webdriver.WebDriver.switch_to_fra
 everytime an element in the :class:`Page` is accessed.
 
 The ``webdriver`` that is supplied to a :class:`Page` is used when looking up any 
-:class:`PageElement`, :class:`PageElements` or :class:`PageElementMap` 
+:class:`Element`, :class:`Elements` or :class:`ElementMap` 
 that is declared as a static member. 
 
 To understand the wiring between a :class:`Page` and its elements try out 
@@ -69,7 +69,7 @@ passed into the ``GooglePage`` instance.
 Collections
 ***********
 To keep the interaction with collections of elements in a Page readable and logically grouped - it is useful to represent 
-and access such elements in a page the same way as one would a python list or dictionary. The :class:`Element` and :class:`ElementMap` 
+and access such elements in a page the same way as one would a python list or dictionary. The :class:`Elements` and :class:`ElementMap` 
 (which is used in the previous example) can be used to organize elements with either relationship.
 
 Using the table defined in ``snippet`` below, a Page can be constructed that allows you to access the ``value`` or ``title`` of each 
