@@ -23,9 +23,12 @@ JSON
 .. code-block:: json
 
     {
-            'default': { 'url': 'http://localhost', 'password':'sekret', 'path':"{{PATH}}" },
-            'production': {'username': '{{holmium.environment}}user'},
-            'development': {'username': '{{holmium.environment}}user'}
+            'default': { 'url': 'http://localhost'
+                        , 'path':"{{PATH}}"
+                        , 'login_url': '{{default.url}}/{{holmium.environment}}/login'}
+                        , 'username' : '{{holmium.environment}}user'}
+            ,'production': {'password': 'sekret'}
+            ,'development': {'password': 'password'}
     }
 
 Python
@@ -34,9 +37,12 @@ Python
 
     config = {
         {
-            'default': { 'url': 'http://localhost', 'password':'sekret', 'path':"{{PATH}}" },
-            'production': {'username': '{{holmium.environment}}user'},
-            'development': {'username': '{{holmium.environment}}user'}
+            'default': { 'url': 'http://localhost'
+                        , 'path':"{{PATH}}"
+                        , 'login_url': '{{default.url}}/{{holmium.environment}}/login'}
+                        , 'username' : '{{holmium.environment}}user'}
+            ,'production': {'password': 'sekret'}
+            ,'development': {'password': 'password'}
         }
     }
 
@@ -49,10 +55,14 @@ When accessing ``self.config`` within a test, due to the default:
 if ``HO_ENV`` or ``--holmium-env`` are ``production``:
 
 * ``self.config['username']`` will return ``productionuser``
+* ``self.config['password']`` will return ``sekret``
+* ``self.config['login_url']`` will return ``http://localhost/production/login``
 
 if ``HO_ENV`` or ``--holmium-env`` are ``development``:
 
 * ``self.config['username']`` will return ``developmentuser``
+* ``self.config['password']`` will return ``password``
+* ``self.config['login_url']`` will return ``http://localhost/development/login``
 
     """
     def __init__(self, dct, environment={"holmium":{"environment":"development"}}):

@@ -61,3 +61,12 @@ class ConfigTests(unittest.TestCase):
         self.assertEquals(cfg["foo"], "development")
         self.assertEquals(cfg["bar"], 2)
 
+    def test_config_defaults_only(self):
+        config = {
+                "default":{
+                    "base_url": "http://{{holmium.environment}}:3000",
+                    "registration_url": "{{default.base_url}}/users/sign_up",
+                }
+            }
+        cfg = Config(config)
+        self.assertEquals( cfg["registration_url"], u"http://development:3000/users/sign_up")
