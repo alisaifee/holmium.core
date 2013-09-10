@@ -52,3 +52,12 @@ class ConfigTests(unittest.TestCase):
         self.assertEquals(cfg["t1"], 1)
         self.assertEquals(cfg["t2"], u"2")
         self.assertEquals(cfg["t3"], 4)
+
+    def test_config_update(self):
+        cfg = Config({})
+        cfg["foo"] = "{{holmium.environment}}"
+        cfg["bar"] = 2
+
+        self.assertEquals(cfg["foo"], "development")
+        self.assertEquals(cfg["bar"], 2)
+

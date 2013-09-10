@@ -80,4 +80,7 @@ if ``HO_ENV`` or ``--holmium-env`` are ``development``:
         context.update(self.env)
         return __render(item, context)
 
+    def __setitem__(self, key, value):
+        sub_dict = dict.setdefault(self, self.env["holmium"]["environment"], {})
+        sub_dict[key] = value
 
