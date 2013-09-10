@@ -43,13 +43,14 @@ class TestCase(unittest.TestCase):
         self.driver = None
         base_file = inspect.getfile(self)
         config_path = os.path.join(os.path.split(base_file)[0], "config")
-        holmium_vars = {
-                "holmium.environment": os.environ.get("HO_ENV", "development"),
-                "holmium.browser": os.environ.get("HO_BROSER", "firefox"),
-                "holmium.user_agent": os.environ.get("HO_USERAGENT", "").lower(),
-                "holmium.remote": os.environ.get("HO_REMOTE", ""),
+        holmium_vars = { "holmium":
+            {
+                    "environment": os.environ.get("HO_ENV", "development"),
+                    "browser": os.environ.get("HO_BROSER", "firefox"),
+                    "user_agent": os.environ.get("HO_USERAGENT", "").lower(),
+                    "remote": os.environ.get("HO_REMOTE", ""),
+            }
         }
-
         try:
             config = None
             if os.path.isfile(config_path+".json"):

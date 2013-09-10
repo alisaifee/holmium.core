@@ -80,11 +80,13 @@ class HolmiumNose(Plugin):
             self.logger.error("failed to initialize selenium driver %s" % e)
             raise SkipTest("holmium could not be initialized due to a problem with the required selenium driver")
         base_file = test.address()[0]
-        holmium_vars = {
-                "holmium.environment": self.environment,
-                "holmium.browser": self.browser,
-                "holmium.user_agent": self.user_agent,
-                "holmium.remote": self.remote_url
+        holmium_vars = { "holmium":
+            {
+                "environment": self.environment,
+                "browser": self.browser,
+                "user_agent": self.user_agent,
+                "remote": self.remote_url
+                }
         }
         config_path = os.path.join(os.path.split(base_file)[0], "config")
         try:
