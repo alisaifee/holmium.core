@@ -7,8 +7,4 @@ install:
     - pip install -e .
     - pip install -r requirements.txt --use-mirrors
 
-script: nosetests --with-coverage 
-
-after_success:
-  - coveralls
-
+script: nosetests 
