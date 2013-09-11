@@ -76,7 +76,7 @@ class Page(object):
             def get_results(self):
                 ....
 
-        assert len(Google().enter_query("page objects").submit_search().get_results() > 0)
+        assert len(Google().enter_query("page objects").submit_search().get_results()) > 0
 
     """
 
