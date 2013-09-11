@@ -55,7 +55,7 @@ class TestCase(unittest.TestCase):
             config = None
             if os.path.isfile(config_path+".json"):
                 config = json.loads(open(config_path+".json").read())
-            elif os.path.isfile(config.pat+".py"):
+            elif os.path.isfile(config_path+".py"):
                 config = imp.load_source("config", config_path+".py").config
             if config:
                 self.config = holmium.core.Config(config, holmium_vars)
