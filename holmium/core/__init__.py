@@ -1,5 +1,5 @@
 from holmium.core.logger import log
-from holmium.core.testcase import TestCase, browser_mapping, capabilities
+from holmium.core.ut_helper import TestCase, browser_mapping, capabilities
 from holmium.core.pageobject import Locators, Page, Element, Elements
 from holmium.core.pageobject import ElementMap
 from holmium.core.decorators import repeat

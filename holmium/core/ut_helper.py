@@ -4,7 +4,7 @@ from selenium import webdriver
 import inspect
 import imp
 import holmium
-
+import json
 browser_mapping = {"firefox": webdriver.Firefox,
                     "chrome": webdriver.Chrome,
                     "ie": webdriver.Ie,
@@ -46,23 +46,18 @@ class TestCase(unittest.TestCase):
         holmium_vars = { "holmium":
             {
                     "environment": os.environ.get("HO_ENV", "development"),
-                    "browser": os.environ.get("HO_BROSER", "firefox"),
+                    "browser": os.environ.get("HO_BROWSER", "firefox"),
                     "user_agent": os.environ.get("HO_USERAGENT", "").lower(),
                     "remote": os.environ.get("HO_REMOTE", ""),
             }
         }
-        try:
-            config = None
-            if os.path.isfile(config_path+".json"):
-                config = json.loads(open(config_path+".json").read())
-            elif os.path.isfile(config_path+".py"):
-                config = imp.load_source("config", config_path+".py").config
-            if config:
-                self.config = holmium.core.Config(config, holmium_vars)
-        except IOError:
-            holmium.core.log.debug("config.py not found for TestClass %s at %s" %
-                                           (self, config_path))
-
+        config = None
+        if os.path.isfile(config_path+".json"):
+            config = json.loads(open(config_path+".json").read())
+        elif os.path.isfile(config_path+".py"):
+            config = imp.load_source("config", config_path+".py").config
+        if config:
+            self.config = holmium.core.Config(config, holmium_vars)
         args = {}
         cap = {}
         driver = os.environ.get("HO_BROWSER", "firefox").lower()
