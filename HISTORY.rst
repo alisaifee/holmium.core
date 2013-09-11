@@ -3,6 +3,12 @@
 History
 -------
 
+0.2 2013-09-11
+==============
+* Deprecated old class names. More information at : http://holmiumcore.readthedocs.org/en/latest/core.html#deprecated-classes
+* Added more tests for holmium.core.TestCase 
+* New Config object. more information at : http://holmiumcore.readthedocs.org/en/latest/internals.html#holmium.core.Config
+
 0.1.8.4 2013-09-04
 ==================
 
@@ -22,6 +28,7 @@ History
 * Bug fix 
   
   - fixed phantomjs build in travis
+
 
 
 
