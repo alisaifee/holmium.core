@@ -194,7 +194,7 @@ class Element(ElementGetter):
         if not instance:
             return self
         try:
-            return self.value_mapper(enhanced(self.get_element(instance.driver.find_element)))
+            return self.value_mapper(enhanced(self.get_element(self.driver.find_element)))
         except NoSuchElementException:
             return None
 
@@ -211,7 +211,7 @@ class Elements(ElementGetter):
         if not instance:
             return self
         try:
-            return [self.value_mapper(enhanced(el)) for el in self.get_element(instance.driver.find_elements)]
+            return [self.value_mapper(enhanced(el)) for el in self.get_element(self.driver.find_elements)]
         except NoSuchElementException:
             return []
 
@@ -236,7 +236,7 @@ class ElementMap(Elements):
         if not instance:
             return self
         try:
-            return OrderedDict((self.key_mapper(el), self.value_mapper(enhanced(el))) for el in self.get_element(instance.driver.find_elements))
+            return OrderedDict((self.key_mapper(el), self.value_mapper(enhanced(el))) for el in self.get_element(self.driver.find_elements))
         except NoSuchElementException:
             return {}
 
