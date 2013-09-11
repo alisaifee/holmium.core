@@ -17,7 +17,7 @@ class PageTest(unittest.TestCase):
     def test_basic_po_real(self):
         driver = selenium.webdriver.PhantomJS()
         driver.execute_script('document.write("%s");' % """<body><div id='test_id'>test_text</div></body>""")
-        po = PageTest.BasicPage(self.driver)
+        po = PageTest.BasicPage(driver)
         self.assertEquals(po.element.text, "test_text")
 
     def test_all_features(self):
