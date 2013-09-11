@@ -6,6 +6,8 @@ omit =
     */selenium/*
     */mock.py* 
     tests/* 
+include = 
+    holmium/core/*.py
 exclude_lines =
     # Have to re-enable the standard pragma
     pragma: no cover
