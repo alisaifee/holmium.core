@@ -1,7 +1,7 @@
 import types
-import pageobject
-import ut_helper
 import warnings
+import pageobject
+import testcase
 class Deprecated(object):
     def __new__(cls, *args, **kwargs):
         warnings.warn("The use of %s is deprecated. Use %s instead" % ( cls.cur, cls.alt.__name__)
@@ -18,6 +18,6 @@ PageObject = construct_deprecated("PageObject", pageobject.Page)
 PageElement = construct_deprecated("PageElement", pageobject.Element)
 PageElements = construct_deprecated("PageElements", pageobject.Elements)
 PageElementMap = construct_deprecated("PageElementMap", pageobject.ElementMap)
-HolmiumTestCase = construct_deprecated("HolmiumTestCase", ut_helper.TestCase)
+HolmiumTestCase = construct_deprecated("HolmiumTestCase", testcase.TestCase)
 
 warnings.simplefilter("always")
