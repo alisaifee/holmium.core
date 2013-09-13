@@ -1,0 +1,3 @@
+config = {
+        "staging": {"foo":"bar"}
+        }

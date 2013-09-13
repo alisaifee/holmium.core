@@ -67,7 +67,7 @@ class HolmiumNose(Plugin):
                     if args.has_key("desired_capabilities"):
                         args["desired_capabilities"].update(cap)
                 except Exception as e:
-                    self.logger.error("unable to load capabilities")
+                    self.logger.debug("unable to load capabilities")
                     raise SkipTest("holmium could not be initialized due to a problem with the provided capabilities " + str(e))
             self.driver_initializer_fn = lambda:holmium.core.browser_mapping[self.browser](**args)
             self.enabled = True
@@ -77,7 +77,7 @@ class HolmiumNose(Plugin):
             if not self.driver:
                 self.driver = self.driver_initializer_fn()
         except Exception as e:
-            self.logger.error("failed to initialize selenium driver %s" % e)
+            self.logger.exception("failed to initialize selenium driver %s" % e)
             raise SkipTest("holmium could not be initialized due to a problem with the required selenium driver")
         base_file = test.address()[0]
         holmium_vars = { "holmium":
@@ -98,7 +98,9 @@ class HolmiumNose(Plugin):
             if config:
                 self.config = holmium.core.Config(config, holmium_vars)
         except Exception as e:
-            self.logger.exception("unable to load %s" % config_path)
+            self.logger.debug("unable to load %s" % config_path)
+            raise SkipTest("error in loading config file at path %s" % config_path)
+
         setattr(test.test, "config", self.config)
     def startTest(self, test):
         if self.driver:
