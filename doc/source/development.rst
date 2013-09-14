@@ -4,6 +4,8 @@ Development
 .. _issue tracker: http://github.com/alisaifee/holmium.core/issues
 .. _travis: https:/travis-ci.org/#!/alisaifee/holmium.core 
 .. _develop: http://pythonhosted.org/distribute/setuptools.html#development-mode
+.. _phantomjs download page: http://phantomjs.org/download.html 
+
 Contributors
 ~~~~~~~~~~~~
 .. include:: ../../CONTRIBUTORS.rst
@@ -43,4 +45,17 @@ in the *installed* version.
     git clone git@github.com:alisaifee/holmium.core 
     cd holmium.core 
     sudo python setup.py develop 
+
+
+Tests
+~~~~~
+:mod:`holmium.core` uses ``nosetests`` for running its tests. You will also
+need ``phantomjs`` installed to run certain tests that make more sense without 
+mocking. For instructions on installing ``phantomjs`` go to the `phantomjs download page`_.
+
+.. code-block:: bash 
+
+    cd holmium.core 
+    nosetests --with-coverage --cover-html --cover-erase --cover-package=holmium.core 
+
 
