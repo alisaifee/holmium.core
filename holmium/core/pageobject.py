@@ -104,7 +104,7 @@ class Page(object):
                     update_element(item)
                 self.__setattr__(el[0], ElementDict(self, el[1]))
             else:
-                update_element(el)
+                update_element(el[1])
 
         if url:
             self.driver.get(url)
