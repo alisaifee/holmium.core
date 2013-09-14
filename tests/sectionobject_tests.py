@@ -49,3 +49,11 @@ class SectionTest(unittest.TestCase):
         self.assertEquals(len(po.tokens), 5)
         self.assertEquals(len(po.section.tokens), 2)
         self.assertEquals(len(po.section_2.tokens), 2)
+        for i in range(0,2):
+            self.assertEquals(po.section.tokens[i].text, "section element %s" % (i+1))
+        for i in range(0,2):
+            self.assertEquals(po.section_2.tokens[i].text, "section element %s" % (i+3))
+        self.assertEquals(po.tokens[0].text, 'section element 1')
+        self.assertEquals(po.tokens[1].text, 'section element 2')
+        self.assertEquals(po.tokens[2].text, 'section element 3')
+        self.assertEquals(po.tokens[3].text, 'section element 4')

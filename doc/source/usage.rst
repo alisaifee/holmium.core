@@ -135,9 +135,11 @@ Take for example a page with the following structure.
     </html>"""
     from holmium.core import Page, Section, Element, Elements, ElementMap, Locators 
     import selenium.webdriver 
+
     class Heading(Section):
         main = Element( Locators.CSS_SELECTOR, "h1")
         sub = Element( Locators.CSS_SELECTOR, "h2")
+
     class NewsSection(Section):
         articles = ElementMap( Locators.CSS_SELECTOR, "ul>li"
                                 , key=lambda el: el.find_element_by_class_name('heading').text 
@@ -149,12 +151,14 @@ Take for example a page with the following structure.
                                 , key=lambda el: el.find_element_by_class_name('sport').text 
                                 , value=lambda el: el.find_element_by_class_name('status').text
                                 )
+
     class NewsPage(Page):
         heading = Heading(Locators.CLASS_NAME, "header")
         news_section = NewsSection(Locators.CLASS_NAME, "news_section")
 
     class HeadlinePage(NewsPage):
         pass
+
     class SportsPage(NewsPage):
         sports_events = SportsEventsSection(Locators.CLASS_NAME, "events")
 

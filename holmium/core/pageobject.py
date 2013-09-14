@@ -1,4 +1,4 @@
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException, NoSuchFrameException
 from selenium.webdriver.support.ui import WebDriverWait, Select
 from selenium.webdriver.remote.webelement import WebElement
 import selenium.webdriver.common.by
@@ -112,27 +112,43 @@ class Page(object):
             self.driver.switch_to_frame(iframe)
 
     @contextlib.contextmanager
-    def driver_scope(self):
+    def scope(self, attr_kls, attr_name):
         Page.local.driver = object.__getattribute__(self, "driver")
-        yield
+        _section_frame = None
+        if issubclass(attr_kls, Section):
+            _section = object.__getattribute__(self, attr_name)
+            Page.local.section_locator_type = _section.locator_type
+            Page.local.section_query_string = _section.query_string
+            _section_frame = _section.iframe 
+        else:
+            Page.local.section_locator_type = None
+            Page.local.section_query_string = None 
 
-
-    @contextlib.contextmanager
-    def section_scope(self, attr):
-        Page.local.section_locator_type = None
-        Page.local.section_query_string = None
-        if isinstance(attr, Section):
-            Page.local.section_locator_type = attr.locator_type
-            Page.local.section_query_string = attr.query_string
+        # frame switch if necessary
+        if issubclass(attr_kls, ElementGetter) or issubclass(attr_kls, Section):
+            _driver = object.__getattribute__(self, "driver")
+            _page_frame = object.__getattribute__(self, "iframe")
+            _frame = _section_frame or _page_frame 
+            if _driver and _frame:
+                try:
+                    _driver.switch_to_default_content()
+                    _driver.switch_to_frame(_frame)
+                except NoSuchFrameException:
+                    holmium.core.log.error("Unable to switch to frame %s" % _frame)
         yield
 
     @staticmethod
     def get_driver():
         return Page.local.driver
+
     @staticmethod
     def get_section_scope():
-        return {"locator_type": Page.local.section_locator_type
-                , "query": Page.local.section_query_string}
+        if hasattr(Page.local, "section_locator_type"):
+            return {"locator_type": Page.local.section_locator_type
+                    , "query": Page.local.section_query_string}
+        else:
+            return {"locator_type": None
+                    , "query": None}
     def go_home(self):
         """
         returns the page object to the url it was initialized with
@@ -144,23 +160,27 @@ class Page(object):
         to enable fluent access to page objects, instance methods that
         don't return a value, instead return the page object instance.
         """
-        with object.__getattribute__(self, "driver_scope")():
+        self_kls = object.__getattribute__(self, "__class__")
+        static_members = dict(inspect.getmembers(self_kls))
+        attr_kls = object.__class__
+        if key in static_members:
+            attr_kls = static_members[key].__class__
+        with object.__getattribute__(self, "scope")(attr_kls, key):
             attr = object.__getattribute__(self, key)
-            with object.__getattribute__(self, "section_scope")(attr):
-                # check if home url is set, else update.
-                if not object.__getattribute__(self, "home"):
-                    holmium.core.log.debug("home url not set, attempting to update.")
-                    object.__setattr__(self, "home", object.__getattribute__(self,"driver").current_url)
-                if isinstance(attr, types.MethodType):
-                    @wraps(attr)
-                    def wrap(*args, **kwargs):
-                        resp = attr(*args, **kwargs)
-                        if not resp:
-                            holmium.core.log.debug("method %s returned None, using fluent response" % attr.func_name)
-                            resp = self
-                        return resp
-                    return wrap
-                return attr
+            # check if home url is set, else update.
+            if not object.__getattribute__(self, "home"):
+                holmium.core.log.debug("home url not set, attempting to update.")
+                object.__setattr__(self, "home", object.__getattribute__(self,"driver").current_url)
+            if isinstance(attr, types.MethodType):
+                @wraps(attr)
+                def wrap(*args, **kwargs):
+                    resp = attr(*args, **kwargs)
+                    if not resp:
+                        holmium.core.log.debug("method %s returned None, using fluent response" % attr.func_name)
+                        resp = self
+                    return resp
+                return wrap
+            return attr
 
 
 class Section(object):
@@ -175,9 +195,10 @@ class Section(object):
             section_2 =  MySection(Locators.ID, "unique_section")
 
     """
-    def __init__(self, locator_type, query_string):
+    def __init__(self, locator_type, query_string, iframe=None):
         self.locator_type = locator_type
         self.query_string = query_string
+        self.iframe = iframe
 
 class ElementGetter(object):
     """
@@ -205,8 +226,8 @@ class ElementGetter(object):
                 section = Page.get_driver().find_element( section_scope["locator_type"]
                     , section_scope["query"])
             except NoSuchElementException:
-                holmium.core.log.error("Element: %s was defined within a section (%s=%s)which couldn't be located" %
-                        (self.__class__.__name__, section_scope["locator_type"], section_scope["query"]))
+                holmium.core.log.error("Element was defined within a section (%s=%s) which couldn't be located" %
+                        (section_scope["locator_type"], section_scope["query"]))
 
         if self.base_element:
             if isinstance(self.base_element, types.LambdaType):
@@ -230,12 +251,6 @@ class ElementGetter(object):
             except TimeoutException:
                 holmium.core.log.debug("unable to find element %s after waiting for %d seconds" % (self.query_string, self.timeout))
 
-        # if the parent page object specified an iframe, thats the context
-        # this element will be queried from. the switch_to_default_content
-        # is to ensure a double switch doesn't occur.
-        if Page.get_driver() and self.iframe:
-            Page.get_driver().switch_to_default_content()
-            Page.get_driver().switch_to_frame(self.iframe)
         return _meth(self.locator_type, self.query_string)
 
 
