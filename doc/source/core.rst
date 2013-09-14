@@ -1,12 +1,13 @@
 Holmium Classes
 ===============
 
-Page Objects
--------------
+Page Objects & Friends
+----------------------
 .. automodule:: holmium.core 
     :members:
 
 .. autoclass:: Page
+.. autoclass:: Section
 .. autoclass:: Element
 .. autoclass:: Elements 
 .. autoclass:: ElementMap

@@ -115,10 +115,24 @@ class Page(object):
     def driver_scope(self):
         Page.local.driver = object.__getattribute__(self, "driver")
         yield
+
+
+    @contextlib.contextmanager
+    def section_scope(self, attr):
+        Page.local.section_locator_type = None
+        Page.local.section_query_string = None
+        if isinstance(attr, Section):
+            Page.local.section_locator_type = attr.locator_type
+            Page.local.section_query_string = attr.query_string
+        yield
+
     @staticmethod
     def get_driver():
         return Page.local.driver
-
+    @staticmethod
+    def get_section_scope():
+        return {"locator_type": Page.local.section_locator_type
+                , "query": Page.local.section_query_string}
     def go_home(self):
         """
         returns the page object to the url it was initialized with
@@ -132,22 +146,38 @@ class Page(object):
         """
         with object.__getattribute__(self, "driver_scope")():
             attr = object.__getattribute__(self, key)
-            # check if home url is set, else update.
+            with object.__getattribute__(self, "section_scope")(attr):
+                # check if home url is set, else update.
+                if not object.__getattribute__(self, "home"):
+                    holmium.core.log.debug("home url not set, attempting to update.")
+                    object.__setattr__(self, "home", object.__getattribute__(self,"driver").current_url)
+                if isinstance(attr, types.MethodType):
+                    @wraps(attr)
+                    def wrap(*args, **kwargs):
+                        resp = attr(*args, **kwargs)
+                        if not resp:
+                            holmium.core.log.debug("method %s returned None, using fluent response" % attr.func_name)
+                            resp = self
+                        return resp
+                    return wrap
+                return attr
 
-            if not object.__getattribute__(self, "home"):
-                holmium.core.log.debug("home url not set, attempting to update.")
-                object.__setattr__(self, "home", object.__getattribute__(self,"driver").current_url)
 
-            if isinstance(attr, types.MethodType):
-                @wraps(attr)
-                def wrap(*args, **kwargs):
-                    resp = attr(*args, **kwargs)
-                    if not resp:
-                        holmium.core.log.debug("method %s returned None, using fluent response" % attr.func_name)
-                        resp = self
-                    return resp
-                return wrap
-            return attr
+class Section(object):
+    """
+    Base class to encapsulate reusable page sections::
+
+        class MySection(Section):
+            things = Elements( .... )
+
+        class MyPage(Page):
+            section_1 =  MySection(Locators.CLASS_NAME, "section")
+            section_2 =  MySection(Locators.ID, "unique_section")
+
+    """
+    def __init__(self, locator_type, query_string):
+        self.locator_type = locator_type
+        self.query_string = query_string
 
 class ElementGetter(object):
     """
@@ -168,6 +198,16 @@ class ElementGetter(object):
                               (locator_type, query_string, timeout))
 
     def get_element(self, method = None):
+        section_scope = Page.get_section_scope()
+        section = None
+        if section_scope["locator_type"] and section_scope["query"]:
+            try:
+                section = Page.get_driver().find_element( section_scope["locator_type"]
+                    , section_scope["query"])
+            except NoSuchElementException:
+                holmium.core.log.error("Element: %s was defined within a section (%s=%s)which couldn't be located" %
+                        (self.__class__.__name__, section_scope["locator_type"], section_scope["query"]))
+
         if self.base_element:
             if isinstance(self.base_element, types.LambdaType):
                 el = self.base_element()
@@ -178,6 +218,8 @@ class ElementGetter(object):
                 _meth = getattr(self.base_element, "find_element")
             else:
                 holmium.core.log.error("unknown base_element type used: %s" % type(self.base_element))
+        elif section:
+            _meth = getattr(section, method.im_func.func_name)
         else:
             _meth = method
         holmium.core.log.debug("looking up locator:%s, query_string:%s, timeout:%d" %

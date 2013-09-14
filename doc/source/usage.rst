@@ -13,6 +13,10 @@ A typical PageObject built with :mod:`holmium.core` has the following compositio
     * :class:`Element` 
     * :class:`Elements` 
     * :class:`ElementMap` 
+    * :class:`Section` 
+        * :class:`Element` 
+        * :class:`Elements` 
+        * :class:`ElementMap` 
 
 A Page is initalized with a :class:`selenium.webdriver.remote.webdriver.WebDriver` 
 instance and can take some optional arguments.
@@ -64,6 +68,115 @@ the example below in a python repl.
 
 Both the element ``search_box`` and the collection of footer links ``google_footer`` are looked up using the driver that was 
 passed into the ``GooglePage`` instance.
+
+********
+Sections
+********
+:class:`Section` objects can be used to further encapsulate blocks of page
+logic that may either be reusable or accessed from within different parts of the
+page in a similar manner. Examples of such usecases are menus, footers and
+collections that may not follow a standard list or map formation. 
+
+Take for example a page with the following structure.
+
+.. code-block:: python
+
+    headlines_snippet = """
+    <html>
+        <body>
+            <div class='header'>
+                <h1>Headlines</h1>
+                <h2>Breaking news!!</h2>
+            </div>
+            <div class='news_section'>
+                <ul>
+                    <li>
+                        <div class='heading'>Big News!!!</div>
+                        <div class='content'>Just kidding</div>
+                    </li>
+                    <li>
+                        <div class='heading'>Other Big News!!!</div>
+                        <div class='content'>Again, just kidding</div>
+                    </li>
+                </ul>
+            </div> 
+        </body>
+    </html>"""
+    sports_snippet = """
+    <html>
+        <body>
+            <div class='header'>
+                <h1>Sports news</h1>
+                <h2>Breaking news!!</h2>
+            </div>
+            <table class="events">
+                <tr> 
+                    <td class='sport'>Soccer</td>
+                    <td class='status'>World cup</td>
+                </tr>
+                <tr> 
+                    <td class='sport'>Cricket</td>
+                    <td class='status'>League matches</td>
+                </tr>
+            </table>
+            <div class='news_section'>
+                <ul>
+                    <li>
+                        <div class='heading'>Soccer worldcup finals!!!</div>
+                        <div class='content'>I'm running out of meaningful snippets</div>
+                    </li>
+                    <li>
+                        <div class='heading'>Cricket league matches</div>
+                        <div class='content'>I'm definitely out.</div>
+                    </li>
+                </ul>
+            </div> 
+        </body>
+    </html>"""
+    from holmium.core import Page, Section, Element, Elements, ElementMap, Locators 
+    import selenium.webdriver 
+    class Heading(Section):
+        main = Element( Locators.CSS_SELECTOR, "h1")
+        sub = Element( Locators.CSS_SELECTOR, "h2")
+    class NewsSection(Section):
+        articles = ElementMap( Locators.CSS_SELECTOR, "ul>li"
+                                , key=lambda el: el.find_element_by_class_name('heading').text 
+                                , value=lambda el: el.find_element_by_class_name('content').text
+                                )
+
+    class SportsEventsSection(Section):
+        events = ElementMap( Locators.CSS_SELECTOR, "tr"
+                                , key=lambda el: el.find_element_by_class_name('sport').text 
+                                , value=lambda el: el.find_element_by_class_name('status').text
+                                )
+    class NewsPage(Page):
+        heading = Heading(Locators.CLASS_NAME, "header")
+        news_section = NewsSection(Locators.CLASS_NAME, "news_section")
+
+    class HeadlinePage(NewsPage):
+        pass
+    class SportsPage(NewsPage):
+        sports_events = SportsEventsSection(Locators.CLASS_NAME, "events")
+
+    driver = selenium.webdriver.Firefox()
+    open("/var/tmp/headlines.html","w").write(headlines_snippet)
+    open("/var/tmp/sports.html","w").write(sports_snippet)
+
+    headlines = HeadlinePage(driver, "file:///var/tmp/headlines.html")
+    print headlines.news_section.articles["Big News!!!"]
+    print headlines.heading.main.text
+
+    sports = SportsPage(driver, "file:///var/tmp/sports.html")
+    print sports.heading.main.text
+    print sports.news_section.articles["Soccer worldcup finals!!!"]
+    print sports.sports_events.events["Cricket"]
+
+
+Though there are two different pages being accessed, they follow a similar structure 
+and the ``news_section`` and ``header`` parts can be encapsulated into a
+common :class:`Section`. Though the ``events`` section in the sports page isn't
+used anywhere else - it still makes it clearer to define it as a :class:`Section`
+to separate its logic from the main ``SportsPage``.
 
 ***********
 Collections
