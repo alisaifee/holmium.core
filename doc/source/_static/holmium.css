@@ -1,0 +1,8 @@
+@import url("pyramid.css");
+div.header {
+  background: #eee;
+  padding: 0px;
+}
+div.logo {
+  padding: 0px;
+}

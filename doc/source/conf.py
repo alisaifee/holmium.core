@@ -16,7 +16,7 @@ version = release = holmium.version.__version__
 exclude_patterns = []
 #add_module_names = True
 pygments_style = 'sphinx'
-
+html_style = "holmium.css"
 html_theme = 'pyramid'
 #html_theme_options = {}
 #html_theme_path = []
