@@ -1,10 +1,17 @@
 .. :changelog:
 .. _Deprecated old class names: http://holmiumcore.readthedocs.org/en/latest/core.html#deprecated-classes 
 .. _Config object: http://holmiumcore.readthedocs.org/en/latest/internals.html#holmium.core.Config
+.. _Section object: https://holmiumcore.readthedocs.org/en/latest/usage.html#sections 
 
 *******
 History
 *******
+
+0.3 2013-09-16
+==============
+* Bug Fix for instantiating multiple instances of the same the Page object
+  (https://github.com/alisaifee/holmium.core/issues/4)
+* `Section object`_ introduced 
 
 0.2 2013-09-11
 ==============
@@ -31,6 +38,7 @@ History
 * Bug fix 
   
   - fixed phantomjs build in travis
+
 
 
 
