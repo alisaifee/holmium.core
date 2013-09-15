@@ -1,22 +1,53 @@
 import mock
 import unittest
-from  holmium.core import Page, Element, Locators
+from  holmium.core import Page, Element, Elements, Section, Locators
 import selenium.webdriver
 
 
+class BasicSectionIframe(Section):
+    element = Element( Locators.CLASS_NAME, "frame_el")
+class BasicPageIframe(Page):
+    element = Element( Locators.CLASS_NAME, "frame_el" )
+    elements = Elements( Locators.CLASS_NAME, "frame_el" )
+    frame_1 = BasicSectionIframe(Locators.CLASS_NAME, "section", "frame_1")
+    frame_2 = BasicSectionIframe(Locators.CLASS_NAME, "section", "frame_2")
+class BasicPage(Page):
+    element = Element( Locators.ID, "test_id" )
+
 class IFrameTest(unittest.TestCase):
-    class BasicPageIframe(Page):
-        element = Element( Locators.ID, "test_id" )
-        element2 = Element( Locators.ID, "test_id" )
-    def test_basic_po(self):
+    def test_basic_po_with_frame(self):
+        frame1 = "<html><body><div class='section'><div class='frame_el'>frame 1 el</div></div></body></html>"
+        frame2 = "<html><body><div class='section'><div class='frame_el'>frame 2 el</div></div></body></html>"
+
+        open("/var/tmp/frame1.html","w").write(frame1)
+        open("/var/tmp/frame2.html","w").write(frame2)
+
+        p1 = '<html><body><iframe id="frame_1" src="file:///var/tmp/frame1.html"/></body></html>'
+        p2 = '<html><body><iframe id="frame_1" src="file:///var/tmp/frame1.html"></iframe><iframe id="frame_2" src="file:///var/tmp/frame2.html"></iframe></body></html>'
+
+        driver = selenium.webdriver.PhantomJS()
+        driver.execute_script("document.write('%s')"  % p1.strip().replace("\n", "") )
+        with mock.patch("holmium.core.log") as log:
+            p = BasicPageIframe(driver, iframe="frame_1")
+            self.assertEquals(p.element.text, "frame 1 el")
+            self.assertEquals(p.frame_1.element.text, "frame 1 el")
+            self.assertTrue(p.frame_2.element == None)
+            driver.execute_script("document.write('%s')"  % p2.strip().replace("\n", "") )
+            self.assertTrue(p.frame_2.element != None)
+            self.assertEquals(p.frame_2.element.text, "frame 2 el")
+            self.assertEquals(p.elements[0].text, "frame 1 el")
+            self.assertEquals(log.error.call_count, 1)
+
+    def test_mocked_basic_po_with_frame(self):
         with mock.patch('selenium.webdriver.Firefox') as driver:
             with mock.patch('selenium.webdriver.remote.webelement.WebElement') as element:
                 element.tag_name = "div"
                 element.text = "test_text"
                 driver.find_element.return_value = element
-                po = IFrameTest.BasicPageIframe( driver , iframe='frame')
+                po = BasicPage( driver , iframe='frame')
                 self.assertEquals( "test_text",  po.element.text)
-                self.assertEquals( "test_text",  po.element2.text)
                 driver.switch_to_frame.assert_called_with("frame")
-                self.assertEquals(driver.switch_to_frame.call_count, 3)
-                self.assertEquals(driver.switch_to_default_content.call_count, 2)
+                self.assertEquals(driver.switch_to_frame.call_count, 1)
+                self.assertEquals(driver.switch_to_default_content.call_count, 1)
+
+

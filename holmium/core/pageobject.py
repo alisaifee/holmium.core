@@ -1,4 +1,4 @@
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException, NoSuchFrameException
 from selenium.webdriver.support.ui import WebDriverWait, Select
 from selenium.webdriver.remote.webelement import WebElement
 import selenium.webdriver.common.by
@@ -8,6 +8,7 @@ import weakref
 import types
 import threading
 import contextlib
+import collections
 
 try:
     from ordereddict import OrderedDict
@@ -108,13 +109,12 @@ class Page(object):
 
         if url:
             self.driver.get(url)
-        if iframe:
-            self.driver.switch_to_frame(iframe)
 
     @contextlib.contextmanager
-    def driver_scope(self):
+    def scope(self):
         Page.local.driver = object.__getattribute__(self, "driver")
         yield
+
     @staticmethod
     def get_driver():
         return Page.local.driver
@@ -130,10 +130,9 @@ class Page(object):
         to enable fluent access to page objects, instance methods that
         don't return a value, instead return the page object instance.
         """
-        with object.__getattribute__(self, "driver_scope")():
+        with object.__getattribute__(self, "scope")():
             attr = object.__getattribute__(self, key)
             # check if home url is set, else update.
-
             if not object.__getattribute__(self, "home"):
                 holmium.core.log.debug("home url not set, attempting to update.")
                 object.__setattr__(self, "home", object.__getattribute__(self,"driver").current_url)
@@ -148,6 +147,9 @@ class Page(object):
                     return resp
                 return wrap
             return attr
+
+
+
 
 class ElementGetter(object):
     """
@@ -164,10 +166,16 @@ class ElementGetter(object):
         self.iframe = None
         self.base_element = base_element
         self.value_mapper = value
+        self.root_fn = lambda:Page.get_driver()
         holmium.core.log.debug("locator:%s, query_string:%s, timeout:%d" %
                               (locator_type, query_string, timeout))
+    
+    @property
+    def root(self):
+        return self.root_fn()
 
     def get_element(self, method = None):
+
         if self.base_element:
             if isinstance(self.base_element, types.LambdaType):
                 el = self.base_element()
@@ -182,18 +190,16 @@ class ElementGetter(object):
             _meth = method
         holmium.core.log.debug("looking up locator:%s, query_string:%s, timeout:%d" %
                               (self.locator_type, self.query_string, self.timeout))
+
+        if self.iframe:
+            Page.local.driver.switch_to_default_content()
+            Page.local.driver.switch_to_frame(self.iframe)
+
         if self.timeout:
             try:
-                WebDriverWait(Page.get_driver(), self.timeout).until(lambda _: _meth(self.locator_type, self.query_string))
+                WebDriverWait(self.root, self.timeout).until(lambda _: _meth(self.locator_type, self.query_string))
             except TimeoutException:
                 holmium.core.log.debug("unable to find element %s after waiting for %d seconds" % (self.query_string, self.timeout))
-
-        # if the parent page object specified an iframe, thats the context
-        # this element will be queried from. the switch_to_default_content
-        # is to ensure a double switch doesn't occur.
-        if Page.get_driver() and self.iframe:
-            Page.get_driver().switch_to_default_content()
-            Page.get_driver().switch_to_frame(self.iframe)
         return _meth(self.locator_type, self.query_string)
 
 
@@ -207,7 +213,7 @@ class Element(ElementGetter):
         if not instance:
             return self
         try:
-            return self.value_mapper(enhanced(self.get_element(Page.get_driver().find_element)))
+            return self.value_mapper(enhanced(self.get_element(self.root.find_element)))
         except NoSuchElementException:
             return None
 
@@ -224,7 +230,7 @@ class Elements(ElementGetter):
         if not instance:
             return self
         try:
-            return [self.value_mapper(enhanced(el)) for el in self.get_element(Page.get_driver().find_elements)]
+            return [self.value_mapper(enhanced(el)) for el in self.get_element(self.root.find_elements)]
         except NoSuchElementException:
             return []
 
@@ -249,7 +255,7 @@ class ElementMap(Elements):
         if not instance:
             return self
         try:
-            return OrderedDict((self.key_mapper(el), self.value_mapper(enhanced(el))) for el in self.get_element(Page.get_driver().find_elements))
+            return OrderedDict((self.key_mapper(el), self.value_mapper(enhanced(el))) for el in self.get_element(self.root.find_elements))
         except NoSuchElementException:
             return {}
 
@@ -257,4 +263,64 @@ class ElementMap(Elements):
     def __getitem__(self, key):
         return lambda:self.__get__(self, self.__class__)[key]
 
+class Section(object):
+    """
+    Base class to encapsulate reusable page sections::
 
+        class MySection(Section):
+            things = Elements( .... )
+
+        class MyPage(Page):
+            section_1 =  MySection(Locators.CLASS_NAME, "section")
+            section_2 =  MySection(Locators.ID, "unique_section")
+
+    """
+    def __init__(self, locator_type, query_string, iframe=None):
+        self.locator_type = locator_type
+        self.query_string = query_string
+        self.iframe = iframe
+        self.__root_val = None
+    def __get__(self, instance, owner):
+        def _root():
+            if self.iframe:
+                try:
+                    Page.get_driver().switch_to_default_content()
+                    Page.get_driver().switch_to_frame(self.iframe)
+                except NoSuchFrameException:
+                    holmium.core.log.error("unable to switch to iframe %s" % self.iframe)
+            return self.root
+
+        root_function = _root
+        for element in inspect.getmembers(self.__class__):
+             if issubclass(element[1].__class__, ElementGetter):
+                element[1].root_fn = root_function
+        return self
+    @property
+    def root(self):
+        return self.__root_val or Page.get_driver().find_element(self.locator_type, self.query_string)
+
+    @root.setter
+    def root(self, val):
+       self.__root_val = val
+
+class Sections(Section, collections.Iterable):
+    """
+    Base class for an Iterable view of a collection of :class:`holmium.core.Section`
+    objects.
+    """
+    def __init__(self, locator_type, query_string, iframe=None):
+        Section.__init__(self, locator_type, query_string, iframe)
+
+    def __iter__(self):
+        def _root():
+            if self.iframe:
+                try:
+                    Page.get_driver().switch_to_default_content()
+                    Page.get_driver().switch_to_frame(self.iframe)
+                except NoSuchFrameException:
+                    holmium.core.log.error("unable to switch to iframe %s" % self.iframe)
+                    return False
+            return True
+        for el in Page.get_driver().find_elements(self.locator_type, self.query_string):
+            self.root = el
+            yield self
