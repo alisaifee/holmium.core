@@ -1,11 +1,12 @@
+*********************
 Unit Test Integration
-=====================
+*********************
 .. automodule:: holmium.core 
 
 Holmium provides two utilities to ease integration with automated tests. 
 
 The :class:`TestCase` base class. 
-----------------------------------------
+=================================
 This base class extends :class:`unittest.TestCase` and adds the following functionality:
     
     * automatically provision a selenium webdriver :attr:`driver` to the testcase which is selected based on the environment variable HO_BROWSER. 
@@ -14,7 +15,7 @@ This base class extends :class:`unittest.TestCase` and adds the following functi
     * quits the driver at the end of the test class.
 
 Example test case
-~~~~~~~~~~~~~~~~~
+-----------------
 
 .. code-block:: python
     
@@ -32,7 +33,7 @@ Example test case
         unittest.main()
 
 Execution
-~~~~~~~~~
+---------
 
 .. code-block:: bash 
     
@@ -42,7 +43,7 @@ Execution
     export HO_BROWSER=firefox;export HO_REMOTE=http://localhost:5555/wd/hub;python test_simple.py 
 
 :class:`HolmiumNose` plugin for nosetest. 
------------------------------------------
+=========================================
 
 This plugin registers the following command line options to nose:
 
@@ -57,7 +58,7 @@ option                       description
 ===========================  ===========================================================================================================================================
 
 Example test case
-~~~~~~~~~~~~~~~~~
+-----------------
 
 .. code-block:: python 
 
@@ -72,7 +73,7 @@ Example test case
 
 
 Execution
-~~~~~~~~~
+---------
 
 .. code-block:: bash 
 

@@ -2,8 +2,9 @@
 .. _Deprecated old class names: http://holmiumcore.readthedocs.org/en/latest/core.html#deprecated-classes 
 .. _Config object: http://holmiumcore.readthedocs.org/en/latest/internals.html#holmium.core.Config
 
+*******
 History
--------
+*******
 
 0.2 2013-09-11
 ==============

@@ -2,11 +2,13 @@
 .. |travis-ci| image:: https://secure.travis-ci.org/alisaifee/holmium.core.png
     :target: https://travis-ci.org/#!/alisaifee/holmium.core 
 
-holmium.core |travis-ci| 
-------------------------
+**holmium.core** |travis-ci|
 
+
+************
 Introduction
-============
+************
+
 holmium.core provides utility classes to simplify writing pageobjects for webpages using selenium.
 
 Nothing beats an example. Conventionally automated tests integrating with python-selenium are written similarly to the following code block (using seleniumhq.org).
@@ -101,6 +103,5 @@ Which can then be executed in a few different ways as shown below.
     export HO_BROWSER=firefox;python test_selenium_hq.py 
     # if using unittest.TestCase as the base class run as:
     nosetests test_selenium_hq.py --holmium-browser=firefox 
-
 
 

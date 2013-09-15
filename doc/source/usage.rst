@@ -1,10 +1,9 @@
-####################
+********************
 Building PageObjects
-####################
+********************
 
-********
 Overview
-********
+========
 .. automodule:: holmium.core 
 
 A typical PageObject built with :mod:`holmium.core` has the following composition:
@@ -65,9 +64,8 @@ the example below in a python repl.
 Both the element ``search_box`` and the collection of footer links ``google_footer`` are looked up using the driver that was 
 passed into the ``GooglePage`` instance.
 
-***********
 Collections
-***********
+===========
 To keep the interaction with collections of elements in a Page readable and logically grouped - it is useful to represent 
 and access such elements in a page the same way as one would a python list or dictionary. The :class:`Elements` and :class:`ElementMap` 
 (which is used in the previous example) can be used to organize elements with either relationship.
@@ -127,15 +125,14 @@ the text attribute of the element. The same type of lookup functions are used in
     # u'one' 
 
 
-*************
 More Examples
-*************
+=============
 
 google search 
-=============
+-------------
 .. literalinclude:: ../../examples/google/test_search_text.py 
 
 Wikipedia text search example 
-============================= 
+----------------------------- 
 .. literalinclude:: ../../examples/wikipedia/test_search_article.py
 

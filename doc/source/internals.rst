@@ -1,5 +1,6 @@
+################
 Internal Classes
-================
+################
 .. automodule:: holmium.core.pageobject 
 
 .. autoclass:: ElementDict

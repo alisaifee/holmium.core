@@ -1,5 +1,6 @@
+*********** 
 Development
-===========
+***********
 .. _github: http://github.com/alisaifee/holmium.core/
 .. _issue tracker: http://github.com/alisaifee/holmium.core/issues
 .. _travis: https:/travis-ci.org/#!/alisaifee/holmium.core 
@@ -7,11 +8,11 @@ Development
 .. _phantomjs download page: http://phantomjs.org/download.html 
 
 Contributors
-~~~~~~~~~~~~
+============
 .. include:: ../../CONTRIBUTORS.rst
 
 Project Resources
-~~~~~~~~~~~~~~~~~
+=================
 Continuous Integration
     The project is being continuously built with `travis`_ against python 2.6 & 2.7. 
 
@@ -25,7 +26,7 @@ Questions
     Freenode irc server : #holmium
 
 Installation
-~~~~~~~~~~~~
+============
 The stable version can be installed either via ``pip`` or ``easy_install``.
 
 .. code-block:: bash
@@ -46,9 +47,8 @@ in the *installed* version.
     cd holmium.core 
     sudo python setup.py develop 
 
-
 Tests
-~~~~~
+=====
 :mod:`holmium.core` uses ``nosetests`` for running its tests. You will also
 need ``phantomjs`` installed to run certain tests that make more sense without 
 mocking. For instructions on installing ``phantomjs`` go to the `phantomjs download page`_.

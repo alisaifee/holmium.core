@@ -1,8 +1,9 @@
+***************
 Holmium Classes
-===============
+***************
 
 Page Objects
--------------
+============
 .. automodule:: holmium.core 
     :members:
 
@@ -15,7 +16,7 @@ Page Objects
     :inherited-members:
 
 Deprecated Classes 
-------------------
+==================
 Earlier versions of :mod:`holmium.core` used rather verbose names for Page objects and elements. 
 As of version 0.2 the classes have been renamed but the older names have been retained as aliases 
 to the new classes for backward compatibility (an annoying warning will however, be emitted everytime 
@@ -28,6 +29,6 @@ the old names are used to hopefully convince test authors to update their test c
 .. autoclass:: HolmiumTestCase 
 
 Utilities
----------
+=========
 .. autoclass:: TestCase
 .. autofunction:: repeat 
