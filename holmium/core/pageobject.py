@@ -6,6 +6,9 @@ import holmium
 import inspect
 import weakref
 import types
+import threading
+import contextlib
+
 try:
     from ordereddict import OrderedDict
 except ImportError:
@@ -79,7 +82,7 @@ class Page(object):
         assert len(Google().enter_query("page objects").submit_search().get_results()) > 0
 
     """
-
+    local = threading.local()
     def __init__(self, driver, url=None, iframe=None):
         self.driver = driver
         if url:
@@ -87,11 +90,11 @@ class Page(object):
         elif driver.current_url:
             self.home = driver.current_url
         self.iframe = iframe
-        def update_element(el):
-            if issubclass(el.__class__, ElementGetter):
-                el.driver = self.driver
-                el.iframe = self.iframe
         for el in inspect.getmembers(self.__class__):
+            def update_element(el):
+                if issubclass(el.__class__, ElementGetter):
+                    el.iframe = self.iframe
+
             if issubclass(el[1].__class__, list):
                 for item in el[1]:
                     update_element(item)
@@ -108,6 +111,14 @@ class Page(object):
         if iframe:
             self.driver.switch_to_frame(iframe)
 
+    @contextlib.contextmanager
+    def driver_scope(self):
+        Page.local.driver = object.__getattribute__(self, "driver")
+        yield
+    @staticmethod
+    def get_driver():
+        return Page.local.driver
+
     def go_home(self):
         """
         returns the page object to the url it was initialized with
@@ -119,22 +130,24 @@ class Page(object):
         to enable fluent access to page objects, instance methods that
         don't return a value, instead return the page object instance.
         """
-        attr = object.__getattribute__(self, key)
-        # check if home url is set, else update.
-        if not object.__getattribute__(self, "home"):
-            holmium.core.log.debug("home url not set, attempting to update.")
-            object.__setattr__(self, "home", object.__getattribute__(self,"driver").current_url)
+        with object.__getattribute__(self, "driver_scope")():
+            attr = object.__getattribute__(self, key)
+            # check if home url is set, else update.
 
-        if isinstance(attr, types.MethodType):
-            @wraps(attr)
-            def wrap(*args, **kwargs):
-                resp = attr(*args, **kwargs)
-                if not resp:
-                    holmium.core.log.debug("method %s returned None, using fluent response" % attr.func_name)
-                    resp = self
-                return resp
-            return wrap
-        return attr
+            if not object.__getattribute__(self, "home"):
+                holmium.core.log.debug("home url not set, attempting to update.")
+                object.__setattr__(self, "home", object.__getattribute__(self,"driver").current_url)
+
+            if isinstance(attr, types.MethodType):
+                @wraps(attr)
+                def wrap(*args, **kwargs):
+                    resp = attr(*args, **kwargs)
+                    if not resp:
+                        holmium.core.log.debug("method %s returned None, using fluent response" % attr.func_name)
+                        resp = self
+                    return resp
+                return wrap
+            return attr
 
 class ElementGetter(object):
     """
@@ -171,16 +184,16 @@ class ElementGetter(object):
                               (self.locator_type, self.query_string, self.timeout))
         if self.timeout:
             try:
-                WebDriverWait(self.driver, self.timeout).until(lambda _: _meth(self.locator_type, self.query_string))
+                WebDriverWait(Page.get_driver(), self.timeout).until(lambda _: _meth(self.locator_type, self.query_string))
             except TimeoutException:
                 holmium.core.log.debug("unable to find element %s after waiting for %d seconds" % (self.query_string, self.timeout))
 
         # if the parent page object specified an iframe, thats the context
         # this element will be queried from. the switch_to_default_content
         # is to ensure a double switch doesn't occur.
-        if self.driver and self.iframe:
-            self.driver.switch_to_default_content()
-            self.driver.switch_to_frame(self.iframe)
+        if Page.get_driver() and self.iframe:
+            Page.get_driver().switch_to_default_content()
+            Page.get_driver().switch_to_frame(self.iframe)
         return _meth(self.locator_type, self.query_string)
 
 
@@ -194,7 +207,7 @@ class Element(ElementGetter):
         if not instance:
             return self
         try:
-            return self.value_mapper(enhanced(self.get_element(self.driver.find_element)))
+            return self.value_mapper(enhanced(self.get_element(Page.get_driver().find_element)))
         except NoSuchElementException:
             return None
 
@@ -211,7 +224,7 @@ class Elements(ElementGetter):
         if not instance:
             return self
         try:
-            return [self.value_mapper(enhanced(el)) for el in self.get_element(self.driver.find_elements)]
+            return [self.value_mapper(enhanced(el)) for el in self.get_element(Page.get_driver().find_elements)]
         except NoSuchElementException:
             return []
 
@@ -236,7 +249,7 @@ class ElementMap(Elements):
         if not instance:
             return self
         try:
-            return OrderedDict((self.key_mapper(el), self.value_mapper(enhanced(el))) for el in self.get_element(self.driver.find_elements))
+            return OrderedDict((self.key_mapper(el), self.value_mapper(enhanced(el))) for el in self.get_element(Page.get_driver().find_elements))
         except NoSuchElementException:
             return {}
 
