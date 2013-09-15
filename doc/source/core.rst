@@ -8,6 +8,7 @@ Page Objects & Friends
 
 .. autoclass:: Page
 .. autoclass:: Section
+.. autoclass:: Sections
 .. autoclass:: Element
 .. autoclass:: Elements 
 .. autoclass:: ElementMap

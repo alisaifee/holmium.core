@@ -4,6 +4,7 @@ Development
 .. _issue tracker: http://github.com/alisaifee/holmium.core/issues
 .. _travis: https:/travis-ci.org/#!/alisaifee/holmium.core 
 .. _develop: http://pythonhosted.org/distribute/setuptools.html#development-mode
+
 Contributors
 ~~~~~~~~~~~~
 .. include:: ../../CONTRIBUTORS.rst

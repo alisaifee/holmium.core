@@ -36,7 +36,7 @@ class IFrameTest(unittest.TestCase):
             self.assertTrue(p.frame_2.element != None)
             self.assertEquals(p.frame_2.element.text, "frame 2 el")
             self.assertEquals(p.elements[0].text, "frame 1 el")
-            self.assertEquals(log.error.call_count, 2)
+            self.assertEquals(log.error.call_count, 1)
 
     def test_mocked_basic_po_with_frame(self):
         with mock.patch('selenium.webdriver.Firefox') as driver:
@@ -47,7 +47,7 @@ class IFrameTest(unittest.TestCase):
                 po = BasicPage( driver , iframe='frame')
                 self.assertEquals( "test_text",  po.element.text)
                 driver.switch_to_frame.assert_called_with("frame")
-                self.assertEquals(driver.switch_to_frame.call_count, 2)
+                self.assertEquals(driver.switch_to_frame.call_count, 1)
                 self.assertEquals(driver.switch_to_default_content.call_count, 1)
 
 

@@ -17,6 +17,10 @@ A typical PageObject built with :mod:`holmium.core` has the following compositio
         * :class:`Element` 
         * :class:`Elements` 
         * :class:`ElementMap` 
+    * :class:`Sections` 
+        * :class:`Element` 
+        * :class:`Elements` 
+        * :class:`ElementMap` 
 
 A Page is initalized with a :class:`selenium.webdriver.remote.webdriver.WebDriver` 
 instance and can take some optional arguments.
@@ -72,10 +76,10 @@ passed into the ``GooglePage`` instance.
 ********
 Sections
 ********
-:class:`Section` objects can be used to further encapsulate blocks of page
-logic that may either be reusable or accessed from within different parts of the
-page in a similar manner. Examples of such usecases are menus, footers and
-collections that may not follow a standard list or map formation. 
+:class:`Section` objects can be used to further encapsulate 
+blocks of page logic that may either be reusable between different pages or
+accessed from within different parts of the page in a similar manner. Examples of 
+such usecases are menus, footers and collections that may not follow a standard list or map formation. 
 
 Take for example a page with the following structure.
 
@@ -180,7 +184,60 @@ Though there are two different pages being accessed, they follow a similar struc
 and the ``news_section`` and ``header`` parts can be encapsulated into a
 common :class:`Section`. Though the ``events`` section in the sports page isn't
 used anywhere else - it still makes it clearer to define it as a :class:`Section`
-to separate its logic from the main ``SportsPage``.
+to separate its logic from the main ``SportsPage``. 
+
+There may be other usecases where :class:`Section` objects may be used to represent 
+complex objects within a page that appear repeatedly in a list like manner. To
+reduce the duplication of specifying :class:`Section` objects repeatedly in a
+:class:`Page` a :class:`Sections` object may be used to obtain an iterable view
+of all matched :class:`Section` objects.
+
+.. code-block:: python
+
+    page_snippet = """
+    <html>
+        <body>
+            <div class='thought'>
+                <div class='author'>
+                    <span class='user'>John</span>
+                    <span class='reputation'>1000</span>
+                </div>
+                <div class='details'>
+                    <div class='brief'>John's world view</div>
+                    <div class='full_text'>Sleeping is important</div>
+                </div>
+            </div>
+            <div class='thought'>
+                <div class='author'>
+                    <span class='user'>Jane</span>
+                    <span class='reputation'>100000000</span>
+                </div>
+                <div class='details'>
+                    <div class='brief'>Jane's world view</div>
+                    <div class='full_text'>John's world view is not important...</div>
+                </div>
+            </div>
+        </body>
+    </html>"""
+    from holmium.core import Page, Section, Element, Elements, ElementMap, Locators 
+    import selenium.webdriver 
+    class ThoughtSections(Sections):
+        author = Element(Locator.CLASS_NAME , "user")
+        brief = Element(Locator.CSS_SELECTOR , "div.details div.brief")
+        full_text = Element(Locator.CSS_SELECTOR , "div.details div.full_text")
+
+    class MainPage(Page):
+        thoughts = ThoughtSections(Locators.CLASS_NAME, "thought")
+
+
+    driver = selenium.webdriver.Firefox()
+    open("/var/tmp/page.html","w").write(page_snippet)
+
+    main_page = MainPage(driver, "file:///var/tmp/page.html")
+    for thought in main_page.thoughts:
+        print thought.author.text 
+        print thought.brief.text
+        print thought.full_text.text
 
 ***********
 Collections
