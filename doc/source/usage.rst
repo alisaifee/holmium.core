@@ -48,18 +48,18 @@ the example below in a python repl.
         search_box = Element( Locators.NAME, "q", timeout = 1)
         google_footer = ElementMap ( Locators.CSS_SELECTOR, "#fll>div>a" , timeout = 1 ) 
 
-    g = GooglePage(driver, url="http://www.google.com")
+    g = GooglePage(driver, url="http://www.google.ca")
     g.search_box 
     # <selenium.webdriver.remote.webelement.WebElement object at 0x10b50e450>
     g.google_footer 
     # OrderedDict([(u'Advertising Programs', <selenium.webdriver.remote.webelement.WebElement object at 0x10b35f250>), .....
-    g.google_footer["Advertising Programs"]
+    g.google_footer["About Google"]
     # <selenium.webdriver.remote.webelement.WebElement object at 0x10b35f450> 
-    g.google_footer["Advertising Programs"].get_attribute("href")
-    # u'http://www.google.com/intl/en/ads/
-    driver.get("http://www.google.tw")
-    g.google_footer[u"廣告服務"].get_attribute("href")
-    # u'http://www.google.com.tw/intl/zh-TW/ads/'
+    g.google_footer["About Google"].get_attribute("href")
+    # u'http://www.google.ca/intl/en/about.html
+    driver.get("http://www.google.co.tz")
+    g.google_footer["Kila Kitu Kuhusu Google"].get_attribute("href")
+    # u'https://www.google.co.tz/intl/sw/about.html'
 
 
 Both the element ``search_box`` and the collection of footer links ``google_footer`` are looked up using the driver that was 
