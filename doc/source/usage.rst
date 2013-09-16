@@ -191,6 +191,11 @@ reduce the duplication of specifying :class:`Section` objects repeatedly in a
 :class:`Page` a :class:`Sections` object may be used to obtain an iterable view
 of all matched :class:`Section` objects.
 
+.. WARNING::
+    Though one could be inclined to treat :class:`Sections` as any other collection 
+    please only use them as an iterable. Trying to cast a :class:`Sections`
+    property into a list or doing random access will lead to pain.
+
 .. code-block:: python
 
     from holmium.core import Page, Sections, Element, Elements, ElementMap, Locators 
