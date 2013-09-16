@@ -312,15 +312,6 @@ class Sections(Section, collections.Iterable):
         Section.__init__(self, locator_type, query_string, iframe)
 
     def __iter__(self):
-        def _root():
-            if self.iframe:
-                try:
-                    Page.get_driver().switch_to_default_content()
-                    Page.get_driver().switch_to_frame(self.iframe)
-                except NoSuchFrameException:
-                    holmium.core.log.error("unable to switch to iframe %s" % self.iframe)
-                    return False
-            return True
         for el in Page.get_driver().find_elements(self.locator_type, self.query_string):
             self.root = el
             yield self
