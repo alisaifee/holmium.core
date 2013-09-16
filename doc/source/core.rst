@@ -24,6 +24,9 @@ As of version 0.2 the classes have been renamed but the older names have been re
 to the new classes for backward compatibility (an annoying warning will however, be emitted everytime 
 the old names are used to hopefully convince test authors to update their test code :D ).
 
+.. WARNING::
+    These aliases will be removed in version 0.4
+
 .. autoclass:: PageObject
 .. autoclass:: PageElement
 .. autoclass:: PageElements 
