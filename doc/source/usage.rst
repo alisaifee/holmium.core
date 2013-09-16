@@ -193,7 +193,7 @@ of all matched :class:`Section` objects.
 
 .. code-block:: python
 
-    from holmium.core import Page, Section, Element, Elements, ElementMap, Locators 
+    from holmium.core import Page, Sections, Element, Elements, ElementMap, Locators 
     import selenium.webdriver 
     
     page_snippet = """
@@ -223,9 +223,9 @@ of all matched :class:`Section` objects.
     </html>"""
    
     class ThoughtSections(Sections):
-        author = Element(Locator.CLASS_NAME , "user")
-        brief = Element(Locator.CSS_SELECTOR , "div.details div.brief")
-        full_text = Element(Locator.CSS_SELECTOR , "div.details div.full_text")
+        author = Element(Locators.CLASS_NAME , "user")
+        brief = Element(Locators.CSS_SELECTOR , "div.details div.brief")
+        full_text = Element(Locators.CSS_SELECTOR , "div.details div.full_text")
 
     class MainPage(Page):
         thoughts = ThoughtSections(Locators.CLASS_NAME, "thought")
