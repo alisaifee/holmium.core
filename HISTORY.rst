@@ -7,6 +7,10 @@
 History
 *******
 
+0.3.1 2013-09-17
+================
+* Allow indexing of Sections objects 
+
 0.3 2013-09-16
 ==============
 * Bug Fix for instantiating multiple instances of the same the Page object
@@ -38,6 +42,7 @@ History
 * Bug fix 
   
   - fixed phantomjs build in travis
+
 
 
 
