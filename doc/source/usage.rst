@@ -193,8 +193,9 @@ of all matched :class:`Section` objects.
 
 .. WARNING::
     Though one could be inclined to treat :class:`Sections` as any other collection 
-    please only use them as an iterable. Trying to cast a :class:`Sections`
-    property into a list or doing random access will lead to pain.
+    please only use them as an iterable or do indexed access directly on the
+    :class:`Sections` object. Trying to cast a :class:`Sections`
+    property into a list is not supported.
 
 .. code-block:: python
 

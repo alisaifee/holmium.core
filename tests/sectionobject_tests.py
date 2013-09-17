@@ -101,3 +101,22 @@ class SectionTest(unittest.TestCase):
             for token in section.tokens:
                 self.assertEquals(token.text, "section element %s" % counter)
                 counter+=1
+
+    def test_sections_list_behavior(self):
+        with mock.patch('selenium.webdriver.Firefox') as driver:
+            element1, element2 = mock.Mock(), mock.Mock()
+            element1.tag_name = element2.tag_name = "div"
+            element1.text = "element 1"
+            element2.text = "element 2"
+            element3, element4 = mock.Mock(), mock.Mock()
+            element3.tag_name = element4.tag_name = "div"
+            element3.text = "element 3"
+            element4.text = "element 4"
+            driver.find_elements.return_value = [element1, element2]
+            element1.find_elements.return_value = [element3, element4]
+            element2.find_elements.return_value = [element4, element3]
+            po = BasicPageWithSections( driver )
+            self.assertEquals( "element 3",  po.sections[0].tokens[0].text)
+            self.assertEquals( "element 4",  po.sections[1].tokens[0].text)
+            self.assertEquals( "element 4",  po.sections[0].tokens[1].text)
+            self.assertEquals( "element 3",  po.sections[1].tokens[1].text)
