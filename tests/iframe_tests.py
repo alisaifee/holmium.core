@@ -15,6 +15,8 @@ class BasicPage(Page):
     element = Element( Locators.ID, "test_id" )
 
 class IFrameTest(unittest.TestCase):
+    def setUp(self):
+        self.driver = selenium.webdriver.PhantomJS()
     def test_basic_po_with_frame(self):
         frame1 = "<html><body><div class='section'><div class='frame_el'>frame 1 el</div></div></body></html>"
         frame2 = "<html><body><div class='section'><div class='frame_el'>frame 2 el</div></div></body></html>"
@@ -50,4 +52,6 @@ class IFrameTest(unittest.TestCase):
                 self.assertEquals(driver.switch_to_frame.call_count, 1)
                 self.assertEquals(driver.switch_to_default_content.call_count, 1)
 
-
+    def tearDown(self):
+        if self.driver:
+            self.driver.quit()

@@ -52,4 +52,6 @@ class ElementTest(unittest.TestCase):
         assert page.elements[1].text == "simple_class"
 
 
-
+    def tearDown(self):
+        if self.driver:
+            self.driver.quit()

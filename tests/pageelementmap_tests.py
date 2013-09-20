@@ -41,3 +41,7 @@ class ElementMapTest(unittest.TestCase):
         self.assertEquals(page.el_map_valuemapper.values() , ["element 1", "element 2", "element 3"] )
         self.assertEquals(page.el_map_keyvaluemapper.keys() , ["element 1", "element 2", "element 3"] )
         self.assertEquals(page.el_map_keyvaluemapper.values() , ["el1", "el2", "el3"] )
+
+    def tearDown(self):
+        if self.driver:
+            self.driver.quit()

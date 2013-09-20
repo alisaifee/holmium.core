@@ -40,3 +40,6 @@ class ElementsTest(unittest.TestCase):
         self.assertEquals(page.el_list_valuemapper_complex , [{"link":"el1", "text":"element 1"}, {"link":"el2", "text":"element 2"} , {"link":"el3", "text":"element 3"}])
         self.assertEquals(page.first_el.text, "element 1")
 
+    def tearDown(self):
+        if self.driver:
+            self.driver.quit()

@@ -15,8 +15,10 @@ class BasicPageWithSections(holmium.core.Page):
     sections = BasicSectionList( holmium.core.Locators.CLASS_NAME, "section")
 
 class SectionTest(unittest.TestCase):
+    def setUp(self):
+        self.driver = selenium.webdriver.PhantomJS()
+
     def test_basic_po_real(self):
-        driver = selenium.webdriver.PhantomJS()
         page = """
         <body>
             <div id='section'>
@@ -50,8 +52,8 @@ class SectionTest(unittest.TestCase):
             </span>
         </body>
         """
-        driver.execute_script('document.write("%s");' % page.strip().replace("\n",""))
-        po = BasicPage(driver)
+        self.driver.execute_script('document.write("%s");' % page.strip().replace("\n",""))
+        po = BasicPage(self.driver)
         self.assertEquals(len(po.tokens), 5)
         self.assertEquals(len(po.section.tokens), 2)
         self.assertEquals(len(po.section_2.tokens), 2)
@@ -94,8 +96,8 @@ class SectionTest(unittest.TestCase):
             </div>
         </body>
         """
-        driver.execute_script('document.write("%s");' % page.strip().replace("\n",""))
-        po = BasicPageWithSections(driver)
+        self.driver.execute_script('document.write("%s");' % page.strip().replace("\n",""))
+        po = BasicPageWithSections(self.driver)
         counter=1
         for section in po.sections:
             for token in section.tokens:
@@ -120,3 +122,7 @@ class SectionTest(unittest.TestCase):
             self.assertEquals( "element 4",  po.sections[1].tokens[0].text)
             self.assertEquals( "element 4",  po.sections[0].tokens[1].text)
             self.assertEquals( "element 3",  po.sections[1].tokens[1].text)
+
+    def tearDown(self):
+        if self.driver:
+            self.driver.quit()
