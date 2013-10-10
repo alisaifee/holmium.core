@@ -141,7 +141,7 @@ class Page(object):
                 @wraps(attr)
                 def wrap(*args, **kwargs):
                     resp = attr(*args, **kwargs)
-                    if not resp:
+                    if None == resp:
                         holmium.core.log.debug("method %s returned None, using fluent response" % attr.func_name)
                         resp = self
                     return resp
