@@ -7,6 +7,10 @@
 History
 *******
 
+0.3.2 2013-10-10
+================
+* Fluent response from page objects only when page method returns None
+
 0.3.1 2013-09-17
 ================
 * Allow indexing of Sections objects 
@@ -42,6 +46,7 @@ History
 * Bug fix 
   
   - fixed phantomjs build in travis
+
 
 
 
