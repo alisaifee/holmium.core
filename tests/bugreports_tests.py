@@ -60,3 +60,26 @@ class BugReports(unittest.TestCase):
         [k.start() for k in threads]
         [k.join() for k in threads]
 
+    def test_fluent_response(self):
+        """ https://github.com/alisaifee/holmium.core/issues/8
+        """
+        class p(holmium.core.Page):
+            el = holmium.core.Element(holmium.core.Locators.NAME, "name")
+            def f1(self):
+                self.el.click()
+            def f2(self):
+                return False
+            def f3(self):
+                return []
+            def f4(self):
+                return {}
+            def f5(self):
+                return ""
+        d1=mock.Mock()
+        p1=p(d1, "http://p1")
+        self.assertEquals(p1, p1.f1())
+        self.assertEquals(False, p1.f2())
+        self.assertEquals([], p1.f3())
+        self.assertEquals({}, p1.f4())
+        self.assertEquals("",p1.f5())
+
