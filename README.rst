@@ -70,9 +70,9 @@ Lets take the above test case for a spin with holmium. Take note of the followin
 
     class SeleniumHQPage(Page):
         nav_links = ElementMap( Locators.CSS_SELECTOR
-                                            , "div#header ul>li"
-                                            , key = lambda element : element.find_element_by_tag_name("a").text
-                                            , value = lambda element: element.find_element_by_tag_name("a") )
+                                , "div#header ul>li"
+                                , key = lambda element : element.find_element_by_tag_name("a").text
+                                , value = lambda element: element.find_element_by_tag_name("a") )
 
         header_text = Element(Locators.CSS_SELECTOR, "#mainContent>h2")
 
