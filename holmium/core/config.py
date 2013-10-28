@@ -23,12 +23,13 @@ JSON
 .. code-block:: json
 
     {
-            'default': { 'url': 'http://localhost'
-                        , 'path':"{{PATH}}"
-                        , 'login_url': '{{default.url}}/{{holmium.environment}}/login'}
+            'default': {  'path':"{{PATH}}"
+                        , 'login_url': '{{url}}/{{holmium.environment}}/login'}
                         , 'username' : '{{holmium.environment}}user'}
-            ,'production': {'password': 'sekret'}
-            ,'development': {'password': 'password'}
+            ,'production': {'url':'http://prod.com'
+                            ,'password': 'sekret'}
+            ,'development': {'url':'http://dev.com'
+                            ,'password': 'password'}
     }
 
 Python
@@ -37,12 +38,13 @@ Python
 
     config = {
         {
-            'default': { 'url': 'http://localhost'
-                        , 'path':"{{PATH}}"
-                        , 'login_url': '{{default.url}}/{{holmium.environment}}/login'}
+            'default': { 'path':"{{PATH}}"
+                        , 'login_url': '{{url}}/{{holmium.environment}}/login'}
                         , 'username' : '{{holmium.environment}}user'}
-            ,'production': {'password': 'sekret'}
-            ,'development': {'password': 'password'}
+            ,'production': {'url':'http://prod.com'
+                            , 'password': 'sekret'}
+            ,'development': {'url':'http://dev.com'
+                            , 'password': 'password'}
         }
     }
 
@@ -50,19 +52,18 @@ When accessing ``self.config`` within a test, due to the default:
 
 * ``self.config['path']`` will always return the value of the environment variable `PATH`,
 * ``self.config['password']`` will always return 'sekret'
-* ``self.config['url']`` will always return 'http://localhost'
 
 if ``HO_ENV`` or ``--holmium-env`` are ``production``:
 
 * ``self.config['username']`` will return ``productionuser``
 * ``self.config['password']`` will return ``sekret``
-* ``self.config['login_url']`` will return ``http://localhost/production/login``
+* ``self.config['login_url']`` will return ``http://prod.com/production/login``
 
 if ``HO_ENV`` or ``--holmium-env`` are ``development``:
 
 * ``self.config['username']`` will return ``developmentuser``
 * ``self.config['password']`` will return ``password``
-* ``self.config['login_url']`` will return ``http://localhost/development/login``
+* ``self.config['login_url']`` will return ``http://dev.com/development/login``
 
     """
     def __init__(self, dct, environment={"holmium":{"environment":"development"}}):
@@ -80,14 +81,18 @@ if ``HO_ENV`` or ``--holmium-env`` are ``development``:
                     return rendered
             else:
                 return item
+        env_ctx = dict.setdefault(self, self.env["holmium"]["environment"], {})
+        default_ctx = dict.setdefault(self, "default", {})
         try:
-            item = dict.__getitem__(self, self.env["holmium"]["environment"])[key]
+            item = env_ctx[key]
         except KeyError,e:
-            item = dict.__getitem__(self, "default")[key]
+            item = default_ctx[key]
 
         context = dict(self)
         context.update(os.environ)
         context.update(self.env)
+        context.update(default_ctx)
+        context.update(env_ctx)
         return __render(item, context)
 
     def __setitem__(self, key, value):
