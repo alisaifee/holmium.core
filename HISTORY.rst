@@ -7,6 +7,27 @@
 History
 *******
 
+0.3.3 2013-10-29
+================
+* Improved back reference access in Config object by allowing variable references 
+  without requiring a prefix of `default` or the environment name. The resolution 
+  order is current environment and then default.
+  
+  For example, the following config will resolve `login_url` as **http://mysite.com/login** 
+  and `profile_url` as **http://mysite.com/profile/prod_user** respectively, when `holmium.environment`
+  is set to **production**
+
+  .. code-block:: python 
+
+    config = { "default" : { 
+                    "login_url" : "{{url}}/login"
+                    , "profile_url":"{{url}}/profiles/{{username}}"}
+              , "production": {
+                    "url": "http://mysite.com"
+                    , "username":"prod_user"} 
+            }
+
+
 0.3.2 2013-10-10
 ================
 * Fluent response from page objects only when page method returns None
@@ -46,6 +67,7 @@ History
 * Bug fix 
   
   - fixed phantomjs build in travis
+
 
 
 
