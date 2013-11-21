@@ -1,9 +1,10 @@
 .. _PageObjects: http://code.google.com/p/selenium/wiki/PageObjects
 .. |travis-ci| image:: https://secure.travis-ci.org/alisaifee/holmium.core.png
     :target: https://travis-ci.org/#!/alisaifee/holmium.core 
-.. |coverall| image:: https://coveralls.io/repos/alisaifee/holmium.core/badge.png?branch=master
+.. |coveralls| image:: https://coveralls.io/repos/alisaifee/holmium.core/badge.png?branch=master 
+    :target: https://coveralls.io/r/alisaifee/holmium.core?branch=master 
 
-**holmium.core** |travis-ci| |coverall|
+**holmium.core** |travis-ci| |coveralls|
 
 
 ************
