@@ -2,7 +2,7 @@ import unittest
 from holmium.core import Config
 import json
 import os
-from holmium.core.config import HolmiumConfig
+from holmium.core.config import HolmiumConfig, configure
 
 
 class ConfigTests(unittest.TestCase):
@@ -123,3 +123,14 @@ class ConfigTests(unittest.TestCase):
 
         cfg["foo"] = "bar"
         self.assertEquals(cfg.foo, "bar")
+
+    def test_holmium_config_unknown_browser(self):
+        cfg = HolmiumConfig(
+            "awesome",
+            "",
+            {},
+            "",
+            "development",
+            False,
+        )
+        self.assertRaises(RuntimeError, configure, cfg)
