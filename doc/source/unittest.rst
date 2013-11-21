@@ -66,16 +66,16 @@ Plugin for nosetest.
 
 This plugin registers the following command line options to nose:
 
-===========================  ===========================================================================================================================================
-option                       description
-===========================  ===========================================================================================================================================
-``--with-holmium``           to enable the use of the holmium plugin
-``--holmium-browser``        one of chrome,firefox,opera,ie,phantomjs,android,iphone or ipad
-``--holmium-remote``         the full qualified url of the selenium server. If not provided the browsers will be attempted to be launched using the built in webdrivers.
-``--holmium-useragent``      useragent to use as an override. only works with firefox & chrome 
-``--holmium-capabilities``   a json dictionary of extra desired capabilities to pass to the webdriver. 
-``--holmium-ignore-ssl``     ignore ssl errors when accessing pages served under untrusted certificates. 
-===========================  ===========================================================================================================================================
+===============================     ===========================================================================================================================================
+option                              description
+===============================     ===========================================================================================================================================
+``--with-holmium``                  to enable the use of the holmium plugin
+``--holmium-browser``               one of chrome,firefox,opera,ie,phantomjs,android,iphone or ipad
+``--holmium-remote``                the full qualified url of the selenium server. If not provided the browsers will be attempted to be launched using the built in webdrivers.
+``--holmium-useragent``             useragent to use as an override. only works with firefox & chrome 
+``--holmium-capabilities``          a json dictionary of extra desired capabilities to pass to the webdriver. 
+``--holmium-ignore-ssl-errors``     ignore ssl errors when accessing pages served under untrusted certificates. 
+===============================     ===========================================================================================================================================
 
 Example test case
 -----------------
