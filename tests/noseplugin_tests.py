@@ -136,6 +136,7 @@ class TestDriverBroken(PluginTester, unittest.TestCase):
     def setUp(self):
         self.old_mapping = holmium.core.config.browser_mapping
         mock_browsers = utils.build_mock_mapping("chrome")
+        self.plugins[0].logger = mock.Mock()
         def fake_construct(*a, **k):
             raise Exception("failed to initialize")
         mock_browsers["chrome"].side_effect = fake_construct
@@ -143,5 +144,6 @@ class TestDriverBroken(PluginTester, unittest.TestCase):
         super(TestDriverBroken,self).setUp()
     def runTest(self):
         assert "Ran 0 tests" in self.output
+        assert self.plugins[0].logger.exception.call_count == 1
     def tearDown(self):
         holmium.core.config.browser_mapping = self.old_mapping
