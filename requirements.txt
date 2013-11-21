@@ -4,3 +4,5 @@ nose
 coverage
 jinja2 
 mock 
+python-coveralls
+nose-cov
