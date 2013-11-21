@@ -229,10 +229,7 @@ class Elements(ElementGetter):
     def __get__(self, instance, owner):
         if not instance:
             return self
-        try:
-            return [self.value_mapper(enhanced(el)) for el in self.get_element(self.root.find_elements)]
-        except NoSuchElementException:
-            return []
+        return [self.value_mapper(enhanced(el)) for el in self.get_element(self.root.find_elements)]
 
 
 class ElementMap(Elements):
@@ -254,10 +251,7 @@ class ElementMap(Elements):
     def __get__(self, instance, owner):
         if not instance:
             return self
-        try:
-            return OrderedDict((self.key_mapper(el), self.value_mapper(enhanced(el))) for el in self.get_element(self.root.find_elements))
-        except NoSuchElementException:
-            return {}
+        return OrderedDict((self.key_mapper(el), self.value_mapper(enhanced(el))) for el in self.get_element(self.root.find_elements))
 
 
     def __getitem__(self, key):
@@ -328,6 +322,6 @@ class Sections(Section, collections.Sequence):
             if idx == _idx:
                 break 
             _idx+=1 
-        if idx > _idx:
-            raise IndexError("Sections index (%d) out of range" % idx)
-        return self 
+            if idx > _idx:
+                raise IndexError("Sections index (%d) out of range" % idx)
+        return self

@@ -103,6 +103,8 @@ class SectionTest(unittest.TestCase):
             for token in section.tokens:
                 self.assertEquals(token.text, "section element %s" % counter)
                 counter+=1
+        self.assertEquals(len(po.sections),2)
+        self.assertRaises(IndexError, lambda: po.sections[2])
 
     def test_sections_list_behavior(self):
         with mock.patch('selenium.webdriver.Firefox') as driver:
