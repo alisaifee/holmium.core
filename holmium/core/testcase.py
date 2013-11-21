@@ -11,49 +11,45 @@ from holmium.core.config import HolmiumConfig, configure
 class TestCase(unittest.TestCase):
     """
     """
-    #:
-    @classmethod
-    def setUp(self):
-        """
-        """
-        pass
 
     @classmethod
-    def setUpClass(self):
+    def setUpClass(cls):
         """
         """
-        self.driver = None
-        base_file = inspect.getfile(self)
+        cls.driver = None
+        base_file = inspect.getfile(cls)
         config_path = os.path.join(os.path.split(base_file)[0], "config")
         browser = os.environ.get("HO_BROWSER", "firefox")
         user_agent = os.environ.get("HO_USERAGENT", "")
         remote = os.environ.get("HO_REMOTE", None)
         environment = os.environ.get("HO_ENV", "development")
         ignore_ssl = os.environ.get("HO_IGNORE_SSL_ERRORS", False)
-        holmium_config = HolmiumConfig(browser, remote, {}, user_agent, environment, ignore_ssl)
+        holmium_config = HolmiumConfig(browser, remote, {}, user_agent,
+                                       environment, ignore_ssl)
         args = configure(holmium_config)
         config = None
-        if os.path.isfile(config_path+".json"):
-            config = json.loads(open(config_path+".json").read())
-        elif os.path.isfile(config_path+".py"):
-            config = imp.load_source("config", config_path+".py").config
+        if os.path.isfile(config_path + ".json"):
+            config = json.loads(open(config_path + ".json").read())
+        elif os.path.isfile(config_path + ".py"):
+            config = imp.load_source("config", config_path + ".py").config
         if config:
-            self.config = holmium.core.Config(config, {"holmium":holmium_config})
+            cls.config = holmium.core.Config(config,
+                                             {"holmium": holmium_config})
         if remote:
             driver = holmium.core.config.browser_mapping["remote"]
         else:
             driver = holmium.core.config.browser_mapping[holmium_config.browser]
         print driver
-        self.driver = driver(**args)
+        cls.driver = driver(**args)
 
     @classmethod
-    def tearDownClass(self):
-        if self.driver:
-            self.driver.quit()
+    def tearDownClass(cls):
+        if cls.driver:
+            cls.driver.quit()
 
     @classmethod
-    def tearDown(self):
+    def tearDown(cls):
         """
         """
-        if self.driver:
-            self.driver.delete_all_cookies()
+        if cls.driver:
+            cls.driver.delete_all_cookies()

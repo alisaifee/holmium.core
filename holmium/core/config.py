@@ -5,6 +5,7 @@ import jinja2
 from selenium import webdriver
 from selenium.webdriver import FirefoxProfile
 
+
 class Config(dict):
     """Dictionary like helper class for maintaining test data configurations per environment.
 
@@ -70,26 +71,30 @@ if ``HO_ENV`` or ``--holmium-env`` are ``development``:
 * ``self.config['login_url']`` will return ``http://dev.com/development/login``
 
     """
-    def __init__(self, dct, environment={"holmium":{"environment":"development"}}):
+
+    def __init__(self, dct,
+                 environment={"holmium": {"environment": "development"}}):
         self.env = environment
         dict.__init__(self, dct)
 
     def __getitem__(self, key):
         def __render(item, context):
-            if issubclass(item.__class__, str) or issubclass(item.__class__,unicode):
+            if issubclass(item.__class__, str) or issubclass(item.__class__,
+                                                             unicode):
                 template = jinja2.Template(item)
                 rendered = template.render(context)
                 if rendered != item:
-                    return __render(rendered,context)
+                    return __render(rendered, context)
                 else:
                     return rendered
             else:
                 return item
+
         env_ctx = dict.setdefault(self, self.env["holmium"]["environment"], {})
         default_ctx = dict.setdefault(self, "default", {})
         try:
             item = env_ctx[key]
-        except KeyError,e:
+        except KeyError, e:
             item = default_ctx[key]
 
         context = dict(self)
@@ -107,10 +112,10 @@ if ``HO_ENV`` or ``--holmium-env`` are ``development``:
 browser_mapping = {"firefox": webdriver.Firefox,
                    "chrome": webdriver.Chrome,
                    "ie": webdriver.Ie,
-                   "opera" : webdriver.Opera,
+                   "opera": webdriver.Opera,
                    "remote": webdriver.Remote,
                    "phantomjs": webdriver.PhantomJS,
-                   "iphone" : webdriver.Remote,
+                   "iphone": webdriver.Remote,
                    "ipad": webdriver.Remote,
                    "android": webdriver.Remote}
 
@@ -119,10 +124,11 @@ capabilities = {"firefox": webdriver.DesiredCapabilities.FIREFOX,
                 "chrome": webdriver.DesiredCapabilities.CHROME,
                 "ie": webdriver.DesiredCapabilities.INTERNETEXPLORER,
                 "opera": webdriver.DesiredCapabilities.OPERA,
-                "phantomjs":webdriver.DesiredCapabilities.PHANTOMJS,
-                "iphone":webdriver.DesiredCapabilities.IPHONE,
-                "ipad":webdriver.DesiredCapabilities.IPAD,
-                "android":webdriver.DesiredCapabilities.ANDROID}
+                "phantomjs": webdriver.DesiredCapabilities.PHANTOMJS,
+                "iphone": webdriver.DesiredCapabilities.IPHONE,
+                "ipad": webdriver.DesiredCapabilities.IPAD,
+                "android": webdriver.DesiredCapabilities.ANDROID}
+
 
 class HolmiumConfig(dict):
     """
@@ -131,8 +137,8 @@ class HolmiumConfig(dict):
     with the additional behavior that any attributes set on it are available
     as keys in the dictionary and vice versa.
     """
-
-    def __init__(self, browser, remote, capabilities, user_agent, environment, ignore_ssl):
+    def __init__(self, browser, remote, capabilities, user_agent, environment,
+                 ignore_ssl):
         _d = {}
         for arg in inspect.getargspec(HolmiumConfig.__init__).args[1:]:
             setattr(self, arg, locals()[arg])
@@ -153,28 +159,34 @@ class DriverConfig(object):
     """
     base class for configuring a webdriver
     """
+
     def __call__(self, config, args):
         return args
+
 
 class FirefoxConfig(DriverConfig):
     def __call__(self, config, args):
         profile = FirefoxProfile()
         if config.user_agent:
-            profile.set_preference("general.useragent.override", config.user_agent)
+            profile.set_preference("general.useragent.override",
+                                   config.user_agent)
         if config.ignore_ssl:
-           profile.accept_untrusted_certs = True
+            profile.accept_untrusted_certs = True
         args["firefox_profile"] = profile
         args["capabilities"] = args["desired_capabilities"]
         args.pop("desired_capabilities")
         return args
 
+
 class ChromeConfig(DriverConfig):
     def __call__(self, config, args):
-        args["desired_capabilities"].setdefault("chrome.switches",[])
+        args["desired_capabilities"].setdefault("chrome.switches", [])
         if config.user_agent:
-            args["desired_capabilities"]["chrome.switches"].append("--user-agent=%s" % config.user_agent)
+            args["desired_capabilities"]["chrome.switches"].append(
+                "--user-agent=%s" % config.user_agent)
         if config.ignore_ssl:
-            args["desired_capabilities"]["chrome.switches"].append("--ignore-certificate-errors")
+            args["desired_capabilities"]["chrome.switches"].append(
+                "--ignore-certificate-errors")
 
         return super(ChromeConfig, self).__call__(config, args)
 
@@ -182,7 +194,8 @@ class ChromeConfig(DriverConfig):
 class PhantomConfig(DriverConfig):
     def __call__(self, config, args):
         if config.ignore_ssl:
-            args.setdefault("service_args", []).append("--ignore-ssl-errors=true")
+            args.setdefault("service_args", []).append(
+                "--ignore-ssl-errors=true")
         return super(PhantomConfig, self).__call__(config, args)
 
 
@@ -197,10 +210,12 @@ class RemoteConfig(DriverConfig):
 
 configurator_mapping = {
     "firefox": FirefoxConfig(),
-    "chrome":ChromeConfig(),
-    "phantomjs":PhantomConfig(),
+    "chrome": ChromeConfig(),
+    "phantomjs": PhantomConfig(),
     "remote": RemoteConfig()
 }
+
+
 def configure(config):
     """
     sets up the arguments required by the specific
@@ -211,10 +226,10 @@ def configure(config):
     if config.browser not in browser_mapping.keys():
         raise RuntimeError("unknown browser %s" % config.browser)
     merged_capabilities = capabilities[config.browser]
-    merged_capabilities.update( config.capabilities )
+    merged_capabilities.update(config.capabilities)
     args = {"desired_capabilities": merged_capabilities}
     if configurator_mapping.has_key(config.browser):
-        args = configurator_mapping[config.browser](config,  args)
+        args = configurator_mapping[config.browser](config, args)
     if config.remote:
         args = configurator_mapping["remote"](config, args)
 
