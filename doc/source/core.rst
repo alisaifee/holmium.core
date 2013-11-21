@@ -28,7 +28,6 @@ the old names are used to hopefully convince test authors to update their test c
     These aliases will be removed in version 0.4
 
 .. autoclass:: PageObject
-.. autoclass:: SectionObject
 .. autoclass:: PageElement
 .. autoclass:: PageElements 
 .. autoclass:: PageElementMap

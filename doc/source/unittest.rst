@@ -14,12 +14,29 @@ This base class extends :class:`unittest.TestCase` and adds the following functi
     * clears the browser cookies between each test case 
     * quits the driver at the end of the test class.
 
+The following environment variables are respected by :class:`TestCase` when :meth:`unittest.TestCase.setUpClass` is executed.
+
+===========================  ===========================================================================================================================================
+variable                     description
+===========================  ===========================================================================================================================================
+``HO_BROWSER``               one of chrome,firefox,opera,ie,phantomjs,android,iphone or ipad
+``HO_REMOTE``                the full qualified url of the selenium server. If not provided the browsers will be attempted to be launched using the built in webdrivers.
+``HO_USERAGENT``             useragent to use as an override. only works with firefox & chrome 
+``HO_IGNORE_SSL_ERRORS``     ignore ssl errors when accessing pages served under untrusted certificates.
+===========================  ===========================================================================================================================================
+
+.. note::
+
+   These environment variables may also be used when using the :ref:`testing-with-nose`.
+   The options passed to nose however will take precedence.
+
+
 Example test case
 -----------------
 
 .. code-block:: python
-    
-    import unittest 
+
+    import unittest
     import holmium.core
 
     class SimpleTest(holmium.core.TestCase):
@@ -42,8 +59,10 @@ Execution
     # against a firefox instance under a remote selenium server 
     export HO_BROWSER=firefox;export HO_REMOTE=http://localhost:5555/wd/hub;python test_simple.py 
 
-:class:`HolmiumNose` plugin for nosetest. 
-=========================================
+.. _testing-with-nose:
+
+Plugin for nosetest.
+====================
 
 This plugin registers the following command line options to nose:
 
@@ -55,6 +74,7 @@ option                       description
 ``--holmium-remote``         the full qualified url of the selenium server. If not provided the browsers will be attempted to be launched using the built in webdrivers.
 ``--holmium-useragent``      useragent to use as an override. only works with firefox & chrome 
 ``--holmium-capabilities``   a json dictionary of extra desired capabilities to pass to the webdriver. 
+``--holmium-ignore-ssl``     ignore ssl errors when accessing pages served under untrusted certificates. 
 ===========================  ===========================================================================================================================================
 
 Example test case

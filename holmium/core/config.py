@@ -1,5 +1,9 @@
-import jinja2
 import os
+import inspect
+
+import jinja2
+from selenium import webdriver
+from selenium.webdriver import FirefoxProfile
 
 class Config(dict):
     """Dictionary like helper class for maintaining test data configurations per environment.
@@ -98,4 +102,121 @@ if ``HO_ENV`` or ``--holmium-env`` are ``development``:
     def __setitem__(self, key, value):
         sub_dict = dict.setdefault(self, self.env["holmium"]["environment"], {})
         sub_dict[key] = value
+
+
+browser_mapping = {"firefox": webdriver.Firefox,
+                   "chrome": webdriver.Chrome,
+                   "ie": webdriver.Ie,
+                   "opera" : webdriver.Opera,
+                   "remote": webdriver.Remote,
+                   "phantomjs": webdriver.PhantomJS,
+                   "iphone" : webdriver.Remote,
+                   "ipad": webdriver.Remote,
+                   "android": webdriver.Remote}
+
+#:
+capabilities = {"firefox": webdriver.DesiredCapabilities.FIREFOX,
+                "chrome": webdriver.DesiredCapabilities.CHROME,
+                "ie": webdriver.DesiredCapabilities.INTERNETEXPLORER,
+                "opera": webdriver.DesiredCapabilities.OPERA,
+                "phantomjs":webdriver.DesiredCapabilities.PHANTOMJS,
+                "iphone":webdriver.DesiredCapabilities.IPHONE,
+                "ipad":webdriver.DesiredCapabilities.IPAD,
+                "android":webdriver.DesiredCapabilities.ANDROID}
+
+class HolmiumConfig(dict):
+    """
+    utility class for storing holmium configuration options strictly.
+    The class behaves like a dictionary after construction
+    with the additional behavior that any attributes set on it are available
+    as keys in the dictionary and vice versa.
+    """
+
+    def __init__(self, browser, remote, capabilities, user_agent, environment, ignore_ssl):
+        _d = {}
+        for arg in inspect.getargspec(HolmiumConfig.__init__).args[1:]:
+            setattr(self, arg, locals()[arg])
+            _d[arg] = locals()[arg]
+        super(HolmiumConfig, self).__init__(**_d)
+
+
+    def __setattr__(self, key, value):
+        super(HolmiumConfig, self).__setattr__(key, value)
+        super(HolmiumConfig, self).__setitem__(key, value)
+
+    def __setitem__(self, key, value):
+        super(HolmiumConfig, self).__setattr__(key, value)
+        super(HolmiumConfig, self).__setitem__(key, value)
+
+
+class DriverConfig(object):
+    """
+    base class for configuring a webdriver
+    """
+    def __call__(self, config, args):
+        return args
+
+class FirefoxConfig(DriverConfig):
+    def __call__(self, config, args):
+        profile = FirefoxProfile()
+        if config.user_agent:
+            profile.set_preference("general.useragent.override", config.user_agent)
+        if config.ignore_ssl:
+           profile.accept_untrusted_certs = True
+        args["firefox_profile"] = profile
+        args["capabilities"] = args["desired_capabilities"]
+        args.pop("desired_capabilities")
+        return args
+
+class ChromeConfig(DriverConfig):
+    def __call__(self, config, args):
+        args["desired_capabilities"].setdefault("chrome.switches",[])
+        if config.user_agent:
+            args["desired_capabilities"]["chrome.switches"].append("--user-agent=%s" % config.user_agent)
+        if config.ignore_ssl:
+            args["desired_capabilities"]["chrome.switches"].append("--ignore-certificate-errors")
+
+        return super(ChromeConfig, self).__call__(config, args)
+
+
+class PhantomConfig(DriverConfig):
+    def __call__(self, config, args):
+        if config.ignore_ssl:
+            args.setdefault("service_args", []).append("--ignore-ssl-errors=true")
+        return super(PhantomConfig, self).__call__(config, args)
+
+
+class RemoteConfig(DriverConfig):
+    def __call__(self, config, args):
+        if config.browser == "firefox" and args.has_key("firefox_profile"):
+            args["browser_profile"] = args["firefox_profile"]
+            args.pop("firefox_profile")
+        args["command_executor"] = config.remote
+        return super(RemoteConfig, self).__call__(config, args)
+
+
+configurator_mapping = {
+    "firefox": FirefoxConfig(),
+    "chrome":ChromeConfig(),
+    "phantomjs":PhantomConfig(),
+    "remote": RemoteConfig()
+}
+def configure(config):
+    """
+    sets up the arguments required by the specific
+    :class:`selenium.webdriver.Webdriver` instance
+    based on the :class:`holmium.core.config.HolmiumConfig`
+    object that is passed in.
+    """
+    if config.browser not in browser_mapping.keys():
+        raise RuntimeError("unknown browser %s" % config.browser)
+    merged_capabilities = capabilities[config.browser]
+    merged_capabilities.update( config.capabilities )
+    args = {"desired_capabilities": merged_capabilities}
+    if configurator_mapping.has_key(config.browser):
+        args = configurator_mapping[config.browser](config,  args)
+    if config.remote:
+        args = configurator_mapping["remote"](config, args)
+
+    return args
 

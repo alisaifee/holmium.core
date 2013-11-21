@@ -2,6 +2,8 @@ import unittest
 from holmium.core import Config
 import json
 import os
+from holmium.core.config import HolmiumConfig
+
 
 class ConfigTests(unittest.TestCase):
     def test_json_config(self):
@@ -90,3 +92,34 @@ class ConfigTests(unittest.TestCase):
         self.assertEquals( cfg["extended_random"], u"random_1")
         cfg = Config(config)
         self.assertEquals( cfg["registration_url"], u"http://development:3000/users/sign_up")
+
+    def test_holmium_config_object(self):
+
+        cfg = HolmiumConfig(1,2,3,4,5,6)
+        self.assertEquals(cfg,  {
+            "browser":1,
+            "remote":2,
+            "capabilities":3,
+            "user_agent":4,
+            "environment":5,
+            "ignore_ssl":6,
+        })
+
+        self.assertEquals(cfg.browser, 1)
+        self.assertEquals(cfg.remote, 2)
+        self.assertEquals(cfg.capabilities, 3)
+        self.assertEquals(cfg.user_agent, 4)
+        self.assertEquals(cfg.environment, 5)
+        self.assertEquals(cfg.ignore_ssl, 6)
+
+        cfg.browser = 2
+        self.assertEquals(cfg.browser, 2)
+        self.assertEquals(cfg["browser"],2)
+
+        nested = {"holmium":{}}
+        nested["holmium"]["config"] = cfg
+        nested["holmium"]["config"]["user_agent"] = 1
+        self.assertEquals(cfg.user_agent , 1)
+
+        cfg["foo"] = "bar"
+        self.assertEquals(cfg.foo, "bar")

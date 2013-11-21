@@ -1,21 +1,18 @@
-from selenium.common.exceptions import NoSuchElementException, TimeoutException, NoSuchFrameException
-from selenium.webdriver.support.ui import WebDriverWait, Select
-from selenium.webdriver.remote.webelement import WebElement
-import selenium.webdriver.common.by
-import holmium
 import inspect
 import weakref
 import types
 import threading
 import contextlib
 import collections
-
-try:
-    from ordereddict import OrderedDict
-except ImportError:
-    from collections import OrderedDict
-
 from functools import wraps
+
+import selenium.webdriver.common.by
+from selenium.common.exceptions import NoSuchElementException, TimeoutException, NoSuchFrameException
+from selenium.webdriver.support.ui import WebDriverWait, Select
+from selenium.webdriver.remote.webelement import WebElement
+import holmium
+from ordereddict import OrderedDict
+
 class Locators(selenium.webdriver.common.by.By):
     """
     proxy class to access locator types
@@ -90,6 +87,9 @@ class Page(object):
             self.home = url
         elif driver.current_url:
             self.home = driver.current_url
+        else:
+            self.home = None
+
         self.iframe = iframe
         for el in inspect.getmembers(self.__class__):
             def update_element(el):
@@ -185,7 +185,7 @@ class ElementGetter(object):
             elif isinstance(self.base_element, WebElement):
                 _meth = getattr(self.base_element, "find_element")
             else:
-                holmium.core.log.error("unknown base_element type used: %s" % type(self.base_element))
+                raise TypeError("invalid base_element type (%s) used" % (type(self.base_element)))
         else:
             _meth = method
         holmium.core.log.debug("looking up locator:%s, query_string:%s, timeout:%d" %

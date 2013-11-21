@@ -1,29 +1,11 @@
 import os
 import unittest
-from selenium import webdriver
 import inspect
 import imp
-import holmium
 import json
-browser_mapping = {"firefox": webdriver.Firefox,
-                    "chrome": webdriver.Chrome,
-                    "ie": webdriver.Ie,
-                    "opera" : webdriver.Opera,
-                    "remote": webdriver.Remote,
-                    "phantomjs": webdriver.PhantomJS,
-                    "iphone" : webdriver.Remote,
-                    "ipad": webdriver.Remote,
-                    "android": webdriver.Remote}
 
-#:
-capabilities = {"firefox": webdriver.DesiredCapabilities.FIREFOX,
-                "chrome": webdriver.DesiredCapabilities.CHROME,
-                "ie": webdriver.DesiredCapabilities.INTERNETEXPLORER,
-                "opera": webdriver.DesiredCapabilities.OPERA,
-                "phantomjs":webdriver.DesiredCapabilities.PHANTOMJS,
-                "iphone":webdriver.DesiredCapabilities.IPHONE,
-                "ipad":webdriver.DesiredCapabilities.IPAD,
-                "android":webdriver.DesiredCapabilities.ANDROID}
+import holmium
+from holmium.core.config import HolmiumConfig, configure
 
 
 class TestCase(unittest.TestCase):
@@ -43,44 +25,26 @@ class TestCase(unittest.TestCase):
         self.driver = None
         base_file = inspect.getfile(self)
         config_path = os.path.join(os.path.split(base_file)[0], "config")
-        holmium_vars = { "holmium":
-            {
-                    "environment": os.environ.get("HO_ENV", "development"),
-                    "browser": os.environ.get("HO_BROWSER", "firefox"),
-                    "user_agent": os.environ.get("HO_USERAGENT", "").lower(),
-                    "remote": os.environ.get("HO_REMOTE", ""),
-            }
-        }
+        browser = os.environ.get("HO_BROWSER", "firefox")
+        user_agent = os.environ.get("HO_USERAGENT", "")
+        remote = os.environ.get("HO_REMOTE", None)
+        environment = os.environ.get("HO_ENV", "development")
+        ignore_ssl = os.environ.get("HO_IGNORE_SSL_ERRORS", False)
+        holmium_config = HolmiumConfig(browser, remote, {}, user_agent, environment, ignore_ssl)
+        args = configure(holmium_config)
         config = None
         if os.path.isfile(config_path+".json"):
             config = json.loads(open(config_path+".json").read())
         elif os.path.isfile(config_path+".py"):
             config = imp.load_source("config", config_path+".py").config
         if config:
-            self.config = holmium.core.Config(config, holmium_vars)
-        args = {}
-        cap = {}
-        driver = os.environ.get("HO_BROWSER", "firefox").lower()
-        remote_url = os.environ.get("HO_REMOTE", "").lower()
-        if os.environ.get("HO_USERAGENT", ""):
-            if driver not in ["chrome","firefox"]:
-                raise SystemExit("useragent string can only be overridden for chrome & firefox")
-            else:
-                if driver == "chrome":
-                    cap.update({"chrome.switches":["--user-agent=%s" % os.environ.get("HO_USERAGENT")]})
-                elif driver  == "firefox":
-                    ffopts = webdriver.FirefoxProfile()
-                    ffopts.set_preference("general.useragent.override", os.environ.get("HO_USERAGENT"))
-                    if remote_url:
-                        args.update({"browser_profile":ffopts})
-                    else:
-                        args.update({"firefox_profile":ffopts})
-        if remote_url:
-            cap.update(capabilities[driver])
-            args = {"command_executor": remote_url,
-                     "desired_capabilities": cap}
-            driver = "remote"
-        self.driver = browser_mapping[driver](**args)
+            self.config = holmium.core.Config(config, {"holmium":holmium_config})
+        if remote:
+            driver = holmium.core.config.browser_mapping["remote"]
+        else:
+            driver = holmium.core.config.browser_mapping[holmium_config.browser]
+        print driver
+        self.driver = driver(**args)
 
     @classmethod
     def tearDownClass(self):
