@@ -7,6 +7,13 @@
 History
 *******
 
+0.3.4 2013-11-21
+================
+* Added support to ignore ssl certificate errors on chrome, firefox & phantomjs 
+* code cleanup
+* improved test coverage 
+
+
 0.3.3 2013-10-29
 ================
 * Improved back reference access in Config object by allowing variable references 
@@ -67,6 +74,7 @@ History
 * Bug fix 
   
   - fixed phantomjs build in travis
+
 
 
 
