@@ -5,7 +5,10 @@ Unit Test Integration
 
 Holmium provides two utilities to ease integration with automated tests. 
 
-The :class:`TestCase` base class. 
+
+.. _testing-unittest:
+
+The :class:`TestCase` base class.
 =================================
 This base class extends :class:`unittest.TestCase` and adds the following functionality:
     
@@ -27,7 +30,7 @@ variable                     description
 
 .. note::
 
-   These environment variables may also be used when using the :ref:`testing-with-nose`.
+   These environment variables may also be used when using the :ref:`testing-nose`.
    The options passed to nose however will take precedence.
 
 
@@ -59,7 +62,7 @@ Execution
     # against a firefox instance under a remote selenium server 
     export HO_BROWSER=firefox;export HO_REMOTE=http://localhost:5555/wd/hub;python test_simple.py 
 
-.. _testing-with-nose:
+.. _testing-nose:
 
 Plugin for nosetest.
 ====================

@@ -10,11 +10,14 @@ from holmium.core.config import HolmiumConfig, configure
 
 class TestCase(unittest.TestCase):
     """
+    Base class for creating test classes for writing holmium driven
+    test cases. More details can be found at :ref:`testing-unittest`.
     """
 
     @classmethod
     def setUpClass(cls):
         """
+        create the driver and configure it before any of the tests run.
         """
         cls.driver = None
         base_file = inspect.getfile(cls)
@@ -41,15 +44,22 @@ class TestCase(unittest.TestCase):
             driver = holmium.core.config.browser_mapping[holmium_config.browser]
         print driver
         cls.driver = driver(**args)
+        super(TestCase, cls).setUpClass()
 
     @classmethod
     def tearDownClass(cls):
+        """
+        quit the driver after all the test methods in the class have
+        finished.
+        """
         if cls.driver:
             cls.driver.quit()
+        super(TestCase, cls).tearDownClass()
 
-    @classmethod
-    def tearDown(cls):
+    def tearDown(self):
         """
+        clear the cookies on the driver after each test
         """
-        if cls.driver:
-            cls.driver.delete_all_cookies()
+        if hasattr(self, "driver"):
+            self.driver.delete_all_cookies()
+        super(TestCase,self).tearDown()
