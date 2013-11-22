@@ -44,7 +44,7 @@ class TestCase(unittest.TestCase):
             driver = holmium.core.config.browser_mapping[holmium_config.browser]
         print driver
         cls.driver = driver(**args)
-        if super(TestCase, cls).hasattr("setUpClass"):
+        if hasattr(super(TestCase, cls), "setUpClass"):
             super(TestCase, cls).setUpClass()
 
     @classmethod
@@ -55,7 +55,7 @@ class TestCase(unittest.TestCase):
         """
         if cls.driver:
             cls.driver.quit()
-        if super(TestCase, cls).hasattr("tearDownClass"):
+        if hasattr(super(TestCase, cls), "tearDownClass"):
             super(TestCase, cls).tearDownClass()
 
     def tearDown(self):
