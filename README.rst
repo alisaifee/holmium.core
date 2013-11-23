@@ -1,8 +1,8 @@
 .. _PageObjects: http://code.google.com/p/selenium/wiki/PageObjects
-.. |travis-ci| image:: https://secure.travis-ci.org/alisaifee/holmium.core.png
-    :target: https://travis-ci.org/#!/alisaifee/holmium.core 
-.. |coveralls| image:: https://coveralls.io/repos/alisaifee/holmium.core/badge.png?branch=master 
-    :target: https://coveralls.io/r/alisaifee/holmium.core?branch=master 
+.. |travis-ci| image:: https://secure.travis-ci.org/alisaifee/holmium.core.png?branch=master
+    :target: https://travis-ci.org/#!/alisaifee/holmium.core?branch=master
+.. |coveralls| image:: https://coveralls.io/repos/alisaifee/holmium.core/badge.png?branch=master
+    :target: https://coveralls.io/r/alisaifee/holmium.core?branch=master
 
 **holmium.core** |travis-ci| |coveralls|
 
@@ -42,7 +42,7 @@ Nothing beats an example. Conventionally automated tests integrating with python
         def tearDown(self):
             if self.driver:
                 self.driver.quit()
-    
+
     if __name__ == "__main__":
         unittest.main()
 
@@ -51,12 +51,12 @@ Nothing beats an example. Conventionally automated tests integrating with python
 The above example does what most selenium tests do:
 
 * initialize a webdriver upon setUp
-* query for one or more web elements using either class name, id, css_selector or xpath 
+* query for one or more web elements using either class name, id, css_selector or xpath
 * assert on the number of occurances / value of certain elements.
-* tear down the webdriver after each test case 
+* tear down the webdriver after each test case
 
 It suffers from the typical web development problem of coupling the test case with the HTML plumbing of the page its testing rather than the functionality its meant to excercise.
-The concept of `PageObjects`_ reduces this coupling and allow for test authors to separate the layout of the page under test and the functional behavior being tested. This separation also results 
+The concept of `PageObjects`_ reduces this coupling and allow for test authors to separate the layout of the page under test and the functional behavior being tested. This separation also results
 in more maintainable test code (i.e. if an element name changes - all tests dont have to be updated, just the pageobject).
 
 Lets take the above test case for a spin with holmium. Take note of the following:
@@ -66,7 +66,7 @@ Lets take the above test case for a spin with holmium. Take note of the followin
 
 
 .. code-block:: python
-  
+
     from holmium.core import TestCase, Page, Element, Locators, ElementMap
     import unittest
 
@@ -100,10 +100,10 @@ Which can then be executed in a few different ways as shown below.
 .. code-block:: bash
 
     # if using TestCase as the base class run as:
-    export HO_BROWSER=firefox;nosetests test_selenium_hq.py 
+    export HO_BROWSER=firefox;nosetests test_selenium_hq.py
     # or..
-    export HO_BROWSER=firefox;python test_selenium_hq.py 
+    export HO_BROWSER=firefox;python test_selenium_hq.py
     # if using unittest.TestCase as the base class run as:
-    nosetests test_selenium_hq.py --holmium-browser=firefox 
+    nosetests test_selenium_hq.py --holmium-browser=firefox
 
 

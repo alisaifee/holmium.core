@@ -42,7 +42,6 @@ class TestCase(unittest.TestCase):
             driver = holmium.core.config.browser_mapping["remote"]
         else:
             driver = holmium.core.config.browser_mapping[holmium_config.browser]
-        print driver
         cls.driver = driver(**args)
         if hasattr(super(TestCase, cls), "setUpClass"):
             super(TestCase, cls).setUpClass()
