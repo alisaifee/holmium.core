@@ -1,0 +1,14 @@
+Development Status :: 5 - Production/Stable
+Environment :: Console
+Environment :: Web Environment
+Intended Audience :: Developers
+Intended Audience :: End Users/Desktop
+License :: OSI Approved :: MIT License
+Operating System :: MacOS
+Operating System :: POSIX :: Linux
+Operating System :: OS Independent
+Topic :: Software Development :: Testing
+Topic :: Software Development :: Libraries
+Programming Language :: Python :: 2.7
+Programming Language :: Python :: 2.6
+

@@ -28,6 +28,7 @@ setup(
     version=holmium.version.__version__,
     include_package_data = True,
     install_requires = REQUIREMENTS,
+    classifiers=[k for k in open('CLASSIFIERS').read().split('\n') if k],
     description='selenium page objects and other utilities for test creation',
     long_description=open('README.rst').read() + open('HISTORY.rst').read(),
     packages = find_packages(),
