@@ -386,8 +386,8 @@ Sample
         def do_login(self, username, password):
             .....
 
-    @facets.redirect(page=LoginPage, action=LoginPage.do_login, action_arguments= {"username":"ali", "password":"sekret"})
     @facets.cookie(name="session")
+    @facets.defer(page=LoginPage, action=LoginPage.do_login, action_arguments= {"username":"ali", "password":"sekret"})
     class ContentPage(Page):
         section = MySection(Locators.ID, "main-section")
 
@@ -408,8 +408,8 @@ To understand how the facets are evaluated, consider the following code path
 
 The chain of execution when calling `p.section.required_element` is as follows
 
-* check redirect to `LoginPage`
-* check `title` of `LoginPage`
+* check defer to `LoginPage`
+ * check `title` of `LoginPage`
 * perform `do_login`
 * check `cookie` of `ContentPage`
 * check `required` element exists in `MySection`
