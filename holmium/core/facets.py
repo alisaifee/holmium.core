@@ -14,7 +14,7 @@ class FacetMeta(type):
     :param bool debug: if True a failure to evaluate will not result in an exception, only a log warning
     :param bool required: if False a failure to evaluate will be treated as a noop.
 """
-        _t.__doc__ = _t.__doc__ or "" + extra_doc
+        _t.__doc__ = (_t.__doc__ or "") + extra_doc
         return _t
 
 
