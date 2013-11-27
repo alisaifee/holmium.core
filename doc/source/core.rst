@@ -20,12 +20,7 @@ Page Objects & Friends
 Deprecated Classes 
 ==================
 Earlier versions of :mod:`holmium.core` used rather verbose names for Page objects and elements. 
-As of version 0.2 the classes have been renamed but the older names have been retained as aliases 
-to the new classes for backward compatibility (an annoying warning will however, be emitted everytime 
-the old names are used to hopefully convince test authors to update their test code :D ).
-
-.. WARNING::
-    These aliases will be removed in version 0.4
+As of version 0.4 they have been removed and accessing them will raise a :exc:`SyntaxError`.
 
 .. autoclass:: PageObject
 .. autoclass:: PageElement

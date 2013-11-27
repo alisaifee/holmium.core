@@ -6,10 +6,10 @@ import testcase
 
 class Deprecated(object):
     def __new__(cls, *args, **kwargs):
-        warnings.warn("The use of %s is deprecated. Use %s instead" % (
-        cls.cur, cls.alt.__name__)
-            , DeprecationWarning
-            , stacklevel=2)
+        raise SyntaxError("%s has been removed as of version 0.4. Use %s instead" % (
+            cls.cur, cls.alt.__name__
+            )
+        )
         return super(Deprecated, cls).__new__(cls)
 
 
