@@ -187,7 +187,15 @@ class ElementGetter(object):
                  timeout=1,
                  value=lambda el: el,
                  facet=False):
-
+        """
+        :param holmium.core.Locators locator_type: selenium locator to use when locating the element
+        :param str query_string: the value to pass to the locator
+        :param holmium.core.Element base_element: a reference to another element under which to locate this element.
+        :param int timeout: time to implicitely wait for the element
+        :param lambda value: transform function for the value of the element.
+         The located :class:`selenium.webdriver.remote.webelement.WebElement` instance is passed as the only argument to the function.
+        :param bool facet: flag to  treat this element as a facet.
+        """
         self.query_string = query_string
         self.locator_type = locator_type
         self.timeout = timeout
@@ -248,6 +256,14 @@ class Element(ElementGetter):
     """
     Utility class to get a :class:`selenium.webdriver.remote.webelement.WebElement`
     by querying via one of :class:`holmium.core.Locators`
+
+    :param holmium.core.Locators locator_type: selenium locator to use when locating the element
+    :param str query_string: the value to pass to the locator
+    :param holmium.core.Element base_element: a reference to another element under which to locate this element.
+    :param int timeout: time to implicitely wait for the element
+    :param lambda value: transform function for the value of the element.
+     The located :class:`selenium.webdriver.remote.webelement.WebElement` instance is passed as the only argument to the function.
+    :param bool facet: flag to  treat this element as a facet.
     """
 
     def __get__(self, instance, owner):
@@ -265,6 +281,14 @@ class Elements(ElementGetter):
     """
     Utility class to get a collection of :class:`selenium.webdriver.remote.webelement.WebElement`
     objects by querying via one of :class:`holmium.core.Locators`
+
+    :param holmium.core.Locators locator_type: selenium locator to use when locating the element
+    :param str query_string: the value to pass to the locator
+    :param holmium.core.Element base_element: a reference to another element under which to locate this element.
+    :param int timeout: time to implicitely wait for the element
+    :param lambda value: transform function for each element in the collection.
+     The located :class:`selenium.webdriver.remote.webelement.WebElement` instance is passed as the only argument to the function.
+    :param bool facet: flag to  treat this element as a facet.
     """
 
     def __getitem__(self, idx):
@@ -284,8 +308,15 @@ class ElementMap(Elements):
 
     The wrapped dictionary is an :class:`collections.OrderedDict` instance.
 
-    :param lambda key: transform function for mapping a key to a WebElement in the collection
+    :param holmium.core.Locators locator_type: selenium locator to use when locating the element
+    :param str query_string: the value to pass to the locator
+    :param holmium.core.Element base_element: a reference to another element under which to locate this element.
+    :param int timeout: time to implicitely wait for the element
+    :param bool facet: flag to  treat this element as a facet.
+    :param lambda key: transform function for mapping a key to a WebElement in the collection.
+     The located :class:`selenium.webdriver.remote.webelement.WebElement` instance is passed as the only argument to the function.
     :param lambda value: transform function for the value when accessed via the key.
+     The located :class:`selenium.webdriver.remote.webelement.WebElement` instance is passed as the only argument to the function.
     """
 
     def __init__(self, locator_type,
