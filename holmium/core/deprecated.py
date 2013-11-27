@@ -10,7 +10,6 @@ class Deprecated(object):
             cls.cur, cls.alt.__name__
             )
         )
-        return super(Deprecated, cls).__new__(cls)
 
 
 def construct_deprecated(name, alt):
