@@ -53,20 +53,20 @@ the example below in a python repl.
     driver = selenium.webdriver.Firefox()
     class GooglePage(Page):
         search_box = Element( Locators.NAME, "q", timeout = 1)
-        google_footer = ElementMap ( Locators.CSS_SELECTOR, "#fll>div>a" , timeout = 1 ) 
+        google_footer = ElementMap ( Locators.CSS_SELECTOR, "#fsl>a" , timeout = 1 )
 
     g = GooglePage(driver, url="http://www.google.ca")
     g.search_box 
     # <selenium.webdriver.remote.webelement.WebElement object at 0x10b50e450>
     g.google_footer 
-    # OrderedDict([(u'Advertising Programs', <selenium.webdriver.remote.webelement.WebElement object at 0x10b35f250>), .....
-    g.google_footer["About Google"]
+    # OrderedDict([(u'Advertising', <selenium.webdriver.remote.webelement.WebElement object at 0x10b35f250>), .....
+    g.google_footer["About"]
     # <selenium.webdriver.remote.webelement.WebElement object at 0x10b35f450> 
-    g.google_footer["About Google"].get_attribute("href")
-    # u'http://www.google.ca/intl/en/about.html
+    g.google_footer["About"].get_attribute("href")
+    # u'http://www.google.ca/intl/en/about.html?fg=1'
     driver.get("http://www.google.co.tz")
-    g.google_footer["Kila Kitu Kuhusu Google"].get_attribute("href")
-    # u'https://www.google.co.tz/intl/sw/about.html'
+    g.google_footer["Kuhusu Google"].get_attribute("href")
+    # u'https://www.google.co.tz/intl/sw/about.html?fg=1'
 
 
 Both the element ``search_box`` and the collection of footer links ``google_footer`` are looked up using the driver that was 
