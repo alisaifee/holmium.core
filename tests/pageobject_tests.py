@@ -1,7 +1,9 @@
 import unittest
 import holmium.core
 import mock
-import selenium.webdriver
+from tests.utils import get_driver, make_temp_page
+
+
 class PageTest(unittest.TestCase):
     class BasicPage(holmium.core.Page):
         element = holmium.core.Element( holmium.core.Locators.ID, "test_id" )
@@ -15,13 +17,13 @@ class PageTest(unittest.TestCase):
                 self.assertEquals( "test_text",  po.element.text)
 
     def test_basic_po_real(self):
-        driver = selenium.webdriver.PhantomJS()
-        driver.execute_script('document.write("%s");' % """<body><div id='test_id'>test_text</div></body>""")
-        po = PageTest.BasicPage(driver)
+        driver = get_driver()
+        uri = make_temp_page("""<body><div id='test_id'>test_text</div></body>""")
+        po = PageTest.BasicPage(driver, uri)
         self.assertEquals(po.element.text, "test_text")
 
     def test_all_features(self):
-        driver = selenium.webdriver.PhantomJS()
+        driver = get_driver()
         content = """
         <div name='e1'>e1</div>
         <div>
@@ -36,8 +38,9 @@ class PageTest(unittest.TestCase):
         </div>
         <div name='e4'>e4</div>
         """
-        driver.execute_script('document.write("%s");' % content.replace('\n',''))
+        uri = make_temp_page(content)
 
+        driver.get(uri)
         # this may appear weird, but its to test the usecase of providing a WebElement
         # as a base_element. #fml.
         web_element = driver.find_element_by_name("e2")
@@ -83,7 +86,8 @@ class PageTest(unittest.TestCase):
         self.assertRaises( TypeError, lambda: page.element_ref_invalid)
         self.assertEquals( page.element_invalid , None)
         self.assertEquals( page.elements_invalid, [])
-        self.assertEquals( page.elementmap_invalid, {} )
+        self.assertEquals(page.elementmap_invalid, {})
+
     def test_fluent(self):
         class FluentPage(holmium.core.Page):
             thing = holmium.core.Element(holmium.core.Locators.NAME, "thing")
@@ -92,8 +96,8 @@ class PageTest(unittest.TestCase):
             def click_thing(self):
                 self.thing.click()
         page = "<div name='thing'>i am thing</div>"
-        driver = selenium.webdriver.PhantomJS()
-        driver.execute_script('document.write("%s");' % page)
-        page = FluentPage(driver)
+        driver = get_driver()
+        uri = make_temp_page(page)
+        page = FluentPage(driver, uri)
         self.assertTrue(page.click_thing().get_text(), "i am thing")
 

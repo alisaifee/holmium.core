@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    {% include "_includes.html" %}
+    {% block head %}
+    <title>{% block title %}{% endblock %}</title>
+    {% endblock %}
+</head>
+<body>
+<div class="container" id="content">
+    <div class="header">
+        <ul class="nav nav-pills pull-right">
+            <li class="active"><a href="/#">Home</a></li>
+            {% if session["current_user"] %}
+                <li><a href="{{url_for("test.logout")}}">Logout</a></li>
+            {% endif %}
+
+        </ul>
+        <h3 class="text-muted">{{ project_name }}</h3>
+    </div>
+    <div class="jumbotron">
+        <h1>{{ callout }} </h1>
+        {% if not (session["current_user"] or request.url_rule | string == "/signup") %}
+        <p>
+            <a class="btn btn-lg btn-success" href="{{url_for("test.signup")}}" role="button">
+                Sign up today
+            </a>
+        </p>
+        {% endif %}
+    </div>
+    {% include "_messages.html" %}
+    <div class="row">
+        <div class="col-md-12">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+</div>
+</body>

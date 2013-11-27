@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 import unittest
-import holmium.core
-from nose.plugins import PluginTester
 import threading
-import mock
 import os
-import utils
+
+import mock
+
+import holmium.core
+
 
 support = os.path.join(os.path.dirname(__file__), "support")
 

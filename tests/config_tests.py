@@ -1,7 +1,7 @@
 import unittest
-from holmium.core import Config
 import json
-import os
+
+from holmium.core import Config
 from holmium.core.config import HolmiumConfig, configure
 
 

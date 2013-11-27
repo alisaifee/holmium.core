@@ -17,6 +17,19 @@ Page Object Helpers
 
 .. autofunction:: enhanced
 
+.. automodule:: holmium.core.facets
+
+.. autoclass:: FacetCollection
+    :members:
+.. autoclass:: Facet
+    :members:
+.. autoclass:: Faceted
+    :members:
+.. autoexception:: FacetError
+
+
+
+
 
 Test configuration / execution
 ==============================
@@ -35,4 +48,6 @@ Test configuration / execution
 
 .. autoclass:: HolmiumConfig
     :members:
+
+
 

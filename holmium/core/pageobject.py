@@ -10,8 +10,11 @@ import selenium.webdriver.common.by
 from selenium.common.exceptions import NoSuchElementException, TimeoutException, NoSuchFrameException
 from selenium.webdriver.support.ui import WebDriverWait, Select
 from selenium.webdriver.remote.webelement import WebElement
-import holmium
 from ordereddict import OrderedDict
+
+import holmium
+
+from holmium.core.facets import Faceted, ElementFacet
 
 
 class Locators(selenium.webdriver.common.by.By):
@@ -63,7 +66,7 @@ class ElementDict(dict):
                                                    self.instance().__class__)
 
 
-class Page(object):
+class Page(Faceted):
     """
     Base class for all page objects to extend from.
     void Instance methods implemented by subclasses are provisioned
@@ -85,7 +88,10 @@ class Page(object):
     local = threading.local()
 
     def __init__(self, driver, url=None, iframe=None):
+        super(Page, self).__init__()
         self.driver = driver
+        self.touched = False
+        self.initialized = False
         if url:
             self.home = url
         elif driver.current_url:
@@ -95,23 +101,27 @@ class Page(object):
 
         self.iframe = iframe
         for el in inspect.getmembers(self.__class__):
-            def update_element(el):
+            def update_element(el, name):
                 if issubclass(el.__class__, ElementGetter):
                     el.iframe = self.iframe
+                    if el.is_facet:
+                        facet = ElementFacet(el, name, debug=el.is_debug_facet)
+                        facet.register(self)
 
             if issubclass(el[1].__class__, list):
                 for item in el[1]:
-                    update_element(item)
+                    update_element(item, el[0])
                 self.__setattr__(el[0], ElementList(self, el[1]))
             elif issubclass(el[1].__class__, dict):
                 for item in el[1].values():
-                    update_element(item)
+                    update_element(item, el[0])
                 self.__setattr__(el[0], ElementDict(self, el[1]))
             else:
-                update_element(el[1])
+                update_element(el[1], el[0])
 
         if url:
             self.driver.get(url)
+        self.initialized = True
 
     @contextlib.contextmanager
     def scope(self):
@@ -133,14 +143,21 @@ class Page(object):
         to enable fluent access to page objects, instance methods that
         don't return a value, instead return the page object instance.
         """
-        with object.__getattribute__(self, "scope")():
-            attr = object.__getattribute__(self, key)
+
+        attr_getter = lambda key: object.__getattribute__(self, key)
+        attr_setter = lambda key, value: object.__setattr__(self, key, value)
+
+        with attr_getter("scope")():
+            if not attr_getter("touched") and attr_getter("initialized"):
+                driver = attr_getter("driver")
+                attr_getter("evaluate")()
+                attr_setter("touched", True)
+            attr = attr_getter(key)
             # check if home url is set, else update.
-            if not object.__getattribute__(self, "home"):
+            if not attr_getter("home"):
                 holmium.core.log.debug(
                     "home url not set, attempting to update.")
-                object.__setattr__(self, "home", object.__getattribute__(self,
-                                                                         "driver").current_url)
+                attr_setter("home", attr_getter("driver").current_url)
 
             if isinstance(attr, types.MethodType):
                 @wraps(attr)
@@ -156,6 +173,7 @@ class Page(object):
             return attr
 
 
+
 class ElementGetter(object):
     """
     internal class to encapsulate the logic used by
@@ -163,8 +181,13 @@ class ElementGetter(object):
     & :class:`holmium.core.Elements`
     """
 
-    def __init__(self, locator_type, query_string, base_element=None, timeout=1,
-                 value=lambda el: el):
+    def __init__(self, locator_type,
+                 query_string,
+                 base_element=None,
+                 timeout=1,
+                 value=lambda el: el,
+                 facet=False):
+
         self.query_string = query_string
         self.locator_type = locator_type
         self.timeout = timeout
@@ -175,10 +198,16 @@ class ElementGetter(object):
         self.root_fn = lambda: Page.get_driver()
         holmium.core.log.debug("locator:%s, query_string:%s, timeout:%d" %
                                (locator_type, query_string, timeout))
+        self.is_facet = facet
+        self.is_debug_facet = False
 
     @property
     def root(self):
         return self.root_fn()
+
+    @root.setter
+    def root(self, root_fn):
+        self.root_fn = root_fn
 
     def get_element(self, method=None):
 
@@ -193,7 +222,7 @@ class ElementGetter(object):
                 _meth = getattr(self.base_element, "find_element")
             else:
                 raise TypeError("invalid base_element type (%s) used" % (
-                type(self.base_element)))
+                    type(self.base_element)))
         else:
             _meth = method
         holmium.core.log.debug(
@@ -211,7 +240,7 @@ class ElementGetter(object):
             except TimeoutException:
                 holmium.core.log.debug(
                     "unable to find element %s after waiting for %d seconds" % (
-                    self.query_string, self.timeout))
+                        self.query_string, self.timeout))
         return _meth(self.locator_type, self.query_string)
 
 
@@ -226,7 +255,8 @@ class Element(ElementGetter):
             return self
         try:
             return self.value_mapper(
-                enhanced(self.get_element(self.root.find_element)))
+                enhanced(self.get_element(self.root.find_element))
+            ) if self.root else None
         except NoSuchElementException:
             return None
 
@@ -244,7 +274,7 @@ class Elements(ElementGetter):
         if not instance:
             return self
         return [self.value_mapper(enhanced(el)) for el in
-                self.get_element(self.root.find_elements)]
+                self.get_element(self.root.find_elements)] if self.root else []
 
 
 class ElementMap(Elements):
@@ -258,11 +288,16 @@ class ElementMap(Elements):
     :param lambda value: transform function for the value when accessed via the key.
     """
 
-    def __init__(self, locator_type, query_string=None, base_element=None,
-                 timeout=1
-                 , key=lambda el: el.text, value=lambda el: el):
-        Elements.__init__(self, locator_type, query_string, base_element,
-                          timeout)
+    def __init__(self, locator_type,
+                 query_string=None,
+                 base_element=None,
+                 timeout=1,
+                 key=lambda el: el.text,
+                 value=lambda el: el,
+                 facet=False):
+        super(ElementMap, self).__init__(locator_type, query_string,
+                                         base_element,
+                                         timeout, facet)
         self.key_mapper = key
         self.value_mapper = value
 
@@ -271,14 +306,14 @@ class ElementMap(Elements):
             return self
         return OrderedDict(
             (self.key_mapper(el), self.value_mapper(enhanced(el))) for el in
-            self.get_element(self.root.find_elements))
+            self.get_element(self.root.find_elements)) if self.root else {}
 
 
     def __getitem__(self, key):
         return lambda: self.__get__(self, self.__class__)[key]
 
 
-class Section(object):
+class Section(Faceted):
     """
     Base class to encapsulate reusable page sections::
 
@@ -292,32 +327,53 @@ class Section(object):
     """
 
     def __init__(self, locator_type, query_string, iframe=None):
+
+        super(Section, self).__init__()
+        self.touched = False
         self.locator_type = locator_type
         self.query_string = query_string
         self.iframe = iframe
         self.__root_val = None
-
-    def __get__(self, instance, owner):
-        def _root():
-            if self.iframe:
-                try:
-                    Page.get_driver().switch_to_default_content()
-                    Page.get_driver().switch_to_frame(self.iframe)
-                except NoSuchFrameException:
-                    holmium.core.log.error(
-                        "unable to switch to iframe %s" % self.iframe)
-            return self.root
-
-        root_function = _root
+        self.element_members = {}
         for element in inspect.getmembers(self.__class__):
             if issubclass(element[1].__class__, ElementGetter):
-                element[1].root_fn = root_function
+                self.element_members[element[0]] = element[1]
+                if element[1].is_facet:
+                    facet = ElementFacet(element[1], element[0], debug=element[1].is_debug_facet)
+                    facet.register(self)
+
+    def __get__(self, instance, owner):
+        for element in self.element_members.values():
+            element.root = lambda: self.root
         return self
+
+    def __getattribute__(self, item):
+        attr_getter = lambda key: super(Section, self).__getattribute__(key)
+        attr_setter = lambda key, value: super(Section, self).__setattr__(key,
+                                                                          value)
+        members = attr_getter("element_members")
+        touched = attr_getter("touched")
+        if not touched and item in members:
+            attr_getter("evaluate")()
+            attr_setter("touched", True)
+        return attr_getter(item)
+
 
     @property
     def root(self):
-        return self.__root_val or Page.get_driver().find_element(
-            self.locator_type, self.query_string)
+        if self.iframe:
+            try:
+                Page.get_driver().switch_to_default_content()
+                Page.get_driver().switch_to_frame(self.iframe)
+            except NoSuchFrameException:
+                holmium.core.log.error(
+                    "unable to switch to iframe %s" % self.iframe)
+        try:
+            return self.__root_val or Page.get_driver().find_element(
+                self.locator_type, self.query_string
+            )
+        except NoSuchElementException:
+            return None
 
     @root.setter
     def root(self, val):
@@ -331,7 +387,7 @@ class Sections(Section, collections.Sequence):
     """
 
     def __init__(self, locator_type, query_string, iframe=None):
-        Section.__init__(self, locator_type, query_string, iframe)
+        super(Sections, self).__init__(locator_type, query_string, iframe)
 
     def __getelements__(self):
         return Page.get_driver().find_elements(self.locator_type,

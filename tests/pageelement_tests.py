@@ -1,6 +1,6 @@
 import unittest
 from  holmium.core import Page, Element, Locators
-import selenium.webdriver
+from tests.utils import get_driver, make_temp_page
 
 
 class ElementTest(unittest.TestCase):
@@ -13,7 +13,7 @@ class ElementTest(unittest.TestCase):
         """
 
     def setUp(self):
-        self.driver = selenium.webdriver.PhantomJS()
+        self.driver = get_driver()
 
     def test_basic_element(self):
         class SimplePage(Page):
@@ -23,8 +23,8 @@ class ElementTest(unittest.TestCase):
             xpath_el = Element(Locators.XPATH, "//div[h3/text()='Simple XPATH']")
 
 
-        self.driver.execute_script("document.write('%s')" % ElementTest.page_content.replace('\n',''))
-        page = SimplePage(self.driver)
+        uri = make_temp_page(ElementTest.page_content)
+        page = SimplePage(self.driver, uri)
         assert page.id_el.text == "simple_id"
         assert page.class_el.text == "simple_class"
         assert page.selector_el.text == "simple_class"
@@ -36,8 +36,8 @@ class ElementTest(unittest.TestCase):
             elements = { "id": Element ( Locators.ID, "simple_id" ), "class" : Element(Locators.CLASS_NAME, "simple_class") }
 
 
-        self.driver.execute_script("document.write('%s')" % ElementTest.page_content.replace('\n',''))
-        page = SimplePage(self.driver)
+        uri = make_temp_page(ElementTest.page_content)
+        page = SimplePage(self.driver, uri)
         assert page.elements["id"].text == "simple_id"
         assert page.elements["class"].text == "simple_class"
 
@@ -45,13 +45,9 @@ class ElementTest(unittest.TestCase):
         class SimplePage(Page):
             elements = [Element ( Locators.ID, "simple_id" ), Element(Locators.CLASS_NAME, "simple_class") ]
 
-
-        self.driver.execute_script("document.write('%s')" % ElementTest.page_content.replace('\n',''))
-        page = SimplePage(self.driver)
+        uri = make_temp_page(ElementTest.page_content)
+        page = SimplePage(self.driver, uri)
         assert page.elements[0].text == "simple_id"
         assert page.elements[1].text == "simple_class"
 
 
-    def tearDown(self):
-        if self.driver:
-            self.driver.quit()

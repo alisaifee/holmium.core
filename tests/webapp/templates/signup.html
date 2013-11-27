@@ -1,0 +1,18 @@
+{% extends "_base.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <form role="form" method="POST" name="signup">
+            <div>
+                <label for="email">Email address</label>
+                <input class='form-control' id="email" name="email" type="text">
+            </div>
+            <div>
+                <label for="email">Password</label>
+                <input class='form-control' id="password" name="password" type="password">
+            </div>
+            <input class='btn btn-primary form-control' id="submit" type="submit" value="Sign up">
+        </form>
+    </div>
+</div>
+{% endblock %}

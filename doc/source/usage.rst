@@ -306,6 +306,115 @@ the text attribute of the element. The same type of lookup functions are used in
     t.element_map["1"]
     # u'one' 
 
+.. _usage-facets:
+
+Page Facets
+===========
+Beyond elements maintained by a page, there are other characteristics that can
+define the behavior of a Page or Section. Holmium allows you to decorate a page
+with a :class:`facets.Facet` which ensures evaluation of the facet before 
+the first access on the Page or Section.
+
+Builtin facets
+--------------
+
+.. automodule:: holmium.core.facets
+.. autoclass:: title
+.. autoclass:: cookie
+.. autoclass:: strict
+.. autoclass:: defer
+
+.. automodule:: holmium.core
+
+Rolling your own
+----------------
+You can create your own facet decorator by subclassing :class:`facets.Facet` and implementing the
+:func:`facets.Facet.evaluate` method. Any additional arguments that you want to access during evaluate
+should be declared as class members:
+ * required arguments as an **__ARGS__** list
+ * optional arguments as an **__OPTIONS__** dictionary.
+
+The example facet below would require that `color` as an argument, and would optionally
+accept `image`. When the  facet is evaluated it would assert on the `background-color` of the body
+element and optionally, the `background-image`.
+
+
+.. code-block:: python
+
+    class background(Facet):
+        __ARGS__ = ["color"]
+        __OPTIONS__ = {"image": None}
+        def validate(self, driver):
+            get_css = """var body=window.document.getElementsByTagName("body")[0];
+            return window.document.defaultView.getComputedStyle(body,null).getPropertyValue("%s");"""
+            color = driver.execute_script(get_css % "background-color")
+            assert_equals( self.arguments["color"], color)
+            if self.options["image"]:
+                image = driver.execute_script(get_css % "background-image")
+                assert_equals( self.options["image"], image)
+
+
+
+
+The decorater could then be applied as follows
+
+.. code-block:: python
+
+    @background(color="rgb(255, 255, 255)", image="none")
+    class Google(Page):
+        google_button = Element(Locators.NAME, "btnK")
+
+
+Additionally individual  :class:`Element`, :class:`ElementMap` or :class:`Elements` members of a Page or Section
+can be promoted to a facet by adding the `facet=True` keyword argument. This will ensure that the specified element 
+is **required** at the time of the containers first access.
+
+
+Sample
+------
+
+.. code-block:: python
+
+    from holmium.core import facets, Page, Element, Section, Locators
+
+    class MySection(Section):
+        required_element = Element(Locators.CLASS_NAME, "main_element", trait=True)
+        optional_element = Element(Locators.CLASS_NAME, "secondary_element")
+
+    @facets.title(title='login page')
+    class LoginPage(Page):
+        def do_login(self, username, password):
+            .....
+
+    @facets.redirect(page=LoginPage, action=LoginPage.do_login, action_arguments= {"username":"ali", "password":"sekret"})
+    @facets.cookie(name="session")
+    class ContentPage(Page):
+        section = MySection(Locators.ID, "main-section")
+
+
+
+To understand how the facets are evaluated, consider the following code path
+
+
+.. code-block:: python
+
+    from selenium import webdriver
+
+    driver = webdriver.Firefox()
+
+    p = ContentPage(driver, "http://localhost/content")
+    assert p.section.optional_element != None
+
+
+The chain of execution when calling `p.section.required_element` is as follows
+
+* check redirect to `LoginPage`
+* check `title` of `LoginPage`
+* perform `do_login`
+* check `cookie` of `ContentPage`
+* check `required` element exists in `MySection`
+* return `optional_element`
+
 
 More Examples
 =============
