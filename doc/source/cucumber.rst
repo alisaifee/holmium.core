@@ -52,10 +52,10 @@ your features.
 .. _testing-cucumber-steps:
 
 Step definitions
-----------------
+================
 
 Browser control
-^^^^^^^^^^^^^^^
+---------------
 .. code-block:: cucumber
 
     When I access the {{url}}
@@ -65,13 +65,13 @@ Browser control
 
 
 Page access
-^^^^^^^^^^^
+-----------
 .. code-block:: cucumber
 
     When I access the {{PageObject}} at {{url}}
 
 Element visibility/content
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------
 
 .. code-block:: cucumber
 
@@ -83,7 +83,7 @@ Element visibility/content
     Then the {{key/attr/index}} item for the {{index}} item in {{Sections}} should have text {{text}}
 
 Element interaction
-^^^^^^^^^^^^^^^^^^^
+-------------------
 
 .. code-block:: cucumber
 
@@ -96,7 +96,7 @@ Element interaction
     When I wait for {{seconds}} second(s)
 
 Page method execution
-^^^^^^^^^^^^^^^^^^^^^
+---------------------
 
 .. code-block:: cucumber
 
@@ -106,7 +106,7 @@ Page method execution
 
 
 Full example
-------------
+============
 
 With the following directory structure and content
 
@@ -118,7 +118,7 @@ With the following directory structure and content
     |- steps.py
 
 page.py
-^^^^^^^
+-------
 
 .. code-block:: python
 
@@ -142,7 +142,7 @@ page.py
 
 
 steps.py
-^^^^^^^^
+--------
 
 .. code-block:: python
 
@@ -152,7 +152,7 @@ steps.py
     init_steps()
 
 google.feature
-^^^^^^^^^^^^^^
+--------------
 
 .. code-block:: cucumber
 
@@ -171,7 +171,7 @@ google.feature
 
 
 Execution
-^^^^^^^^^
+---------
 All the nose plugin options defined at :ref:`testing-nose` can be used here.
 
 
