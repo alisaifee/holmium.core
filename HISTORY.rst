@@ -2,10 +2,20 @@
 .. _Deprecated old class names: http://holmiumcore.readthedocs.org/en/latest/core.html#deprecated-classes 
 .. _Config object: http://holmiumcore.readthedocs.org/en/latest/internals.html#holmium.core.Config
 .. _Section object: https://holmiumcore.readthedocs.org/en/latest/usage.html#sections 
+.. _Facets: http://holmiumcore.readthedocs.org/en/latest/usage.html#page-facets 
+.. _Cucumber Features: http://holmiumcore.readthedocs.org/en/latest/cucumber.html 
+.. _fresher: https://github.com/lddubeau/fresher 
 
 *******
 History
 *******
+
+0.4 2013-11-28
+==============
+* Old style class names removed (`Deprecated old class names`_)
+* Introduced `Facets`_
+* Introduced `Cucumber Features`_ integration with `fresher`_.
+* General refactoring and code cleanup.
 
 0.3.4 2013-11-21
 ================
@@ -74,6 +84,7 @@ History
 * Bug fix 
   
   - fixed phantomjs build in travis
+
 
 
 
