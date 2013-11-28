@@ -49,29 +49,6 @@ scenarios have been imported in the scope of your `steps` module. Once that is d
 your features.
 
 
-Features
---------
-
-Within your features definitions (awesome.feature, lame.feature...) you can access any of the builtin holmium
-scenario steps interleaved with  definitions from your own `steps` module.
-
-For example
-
-.. code-block:: cucumber
-
-
-    Feature: Awesome
-    Scenario: I can discover the features of my Awesome page
-        When I access the page AwesomePage at url http://www.awesome.com
-        Then I should see the title awesome page
-        And the element features should be visible
-        And the element features should have Login
-        When I click the element features
-        Then the element feature_list should have 2 items
-        When I click the second item in feature_list
-        Then the element heading should have text Second Feature
-
-
 .. _testing-cucumber-steps:
 
 Step definitions
