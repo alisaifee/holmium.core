@@ -21,8 +21,8 @@ class BasicPage(holmium.core.Page):
 
 
 class BasicPageWithSections(holmium.core.Page):
-    sections = BasicSectionList(holmium.core.Locators.CLASS_NAME, "section")
-
+    sections = BasicSectionList( holmium.core.Locators.CLASS_NAME, "section", timeout=1)
+    missing_sections = BasicSectionList( holmium.core.Locators.CLASS_NAME, "missing_section", timeout=1)
 
 class SectionTest(unittest.TestCase):
 
@@ -116,6 +116,7 @@ class SectionTest(unittest.TestCase):
                 counter += 1
         self.assertEquals(len(po.sections), 2)
         self.assertRaises(IndexError, lambda: po.sections[2])
+        self.assertRaises(IndexError, lambda: po.missing_sections[0])
 
     def test_sections_list_behavior(self):
         with mock.patch('selenium.webdriver.Firefox') as driver:

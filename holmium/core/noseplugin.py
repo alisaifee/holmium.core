@@ -5,7 +5,10 @@ from nose.plugins.base import Plugin
 from nose.plugins.skip import SkipTest
 import holmium.core
 from holmium.core.config import HolmiumConfig, configure
-
+try:
+    from fresher import ftc
+except ImportError:
+    ftc = None
 
 class HolmiumNose(Plugin):
     """
@@ -82,7 +85,9 @@ class HolmiumNose(Plugin):
             self.logger.exception("failed to initialize selenium driver")
             raise SkipTest(
                 "holmium could not be initialized due to a problem with the required selenium driver")
-        base_file = test.address()[0]
+
+        base_file = test.address()[0] if not hasattr(test.test,
+                                                     "feature") else test.test.feature.src_file
         config_path = os.path.join(os.path.split(base_file)[0], "config")
         try:
             config = None
@@ -97,15 +102,23 @@ class HolmiumNose(Plugin):
             self.logger.debug("unable to load %s" % config_path)
             raise SkipTest(
                 "error in loading config file at path %s" % config_path)
-
-        setattr(test.test, "config", self.config)
+        if HolmiumNose.is_freshen_test(test) and ftc:
+            ftc.config = self.config
+        else:
+            setattr(test.test, "config", self.config)
 
     def startTest(self, test):
         if self.driver:
-            setattr(test.test, "driver", self.driver)
+            if HolmiumNose.is_freshen_test(test) and ftc:
+                ftc.driver = self.driver
+            else:
+                setattr(test.test, "driver", self.driver)
             self.driver.delete_all_cookies()
 
     def finalize(self, result):
         if self.driver:
             self.driver.quit()
 
+    @staticmethod
+    def is_freshen_test(test):
+        return test.address()[1] == "fresher.noseplugin"

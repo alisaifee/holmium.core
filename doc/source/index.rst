@@ -7,6 +7,7 @@
    usage 
    core
    unittest 
+   cucumber
    internals
    development 
    history 

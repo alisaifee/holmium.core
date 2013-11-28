@@ -64,8 +64,8 @@ Execution
 
 .. _testing-nose:
 
-Plugin for nosetest.
-====================
+Plugin for nosetest
+===================
 
 This plugin registers the following command line options to nose:
 

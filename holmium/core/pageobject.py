@@ -65,6 +65,17 @@ class ElementDict(dict):
         return dict.__getitem__(self, key).__get__(self.instance(),
                                                    self.instance().__class__)
 
+class Registry(type):
+    """
+    simple meta class to keep track of all page objects registered
+    """
+    pages = {}
+    def __new__(cls, *args, **kwargs):
+        page = super(Registry, cls).__new__(cls, *args, **kwargs)
+        Registry.pages[args[0]] = page
+        return page
+
+
 
 class Page(Faceted):
     """
@@ -85,6 +96,7 @@ class Page(Faceted):
         assert len(Google().enter_query("page objects").submit_search().get_results()) > 0
 
     """
+    __metaclass__ = Registry
     local = threading.local()
 
     def __init__(self, driver, url=None, iframe=None):
@@ -417,10 +429,19 @@ class Sections(Section, collections.Sequence):
     objects.
     """
 
-    def __init__(self, locator_type, query_string, iframe=None):
+    def __init__(self, locator_type, query_string, iframe=None, timeout=0):
         super(Sections, self).__init__(locator_type, query_string, iframe)
+        self.timeout = timeout
 
     def __getelements__(self):
+        if self.timeout:
+            try:
+                WebDriverWait(Page.get_driver(), self.timeout).until(
+                    lambda _: Page.get_driver().find_elements(self.locator_type, self.query_string))
+            except TimeoutException:
+                holmium.core.log.debug(
+                    "unable to find element %s after waiting for %d seconds" % (
+                        self.query_string, self.timeout))
         return Page.get_driver().find_elements(self.locator_type,
                                                self.query_string)
 
@@ -440,4 +461,6 @@ class Sections(Section, collections.Sequence):
             _idx += 1
             if idx > _idx:
                 raise IndexError("Sections index (%d) out of range" % idx)
+        if len(self) == 0:
+            raise IndexError("Sections index (%d) out of range" % idx)
         return self
