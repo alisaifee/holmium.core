@@ -26,10 +26,10 @@ Holmium+Fresher features require the same structure as regular fresher features,
 .. code-block:: bash
 
     my_feature/
-    ├── config.py
-    ├── awesome.feature
-    ├── lame.feature
-    ├── steps.py
+    |- config.py
+    |- awesome.feature
+    |- lame.feature
+    |- steps.py
 
 steps.py
 --------
@@ -113,9 +113,9 @@ With the following directory structure and content
 .. code-block:: bash
 
     google_feature
-    ├── page.py
-    ├── search.feature
-    └── steps.py
+    |- page.py
+    |- search.feature
+    |- steps.py
 
 page.py
 ^^^^^^^
