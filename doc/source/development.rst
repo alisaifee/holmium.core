@@ -6,6 +6,7 @@ Development
 .. _travis: https:/travis-ci.org/#!/alisaifee/holmium.core 
 .. _develop: http://pythonhosted.org/distribute/setuptools.html#development-mode
 .. _phantomjs download page: http://phantomjs.org/download.html 
+.. _freenode irc channel: irc://irc.freenode.net/#holmium
 
 Contributors
 ============
@@ -23,7 +24,7 @@ Bugs, Feature Requests
     Tracked at the `issue tracker`_.
 
 Questions
-    Freenode irc server : #holmium
+    `freenode irc channel`_ 
 
 Installation
 ============
