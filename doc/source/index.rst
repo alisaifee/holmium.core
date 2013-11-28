@@ -5,10 +5,9 @@
    :hidden: 
 
    usage 
-   core
    unittest 
    cucumber
-   internals
+   api
    development 
    history 
    license 

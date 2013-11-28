@@ -4,7 +4,7 @@ Building PageObjects
 
 Overview
 ========
-.. automodule:: holmium.core 
+.. currentmodule:: holmium.core 
 
 A typical PageObject built with :mod:`holmium.core` has the following composition:
 
@@ -318,21 +318,21 @@ the first access on the Page or Section.
 Builtin facets
 --------------
 
-.. automodule:: holmium.core.facets
+.. currentmodule:: holmium.core.facets
 .. autoclass:: title
 .. autoclass:: cookie
 .. autoclass:: strict
 .. autoclass:: defer
-
-.. automodule:: holmium.core
+.. currentmodule:: holmium.core 
 
 Rolling your own
 ----------------
 You can create your own facet decorator by subclassing :class:`facets.Facet` and implementing the
 :func:`facets.Facet.evaluate` method. Any additional arguments that you want to access during evaluate
 should be declared as class members:
- * required arguments as an **__ARGS__** list
- * optional arguments as an **__OPTIONS__** dictionary.
+
+    * required arguments as an **__ARGS__** list
+    * optional arguments as an **__OPTIONS__** dictionary.
 
 The example facet below would require that `color` as an argument, and would optionally
 accept `image`. When the  facet is evaluated it would assert on the `background-color` of the body
@@ -409,7 +409,7 @@ To understand how the facets are evaluated, consider the following code path
 The chain of execution when calling `p.section.required_element` is as follows
 
 * check defer to `LoginPage`
- * check `title` of `LoginPage`
+* check `title` of `LoginPage`
 * perform `do_login`
 * check `cookie` of `ContentPage`
 * check `required` element exists in `MySection`
