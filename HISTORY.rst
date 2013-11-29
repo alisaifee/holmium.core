@@ -10,6 +10,10 @@
 History
 *******
 
+0.4.1 2013-11-29
+================
+* Bug fix for config module being reused between test runs. 
+
 0.4 2013-11-28
 ==============
 * Old style class names removed (`Deprecated old class names`_)
@@ -84,6 +88,7 @@ History
 * Bug fix 
   
   - fixed phantomjs build in travis
+
 
 
 
