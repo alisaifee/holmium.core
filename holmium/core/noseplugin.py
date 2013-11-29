@@ -3,6 +3,7 @@ import os
 import json
 from nose.plugins.base import Plugin
 from nose.plugins.skip import SkipTest
+import sys
 import holmium.core
 from holmium.core.config import HolmiumConfig, configure
 try:
@@ -94,7 +95,9 @@ class HolmiumNose(Plugin):
             if os.path.isfile(config_path + ".json"):
                 config = json.loads(open(config_path + ".json").read())
             elif os.path.isfile(config_path + ".py"):
-                config = imp.load_source("config", config_path + ".py").config
+                if "holmium_testcase_config" in sys.modules:
+                    del sys.modules["holmium_testcase_config"]
+                config = imp.load_source("holmium_testcase_config", config_path + ".py").config
             if config:
                 self.config = holmium.core.Config(config, {
                 "holmium": self.holmium_config})
