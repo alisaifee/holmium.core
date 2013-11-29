@@ -49,9 +49,18 @@ Feature: Test holmium freshen integration
     When I access the page TestPage at url {{url}}
     Then the moo item in section should be visible
 
+
+  Scenario: Valid Page invalid sub element
+    When I access the page TestPage at url {{url}}
+    Then the moo item in missing_section should be visible
+
   Scenario: Valid Page invalid action
     When I access the page TestPage at url {{url}}
     And I perform noop
+
+  Scenario: Valid Page invalid action with args
+    When I access the page TestPage at url {{url}}
+    And I perform noop with arguments 1,2,3
 
   Scenario: Valid Page invalid action args
     When I access the page TestPage at url {{url}}

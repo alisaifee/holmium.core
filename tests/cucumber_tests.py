@@ -41,18 +41,19 @@ class TestFresherIntegration(PluginTester, unittest.TestCase):
 
         super(TestFresherIntegration,self).setUp()
     def runTest(self):
-        assert "Ran 8 tests" in self.output, self.output
-        assert "FAILED (errors=6)" in self.output, self.output
+        assert "Ran 10 tests" in self.output, self.output
+        assert "FAILED (errors=8)" in self.output, self.output
         assert "KeyError: u'moo'" in self.output, self.output
         assert "TestPage does not contain an element named not_existent" in self.output
         assert "page object FooPage not found. did you import it?" in self.output
         assert "'TestSection' object has no attribute 'moo'" in self.output
-        assert "page object TestPage does not contain a method noop" in self.output
+        assert "page object TestPage does not contain an element named missing_section" in self.output
+        assert str(self.output).count("page object TestPage does not contain a method noop") == 2
         assert "do_stuff() takes exactly 3 arguments (4 given)" in self.output
         assert self.driver.call_count == 1, self.driver.call_count
         self.driver.return_value.get.assert_any_call("http://www.google.com")
         self.driver.return_value.get.assert_any_call("http://www.google.com/login")
-        assert self.driver.return_value.delete_all_cookies.call_count == 8, self.driver.return_value.delete_all_cookies.call_count
+        assert self.driver.return_value.delete_all_cookies.call_count == 10, self.driver.return_value.delete_all_cookies.call_count
     def tearDown(self):
         holmium.core.config.browser_mapping = self.old_mapping
         self.sleep_patcher.stop()

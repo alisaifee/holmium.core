@@ -104,7 +104,7 @@ def transform_element(name):
 def transform_sub_element(key, name):
     if not hasattr(scc.page, name):
         raise AttributeError(
-            "page object %s does not contain an element named .%s." % (
+            "page object %s does not contain an element named %s" % (
                 scc.page.__class__.__name__, name
             )
         )
