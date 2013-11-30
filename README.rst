@@ -4,7 +4,13 @@
 .. |coveralls| image:: https://coveralls.io/repos/alisaifee/holmium.core/badge.png?branch=master 
     :target: https://coveralls.io/r/alisaifee/holmium.core?branch=master 
 
-**holmium.core** |travis-ci| |coveralls|
+.. |pypi| image:: https://pypip.in/v/holmium.core/badge.png
+    :target: https://crate.io/packages/holmium.core/
+
+************
+holmium.core
+************
+|travis-ci| |coveralls| |pypi|
 
 
 ************
