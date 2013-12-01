@@ -9,7 +9,7 @@ from .logger import log
 
 try:
     from fresher import ftc
-except ImportError:
+except ImportError: # pragma: no cover
     ftc = None # pragma: no cover
 
 def load_source(name, path):
