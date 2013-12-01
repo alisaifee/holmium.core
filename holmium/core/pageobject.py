@@ -10,12 +10,14 @@ import selenium.webdriver.common.by
 from selenium.common.exceptions import NoSuchElementException, TimeoutException, NoSuchFrameException
 from selenium.webdriver.support.ui import WebDriverWait, Select
 from selenium.webdriver.remote.webelement import WebElement
-from ordereddict import OrderedDict
 
-import holmium
+if hasattr(collections, "OrderedDict"):
+    OrderedDict = collections.OrderedDict
+else:
+    from ordereddict import OrderedDict
 
-from holmium.core.facets import Faceted, ElementFacet
-
+from .facets import Faceted, ElementFacet
+from .logger import log
 
 class Locators(selenium.webdriver.common.by.By):
     """
@@ -74,7 +76,6 @@ class Registry(type):
         page = super(Registry, cls).__new__(cls, *args, **kwargs)
         Registry.pages[args[0]] = page
         return page
-
 
 
 class Page(Faceted):
@@ -167,7 +168,7 @@ class Page(Faceted):
             attr = attr_getter(key)
             # check if home url is set, else update.
             if not attr_getter("home"):
-                holmium.core.log.debug(
+                log.debug(
                     "home url not set, attempting to update.")
                 attr_setter("home", attr_getter("driver").current_url)
 
@@ -176,8 +177,8 @@ class Page(Faceted):
                 def wrap(*args, **kwargs):
                     resp = attr(*args, **kwargs)
                     if None == resp:
-                        holmium.core.log.debug(
-                            "method %s returned None, using fluent response" % attr.func_name)
+                        log.debug(
+                            "method %s returned None, using fluent response" % attr.__name__)
                         resp = self
                     return resp
 
@@ -223,7 +224,7 @@ class ElementGetter(object):
         self.value_mapper = value
         self.root_fn = lambda: Page.get_driver()
         self.only_if = only_if
-        holmium.core.log.debug("locator:%s, query_string:%s, timeout:%d" %
+        log.debug("locator:%s, query_string:%s, timeout:%d" %
                                (locator_type, query_string, timeout))
         self.is_facet = facet
         self.is_debug_facet = False
@@ -241,10 +242,10 @@ class ElementGetter(object):
         if self.base_element:
             if isinstance(self.base_element, types.LambdaType):
                 el = self.base_element()
-                _meth = getattr(el, method.im_func.func_name)
+                _meth = getattr(el, method.__name__)
             elif isinstance(self.base_element, Element):
                 _meth = getattr(self.base_element.__get__(self, self.__class__),
-                                method.im_func.func_name)
+                                method.__name__)
             elif isinstance(self.base_element, WebElement):
                 _meth = getattr(self.base_element, "find_element")
             else:
@@ -252,7 +253,7 @@ class ElementGetter(object):
                     type(self.base_element)))
         else:
             _meth = method
-        holmium.core.log.debug(
+        log.debug(
             "looking up locator:%s, query_string:%s, timeout:%d" %
             (self.locator_type, self.query_string, self.timeout))
 
@@ -266,7 +267,7 @@ class ElementGetter(object):
                     and self.only_if( _meth(self.locator_type, self.query_string))
                 WebDriverWait(self.root, self.timeout).until(callback)
             except TimeoutException:
-                holmium.core.log.debug(
+                log.debug(
                     "unable to find element %s after waiting for %d seconds" % (
                         self.query_string, self.timeout))
                 raise
@@ -435,7 +436,7 @@ class Section(Faceted):
                 Page.get_driver().switch_to_default_content()
                 Page.get_driver().switch_to_frame(self.iframe)
             except NoSuchFrameException:
-                holmium.core.log.error(
+                log.error(
                     "unable to switch to iframe %s" % self.iframe)
         try:
             return self.__root_val or Page.get_driver().find_element(
@@ -465,7 +466,7 @@ class Sections(Section, collections.Sequence):
                 WebDriverWait(Page.get_driver(), self.timeout).until(
                     lambda _: Page.get_driver().find_elements(self.locator_type, self.query_string))
             except TimeoutException:
-                holmium.core.log.debug(
+                log.debug(
                     "unable to find element %s after waiting for %d seconds" % (
                         self.query_string, self.timeout))
         return Page.get_driver().find_elements(self.locator_type,

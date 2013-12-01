@@ -35,15 +35,15 @@ class ElementsTest(unittest.TestCase):
             </body>
         """)
         page = SimplePage(self.driver, uri)
-        self.assertEquals([k.text for k in page.el_list_default],
+        self.assertEqual([k.text for k in page.el_list_default],
                           ["simple class el 1 element 1",
                            "simple class el 2 element 2",
                            "simple class el 3 element 3"])
-        self.assertEquals(page.el_list_valuemapper,
+        self.assertEqual(page.el_list_valuemapper,
                           ["element 1", "element 2", "element 3"])
-        self.assertEquals(page.el_list_valuemapper_complex,
+        self.assertEqual(page.el_list_valuemapper_complex,
                           [{"link": "http://el1.com/", "text": "element 1"},
                            {"link": "http://el2.com/", "text": "element 2"},
                            {"link": "http://el3.com/", "text": "element 3"}])
-        self.assertEquals(page.first_el.text, "element 1")
+        self.assertEqual(page.first_el.text, "element 1")
 

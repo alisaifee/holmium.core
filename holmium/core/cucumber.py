@@ -7,7 +7,7 @@ from selenium.webdriver.common.keys import Keys
 from nose.tools import assert_equals, assert_is_not_none
 
 from fresher import Transform, When, scc, Then, NamedTransform, ftc
-from holmium.core.pageobject import Registry, Section, Sections
+from .pageobject import Registry, Section, Sections
 
 
 def paramfromconfig(fn):
@@ -123,7 +123,6 @@ def transform_sub_element(key, name):
         sub_element = element[int(key)]
     if sub != None:
         if isinstance(sub_element, (list, dict)):
-            print sub, sub_element
             return sub_element[sub]
         return getattr(sub_element, sub)
     return sub_element

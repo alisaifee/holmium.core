@@ -1,11 +1,10 @@
-import os
 import unittest
 import inspect
 import imp
 import json
 
-import holmium
-from holmium.core.config import HolmiumConfig, configure
+import os
+from .config import HolmiumConfig, configure, Config, browser_mapping
 
 
 class TestCase(unittest.TestCase):
@@ -36,12 +35,12 @@ class TestCase(unittest.TestCase):
         elif os.path.isfile(config_path + ".py"):
             config = imp.load_source("config", config_path + ".py").config
         if config:
-            cls.config = holmium.core.Config(config,
+            cls.config = Config(config,
                                              {"holmium": holmium_config})
         if remote:
-            driver = holmium.core.config.browser_mapping["remote"]
+            driver = browser_mapping["remote"]
         else:
-            driver = holmium.core.config.browser_mapping[holmium_config.browser]
+            driver = browser_mapping[holmium_config.browser]
         cls.driver = driver(**args)
         super(TestCase, cls).setUpClass()
 

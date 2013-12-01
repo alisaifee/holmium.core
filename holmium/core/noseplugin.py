@@ -1,15 +1,27 @@
-import imp
+from contextlib import closing
 import os
+import sys
 import json
 from nose.plugins.base import Plugin
 from nose.plugins.skip import SkipTest
-import sys
-import holmium.core
-from holmium.core.config import HolmiumConfig, configure
+from .config import HolmiumConfig, Config,  configure, browser_mapping
+from .logger import log
+
 try:
     from fresher import ftc
 except ImportError:
     ftc = None # pragma: no cover
+
+def load_source(name, path):
+    """
+    abstracted out for 2.7 versus 3.x support
+    """
+    if sys.version_info >= (3,0,0):
+        from importlib import machinery
+        return machinery.SourceFileLoader(name, path).load_module(name)
+    else:
+        import imp
+        return imp.load_source(name, path)
 
 class HolmiumNose(Plugin):
     """
@@ -25,7 +37,7 @@ class HolmiumNose(Plugin):
         self.config = {}
         self.environment = None
         self.driver_initializer_fn = lambda _: None
-        self.logger = holmium.core.log
+        self.logger = log
 
     def options(self, parser, env):
         """
@@ -39,7 +51,7 @@ class HolmiumNose(Plugin):
         parser.add_option("", "--holmium-browser", dest="ho_browser",
                           type="choice",
                           choices=list(
-                              holmium.core.config.browser_mapping.keys()),
+                              browser_mapping.keys()),
                           help="the selenium driver to invoke")
         parser.add_option("", "--holmium-remote", dest="ho_remote",
                           help="full url to remote selenium instance")
@@ -70,11 +82,9 @@ class HolmiumNose(Plugin):
 
             args = configure(holmium_config)
             if holmium_config.remote:
-                driver = holmium.core.config.browser_mapping["remote"]
+                driver = browser_mapping["remote"]
             else:
-                driver = holmium.core.config.browser_mapping[
-                    holmium_config.browser]
-
+                driver = browser_mapping[holmium_config.browser]
             self.driver_initializer_fn = lambda: driver(**args)
             self.enabled = True
 
@@ -93,18 +103,19 @@ class HolmiumNose(Plugin):
         try:
             config = None
             if os.path.isfile(config_path + ".json"):
-                config = json.loads(open(config_path + ".json").read())
+                with closing(open(config_path + ".json")) as f:
+                    config = json.loads(f.read())
             elif os.path.isfile(config_path + ".py"):
                 if "holmium_testcase_config" in sys.modules:
                     del sys.modules["holmium_testcase_config"]
-                config = imp.load_source("holmium_testcase_config", config_path + ".py").config
+                config = load_source("holmium_testcase_config", config_path + ".py").config
             if config:
-                self.config = holmium.core.Config(config, {
+                self.config = Config(config, {
                 "holmium": self.holmium_config})
         except Exception as e:
             self.logger.debug("unable to load %s" % config_path)
             raise SkipTest(
-                "error in loading config file at path %s" % config_path)
+                "error in loading config file at path %s" % config_path, e)
         if HolmiumNose.is_freshen_test(test) and ftc:
             ftc.config = self.config
         else:

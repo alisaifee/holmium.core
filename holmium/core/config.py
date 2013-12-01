@@ -1,3 +1,4 @@
+import sys
 import os
 import inspect
 
@@ -79,8 +80,15 @@ if ``HO_ENV`` or ``--holmium-env`` are ``development``:
 
     def __getitem__(self, key):
         def __render(item, context):
-            if issubclass(item.__class__, str) or issubclass(item.__class__,
-                                                             unicode):
+            def _check_string_type(_item):
+                if isinstance(_item, str):
+                    return True
+                elif sys.version_info < (3,0,0):
+                    if isinstance(_item, eval("unicode")):
+                        return True
+                return False
+
+            if _check_string_type(item):
                 template = jinja2.Template(item)
                 rendered = template.render(context)
                 if rendered != item:
@@ -94,7 +102,7 @@ if ``HO_ENV`` or ``--holmium-env`` are ``development``:
         default_ctx = dict.setdefault(self, "default", {})
         try:
             item = env_ctx[key]
-        except KeyError, e:
+        except KeyError as e:
             item = default_ctx[key]
 
         context = dict(self)
@@ -201,7 +209,7 @@ class PhantomConfig(DriverConfig):
 
 class RemoteConfig(DriverConfig):
     def __call__(self, config, args):
-        if config.browser == "firefox" and args.has_key("firefox_profile"):
+        if config.browser == "firefox" and "firefox_profile" in args:
             args["browser_profile"] = args["firefox_profile"]
             args.pop("firefox_profile")
         args["command_executor"] = config.remote
@@ -228,7 +236,7 @@ def configure(config):
     merged_capabilities = capabilities[config.browser]
     merged_capabilities.update(config.capabilities)
     args = {"desired_capabilities": merged_capabilities}
-    if configurator_mapping.has_key(config.browser):
+    if config.browser in configurator_mapping:
         args = configurator_mapping[config.browser](config, args)
     if config.remote:
         args = configurator_mapping["remote"](config, args)

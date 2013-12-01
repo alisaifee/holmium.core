@@ -6,3 +6,4 @@ include requirements.txt
 recursive-include examples *.py
 recursive-include doc/source *
 recursive-include doc *.py Make*
+recursive-include tests *.* 

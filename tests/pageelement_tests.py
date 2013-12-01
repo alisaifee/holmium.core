@@ -61,12 +61,12 @@ class ElementTest(unittest.TestCase):
 
         uri = make_temp_page(ElementTest.page_content)
         page = SimplePage(self.driver, uri)
-        self.assertEquals(page.id_el.text, "simple_id")
+        self.assertEqual(page.id_el.text, "simple_id")
         script = 'document.getElementById("simple_id").firstChild.nodeValue="changed";'
         runner = hiro.run_async(5, lambda: time.sleep(1) or self.driver.execute_script(script))
         with hiro.ScaledTimeline(10):
-            self.assertEquals(page.id_el_changed.text, "changed")
+            self.assertEqual(page.id_el_changed.text, "changed")
         self.assertTrue(runner.get_response() == None)
         self.driver.refresh()
         with hiro.ScaledTimeline(10):
-            self.assertEquals(page.id_el_changed, None)
+            self.assertEqual(page.id_el_changed, None)

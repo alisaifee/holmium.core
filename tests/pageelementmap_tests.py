@@ -36,9 +36,9 @@ class ElementMapTest(unittest.TestCase):
             </body>
         """)
         page = SimplePage(self.driver, uri)
-        self.assertEquals(page.el_map_default.keys() , ["simple class el 1 element 1", "simple class el 2 element 2", "simple class el 3 element 3"] )
-        self.assertEquals(page.el_map_keymapper.keys() , ["element 1", "element 2", "element 3"] )
-        self.assertEquals(page.el_map_valuemapper.values() , ["element 1", "element 2", "element 3"] )
-        self.assertEquals(page.el_map_keyvaluemapper.keys() , ["element 1", "element 2", "element 3"] )
-        self.assertEquals(page.el_map_keyvaluemapper.values() , ["http://el1.com/", u"http://el2.com/", u"http://el3.com/"])
+        self.assertEqual(list(page.el_map_default.keys()) , ["simple class el 1 element 1", "simple class el 2 element 2", "simple class el 3 element 3"] )
+        self.assertEqual(list(page.el_map_keymapper.keys()) , ["element 1", "element 2", "element 3"] )
+        self.assertEqual(list(page.el_map_valuemapper.values()) , ["element 1", "element 2", "element 3"] )
+        self.assertEqual(list(page.el_map_keyvaluemapper.keys()) , ["element 1", "element 2", "element 3"] )
+        self.assertEqual(list(page.el_map_keyvaluemapper.values()) , ["http://el1.com/", u"http://el2.com/", u"http://el3.com/"])
 

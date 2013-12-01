@@ -1,5 +1,6 @@
 import atexit
 import tempfile
+import sys
 import mock
 from selenium import webdriver
 import os
@@ -28,3 +29,8 @@ def make_temp_page(src):
     fh.close()
     atexit.register( lambda: os.remove(f) )
     return "file://%s" % f
+
+def mock_open():
+    if sys.version_info >= (3,0,0):
+        return mock.patch("builtins.open")
+    return mock.patch("__builtin__.open")

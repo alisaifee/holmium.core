@@ -25,10 +25,10 @@ class BugReports(unittest.TestCase):
         e2.text = "t2"
         d1.find_element.return_value = e1
         d2.find_element.return_value = e2
-        self.assertEquals(p1.el.text,"t1")
-        self.assertEquals(p2.el.text,"t2")
-        self.assertEquals(d1.get.call_count, 1)
-        self.assertEquals(d2.get.call_count, 1)
+        self.assertEqual(p1.el.text,"t1")
+        self.assertEqual(p2.el.text,"t2")
+        self.assertEqual(d1.get.call_count, 1)
+        self.assertEqual(d2.get.call_count, 1)
     def test_multiple_pageinstances_multithreaded(self):
         """ https://github.com/alisaifee/holmium.core/issues/4
         """
@@ -39,8 +39,8 @@ class BugReports(unittest.TestCase):
 
         def exec_page_in_thread(p):
             p.go_home()
-            self.assertEquals(p.t, p.el.text)
-            self.assertEquals(p.driver.get.call_count, 2)
+            self.assertEqual(p.t, p.el.text)
+            self.assertEqual(p.driver.get.call_count, 2)
 
         def build_pages(po):
             pages=[]
@@ -78,9 +78,9 @@ class BugReports(unittest.TestCase):
                 return ""
         d1=mock.Mock()
         p1=p(d1, "http://p1")
-        self.assertEquals(p1, p1.f1())
-        self.assertEquals(False, p1.f2())
-        self.assertEquals([], p1.f3())
-        self.assertEquals({}, p1.f4())
-        self.assertEquals("",p1.f5())
+        self.assertEqual(p1, p1.f1())
+        self.assertEqual(False, p1.f2())
+        self.assertEqual([], p1.f3())
+        self.assertEqual({}, p1.f4())
+        self.assertEqual("",p1.f5())
 

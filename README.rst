@@ -1,8 +1,8 @@
 .. _PageObjects: http://code.google.com/p/selenium/wiki/PageObjects
 .. |travis-ci| image:: https://secure.travis-ci.org/alisaifee/holmium.core.png?branch=master
-    :target: https://travis-ci.org/#!/alisaifee/holmium.core?branch=master 
-.. |coveralls| image:: https://coveralls.io/repos/alisaifee/holmium.core/badge.png?branch=master 
-    :target: https://coveralls.io/r/alisaifee/holmium.core?branch=master 
+    :target: https://travis-ci.org/#!/alisaifee/holmium.core?branch=master
+.. |coveralls| image:: https://coveralls.io/repos/alisaifee/holmium.core/badge.png?branch=master
+    :target: https://coveralls.io/r/alisaifee/holmium.core?branch=master
 
 .. |pypi| image:: https://pypip.in/v/holmium.core/badge.png
     :target: https://crate.io/packages/holmium.core/

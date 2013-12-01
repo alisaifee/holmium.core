@@ -1,7 +1,7 @@
 #!/bin/bash 
 echo current version:$(python -c "import holmium.version;print holmium.version.__version__")
 read -p "new version:" new_version
-sed -i -e "s/__version__.*/__version__=\"${new_version}\"/g" holmium/version.py 
+sed -i -e "s/__version__.*/__version__=\"${new_version}\" # pragma: no cover/g" holmium/version.py 
 last_portion=$(grep -E "^History$" HISTORY.rst -5 | grep -E "^\d+.\d+.\d+")
 changelog_file=/var/tmp/holmium.core.newchangelog
 new_changelog_heading="${new_version} `date +"%Y-%m-%d"`"

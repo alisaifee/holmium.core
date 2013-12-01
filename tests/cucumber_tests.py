@@ -9,6 +9,7 @@ from nose.plugins import PluginTester
 from fresher.noseplugin import FresherNosePlugin
 
 import holmium.core
+import holmium.core.noseplugin
 from tests import utils
 
 
@@ -24,8 +25,8 @@ class TestFresherIntegration(PluginTester, unittest.TestCase):
     plugins = [holmium.core.HolmiumNose(), FresherNosePlugin()]
     def setUp(self):
         self.old_mapping = holmium.core.config.browser_mapping
-        holmium.core.config.browser_mapping = utils.build_mock_mapping("firefox")
-        self.driver = holmium.core.config.browser_mapping["firefox"]
+        holmium.core.noseplugin.browser_mapping = utils.build_mock_mapping("firefox")
+        self.driver = holmium.core.noseplugin.browser_mapping["firefox"]
         self.driver.return_value.title = "test"
         e1 = mock.Mock()
         e1.text = "e"
@@ -43,18 +44,18 @@ class TestFresherIntegration(PluginTester, unittest.TestCase):
     def runTest(self):
         assert "Ran 10 tests" in self.output, self.output
         assert "FAILED (errors=8)" in self.output, self.output
-        assert "KeyError: u'moo'" in self.output, self.output
+        assert "'moo'" in self.output, self.output
         assert "TestPage does not contain an element named not_existent" in self.output
         assert "page object FooPage not found. did you import it?" in self.output
         assert "'TestSection' object has no attribute 'moo'" in self.output
         assert "page object TestPage does not contain an element named missing_section" in self.output
         assert str(self.output).count("page object TestPage does not contain a method noop") == 2
-        assert "do_stuff() takes exactly 3 arguments (4 given)" in self.output
+        assert "do_stuff() takes" in self.output, self.output
         assert self.driver.call_count == 1, self.driver.call_count
         self.driver.return_value.get.assert_any_call("http://www.google.com")
         self.driver.return_value.get.assert_any_call("http://www.google.com/login")
         assert self.driver.return_value.delete_all_cookies.call_count == 10, self.driver.return_value.delete_all_cookies.call_count
     def tearDown(self):
-        holmium.core.config.browser_mapping = self.old_mapping
+        holmium.core.noseplugin.browser_mapping = self.old_mapping
         self.sleep_patcher.stop()
 

@@ -1,7 +1,5 @@
-import types
-import warnings
-import pageobject
-import testcase
+from .pageobject import *
+from .testcase import *
 
 
 class Deprecated(object):
@@ -14,15 +12,14 @@ class Deprecated(object):
 
 def construct_deprecated(name, alt):
     doc = """Deprecated alias for :class:`%s`""" % alt.__name__
-    cls = types.ClassType(name, (Deprecated, alt),
-                          dict(cur=name, alt=alt, __doc__=doc))
+    cls = type(name, (Deprecated, alt),
+                    dict(cur=name, alt=alt, __doc__=doc))
     return cls
 
 
-PageObject = construct_deprecated("PageObject", pageobject.Page)
-PageElement = construct_deprecated("PageElement", pageobject.Element)
-PageElements = construct_deprecated("PageElements", pageobject.Elements)
-PageElementMap = construct_deprecated("PageElementMap", pageobject.ElementMap)
-HolmiumTestCase = construct_deprecated("HolmiumTestCase", testcase.TestCase)
+PageObject = construct_deprecated("PageObject", Page)
+PageElement = construct_deprecated("PageElement", Element)
+PageElements = construct_deprecated("PageElements", Elements)
+PageElementMap = construct_deprecated("PageElementMap", ElementMap)
+HolmiumTestCase = construct_deprecated("HolmiumTestCase", TestCase)
 
-warnings.simplefilter("always")

@@ -103,11 +103,11 @@ class FacetsTests(LiveTest):
 
     def test_main_page_callout(self):
         main = MainPage(self.driver, self.base_url)
-        self.assertEquals(main.jumbo.callout.text, "Here's a few ways it can be good")
+        self.assertEqual(main.jumbo.callout.text, "Here's a few ways it can be good")
 
     def test_main_page_with_callable_callout(self):
         main = MainPageWithCallable(self.driver, self.base_url)
-        self.assertEquals(main.jumbo.callout.text, "Here's a few ways it can be good")
+        self.assertEqual(main.jumbo.callout.text, "Here's a few ways it can be good")
 
     def test_main_click_selenium(self):
         main = MainPage(self.driver, self.base_url)
@@ -118,7 +118,7 @@ class FacetsTests(LiveTest):
         login = LoginPage(self.driver, self.base_url + "/login")
         login.login("john@doe.com", "sekret")
         main = MainPage(self.driver, self.base_url)
-        self.assertEquals(main.jumbo.callout.text, "Here's a few ways it can be good")
+        self.assertEqual(main.jumbo.callout.text, "Here's a few ways it can be good")
 
     def test_main_page_bad_trait_element(self):
         main = MainPageBadElement(self.driver, self.base_url)
@@ -139,7 +139,7 @@ class FacetsTests(LiveTest):
         class _P(MainPage):
             bad_nav = BadNavSectionStrictDebug(Locators.CLASS_NAME, "nav")
         main = _P(self.driver, self.base_url)
-        with mock.patch("holmium.core.log") as log:
+        with mock.patch("holmium.core.facets.log") as log:
             self.assertTrue( main.bad_nav.links is not None)
             self.assertTrue( main.bad_nav.junk is None)
             self.assertTrue( main.nav.links is not None)
@@ -173,7 +173,7 @@ class GoodFacetsTest(unittest.TestCase):
         driver.get_cookie.return_value = "yum"
         driver.title = "title"
         p = P(driver)
-        self.assertEquals(p.el.text, "null")
+        self.assertEqual(p.el.text, "null")
 
 class BadFacetTests(unittest.TestCase):
     def test_missing_title(self):
@@ -220,7 +220,7 @@ class BadReactionTests(unittest.TestCase):
         driver = mock.Mock()
         driver.find_element.return_value.text = "null"
         p = P(driver)
-        self.assertEquals(p.el.text, "null")
+        self.assertEqual(p.el.text, "null")
 
 
 def test_missing_arguments():
@@ -235,6 +235,6 @@ def check_arguments(args):
     try:
         create(**args)
         raise Exception("exception not raised")
-    except AttributeError,e:
+    except AttributeError as e:
         pass
 

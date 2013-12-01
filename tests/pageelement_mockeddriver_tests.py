@@ -22,13 +22,13 @@ class ElementWithMockDriverTest(unittest.TestCase):
             id_el = Element(Locators.ID, "simple_id")
 
         page = SimplePage(self.driver)
-        self.assertEquals(page.home, None)
+        self.assertEqual(page.home, None)
         self.driver.current_url = "http://www.google.com"
         self.driver.find_element.return_value.text = "simple"
         # when accessing an element, the home parameter should be updated
-        self.assertEquals(page.id_el.text, "simple")
-        self.assertEquals(page.home, "http://www.google.com")
-        self.assertEquals(self.driver.get.call_count, 0)
+        self.assertEqual(page.id_el.text, "simple")
+        self.assertEqual(page.home, "http://www.google.com")
+        self.assertEqual(self.driver.get.call_count, 0)
         page.go_home()
         self.assertTrue(self.driver.get.call_count, 1)
 

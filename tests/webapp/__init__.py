@@ -34,7 +34,7 @@ class DB:
         return self.db.execute("select email, password from users where email = ?", (email,)).fetchone()
 
     def create_user(self, email, password):
-        values = (email, hashlib.md5(password).hexdigest())
+        values = (email, hashlib.md5(password.encode("utf-8")).hexdigest())
         return self.db.execute("insert into users (email, password) values(?,?)", values)
 
     def get_entry(self, entry_name):
@@ -62,8 +62,8 @@ def requires_login(fn):
             try:
                 user = db.get_user(session.get("current_user"))
                 return user and request.cookies["uid"] == hashlib.md5(
-                    session.get("current_user")).hexdigest() + ":" + user[1]
-            except Exception,e:
+                    session.get("current_user").encode("utf-8")).hexdigest() + ":" + user[1]
+            except Exception as e:
                 return False
         if not ("uid" in request.cookies and check_cookie()):
             if "current_user" in session:
@@ -80,8 +80,8 @@ def validate_login(email, password):
         return flash_and_back("Password required")
     user = db.get_user(email)
     if user:
-        if hashlib.md5(password).hexdigest() == user[1]:
-            cookie = ("uid", hashlib.md5(email).hexdigest() + ":" + hashlib.md5(password).hexdigest())
+        if hashlib.md5(password.encode("utf-8")).hexdigest() == user[1]:
+            cookie = ("uid", hashlib.md5(email.encode("utf-8")).hexdigest() + ":" + hashlib.md5(password.encode("utf-8")).hexdigest())
             response = make_response(redirect(request.args.get("return", "/")))
             session["current_user"] = email
             response.set_cookie(*cookie)
@@ -104,7 +104,7 @@ def validate_signup(email, password):
         return flash_and_back("User already exists")
     else:
         db.create_user(email, password)
-        cookie = ("uid", hashlib.md5(email).hexdigest() + ":" + hashlib.md5(password).hexdigest())
+        cookie = ("uid", hashlib.md5(email.encode("utf-8")).hexdigest() + ":" + hashlib.md5(password.encode("utf-8")).hexdigest())
         response = make_response(redirect(url_for("test.index")))
         session["current_user"] = email
         response.set_cookie(*cookie)

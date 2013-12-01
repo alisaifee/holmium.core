@@ -2,8 +2,8 @@ from abc import ABCMeta, abstractmethod
 import inspect
 import weakref
 import re
-import holmium
 from nose.tools import assert_equals, assert_true
+from .logger import log
 
 class FacetMeta(type):
     __metaclass__ = ABCMeta
@@ -128,9 +128,9 @@ class FacetCollection(list):
         for facet in self:
             try:
                 facet.evaluate(driver)
-            except Exception, e:
+            except Exception as e:
                 if facet.debug:
-                    holmium.core.log.warn(FacetError(facet, e))
+                    log.warn(FacetError(facet, e))
                 elif facet.required:
                     raise FacetError(facet, e)
 
@@ -156,10 +156,10 @@ class Faceted(object):
 
 
     def evaluate(self):
-        import holmium.core
+        from .pageobject import Page
 
         safe_get = lambda e: object.__getattribute__(self, e)
-        driver = holmium.core.Page.get_driver()
+        driver = Page.get_driver()
         instance_facets = safe_get("get_instance_facets")()
         class_facets = safe_get("get_class_facets")()
 
@@ -231,10 +231,10 @@ class strict(Facet):
         raise NotImplementedError
 
     def __call__(self, obj):
-        import holmium.core.pageobject
+        from .pageobject import ElementGetter
 
         for element in inspect.getmembers(obj):
-            if isinstance(element[1], holmium.core.pageobject.ElementGetter):
+            if isinstance(element[1], ElementGetter):
                 element[1].is_facet = True
                 element[1].is_debug_facet = self.debug
         return obj

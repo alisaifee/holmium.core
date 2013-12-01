@@ -14,13 +14,13 @@ class PageTest(unittest.TestCase):
                 element.text = "test_text"
                 driver.find_element.return_value = element
                 po = PageTest.BasicPage( driver , iframe = 'some_frame')
-                self.assertEquals( "test_text",  po.element.text)
+                self.assertEqual( "test_text",  po.element.text)
 
     def test_basic_po_real(self):
         driver = get_driver()
         uri = make_temp_page("""<body><div id='test_id'>test_text</div></body>""")
         po = PageTest.BasicPage(driver, uri)
-        self.assertEquals(po.element.text, "test_text")
+        self.assertEqual(po.element.text, "test_text")
 
     def test_all_features(self):
         driver = get_driver()
@@ -70,23 +70,23 @@ class PageTest(unittest.TestCase):
             element_ref_invalid = holmium.core.Element( holmium.core.Locators.NAME, "e6", base_element = 42 )
 
         page = ExhaustivePage(driver)
-        self.assertEquals( page.element.text, "e1" )
-        self.assertEquals( [el.text for el in page.elements], ["e2 - 1\ne6", "e2 - 2"] )
-        self.assertEquals( [(k, k) for k in page.elementmap], [("e3 - 1","e3 - 1"), ("e3 - 2", "e3 - 2")])
-        self.assertEquals( page.elements_raw[0].text, "e4" )
-        self.assertEquals( [k.text for k in page.elements_raw[1]], ["e2 - 1\ne6","e2 - 2"])
-        self.assertEquals( [k.text for k in page.elements_raw[2].values()], ["e3 - 1","e3 - 2"])
-        self.assertEquals( page.elementmap_raw["e4"].text, "e4" )
-        self.assertEquals( [k.text for k in page.elementmap_raw["e2"]], ["e2 - 1\ne6", "e2 - 2"])
-        self.assertEquals( [k.text for k in page.elementmap_raw["e3"].values()], ["e3 - 1","e3 - 2"])
-        self.assertEquals( page.element_ref.text, "e6" )
-        self.assertEquals( page.element_ref_direct.text, "e6" )
-        self.assertEquals( page.element_ref_webelement.text, "e6" )
-        self.assertEquals( page.element_map_ref.text, "e6")
+        self.assertEqual( page.element.text, "e1" )
+        self.assertEqual( [el.text for el in page.elements], ["e2 - 1\ne6", "e2 - 2"] )
+        self.assertEqual( [(k, k) for k in page.elementmap], [("e3 - 1","e3 - 1"), ("e3 - 2", "e3 - 2")])
+        self.assertEqual( page.elements_raw[0].text, "e4" )
+        self.assertEqual( [k.text for k in page.elements_raw[1]], ["e2 - 1\ne6","e2 - 2"])
+        self.assertEqual( [k.text for k in page.elements_raw[2].values()], ["e3 - 1","e3 - 2"])
+        self.assertEqual( page.elementmap_raw["e4"].text, "e4" )
+        self.assertEqual( [k.text for k in page.elementmap_raw["e2"]], ["e2 - 1\ne6", "e2 - 2"])
+        self.assertEqual( [k.text for k in page.elementmap_raw["e3"].values()], ["e3 - 1","e3 - 2"])
+        self.assertEqual( page.element_ref.text, "e6" )
+        self.assertEqual( page.element_ref_direct.text, "e6" )
+        self.assertEqual( page.element_ref_webelement.text, "e6" )
+        self.assertEqual( page.element_map_ref.text, "e6")
         self.assertRaises( TypeError, lambda: page.element_ref_invalid)
-        self.assertEquals( page.element_invalid , None)
-        self.assertEquals( page.elements_invalid, [])
-        self.assertEquals(page.elementmap_invalid, {})
+        self.assertEqual( page.element_invalid , None)
+        self.assertEqual( page.elements_invalid, [])
+        self.assertEqual(page.elementmap_invalid, {})
 
     def test_fluent(self):
         class FluentPage(holmium.core.Page):

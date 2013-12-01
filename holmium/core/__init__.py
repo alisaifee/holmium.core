@@ -1,7 +1,7 @@
-from holmium.core.logger import log
-from holmium.core.testcase import TestCase
-from holmium.core.pageobject import Locators, Page, Section, Sections, Element, Elements
-from holmium.core.pageobject import ElementMap
-from holmium.core.noseplugin import HolmiumNose
-from holmium.core.deprecated import PageObject, PageElement, PageElements, PageElementMap, HolmiumTestCase
-from holmium.core.config import Config
+from .config import Config
+from .logger import log
+from .testcase import TestCase
+from .pageobject import Locators, Page, Section, Sections, Element, Elements
+from .pageobject import ElementMap
+from .noseplugin import HolmiumNose
+from .deprecated import PageObject, PageElement, PageElements, PageElementMap, HolmiumTestCase

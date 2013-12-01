@@ -1,6 +1,8 @@
 import mock
 import unittest
 from  holmium.core import Page, Element, Elements, Section, Locators
+import holmium.core.pageobject
+
 from tests.utils import get_driver, make_temp_page
 
 
@@ -29,17 +31,17 @@ class IFrameTest(unittest.TestCase):
 
         driver = get_driver()
         uri = make_temp_page(p1)
-        with mock.patch("holmium.core.log") as log:
+        with mock.patch("holmium.core.pageobject.log") as log:
             p = BasicPageIframe(driver, uri, iframe="frame_1")
-            self.assertEquals(p.element.text, "frame 1 el")
-            self.assertEquals(p.frame_1.element.text, "frame 1 el")
+            self.assertEqual(p.element.text, "frame 1 el")
+            self.assertEqual(p.frame_1.element.text, "frame 1 el")
             self.assertTrue(p.frame_2.element == None)
             uri = make_temp_page(p2)
             driver.get(uri)
-            self.assertTrue(p.frame_2.element != None)
-            self.assertEquals(p.frame_2.element.text, "frame 2 el")
-            self.assertEquals(p.elements[0].text, "frame 1 el")
-            self.assertEquals(log.error.call_count, 1)
+            self.assertTrue(p.frame_2.element is not None)
+            self.assertEqual(p.frame_2.element.text, "frame 2 el")
+            self.assertEqual(p.elements[0].text, "frame 1 el")
+            self.assertEqual(log.error.call_count, 1)
 
     def test_mocked_basic_po_with_frame(self):
         with mock.patch('selenium.webdriver.Firefox') as driver:
@@ -48,8 +50,8 @@ class IFrameTest(unittest.TestCase):
                 element.text = "test_text"
                 driver.find_element.return_value = element
                 po = BasicPage( driver , iframe='frame')
-                self.assertEquals( "test_text",  po.element.text)
+                self.assertEqual( "test_text",  po.element.text)
                 driver.switch_to_frame.assert_called_with("frame")
-                self.assertEquals(driver.switch_to_frame.call_count, 1)
-                self.assertEquals(driver.switch_to_default_content.call_count, 1)
+                self.assertEqual(driver.switch_to_frame.call_count, 1)
+                self.assertEqual(driver.switch_to_default_content.call_count, 1)
 
