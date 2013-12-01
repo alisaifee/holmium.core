@@ -15,7 +15,7 @@ Contributors
 Project Resources
 =================
 Continuous Integration
-    The project is being continuously built with `travis`_ against python 2.6 & 2.7. 
+    The project is being continuously built with `travis`_ against python 2.6 & 2.7 & 3.3. 
 
 Code
     The code is hosted on `github`_.
@@ -28,7 +28,7 @@ Questions
 
 Installation
 ============
-Holmium is tested and supported on pythons version 2.7 & 3.3.
+Holmium is tested and supported on pythons version 2.6, 2.7 & 3.3.
 The stable version can be installed either via ``pip`` or ``easy_install``.
 
 .. code-block:: bash
