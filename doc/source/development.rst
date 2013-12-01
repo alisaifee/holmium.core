@@ -28,6 +28,7 @@ Questions
 
 Installation
 ============
+Holmium is tested and supported on pythons version 2.7 & 3.3.
 The stable version can be installed either via ``pip`` or ``easy_install``.
 
 .. code-block:: bash
