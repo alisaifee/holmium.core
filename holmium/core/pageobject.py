@@ -198,7 +198,7 @@ class ElementGetter(object):
                  base_element=None,
                  timeout=1,
                  value=lambda el: el,
-                 only_if=lambda el: el != None,
+                 only_if=lambda el: el is not None,
                  facet=False):
         """
         :param holmium.core.Locators locator_type: selenium locator to use when locating the element
@@ -360,11 +360,11 @@ class ElementMap(Elements):
                  timeout=1,
                  key=lambda el: el.text,
                  value=lambda el: el,
-                 only_if=lambda el: el != None,
+                 only_if=lambda el: el is not None,
                  facet=False):
         super(ElementMap, self).__init__(locator_type, query_string,
                                          base_element,
-                                         timeout, facet)
+                                         timeout, facet, only_if=only_if)
         self.key_mapper = key
         self.value_mapper = value
 
