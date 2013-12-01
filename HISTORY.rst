@@ -10,6 +10,13 @@
 History
 *******
 
+0.4.2 2013-12-01
+================
+* New parameter **only_if** (callable that accepts the webelement that was
+  found) accepted by Element, Elements, ElementMap that allows for waiting 
+  for an element to become valid according to the response of **only_if**. The callable will be checked uptil the timeout parameter set 
+  on the Element.
+
 0.4.1 2013-11-29
 ================
 * Bug fix for config module being reused between test runs. 
@@ -88,6 +95,7 @@ History
 * Bug fix 
   
   - fixed phantomjs build in travis
+
 
 
 
