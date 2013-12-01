@@ -9,7 +9,7 @@ from holmium.core.config import HolmiumConfig, configure
 try:
     from fresher import ftc
 except ImportError:
-    ftc = None
+    ftc = None # pragma: no cover
 
 class HolmiumNose(Plugin):
     """

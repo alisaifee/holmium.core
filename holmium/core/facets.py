@@ -228,7 +228,7 @@ class strict(Facet):
     """
 
     def evaluate(self, driver):
-        pass
+        raise NotImplementedError
 
     def __call__(self, obj):
         import holmium.core.pageobject
