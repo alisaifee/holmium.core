@@ -4,7 +4,7 @@ import re
 import time
 
 from selenium.webdriver.common.keys import Keys
-from nose.tools import assert_equals, assert_is_not_none
+from nose.tools import assert_equals, assert_true
 
 from fresher import Transform, When, scc, Then, NamedTransform, ftc
 from .pageobject import Registry, Section, Sections
@@ -160,13 +160,13 @@ def page_action(action):
 @Then("(?:the)?\s*{element} should be visible\s*$")
 @paramfromconfig
 def element_visible(element, *args):
-    assert_is_not_none(element)
+    assert_true(element is not None)
 
 
 @Then("(?:the)?\s*{item_in_elements} should be visible\s*$")
 @paramfromconfig
 def item_in_element_visible(element, *args):
-    assert_is_not_none(element)
+    assert_true(element is not None)
 
 
 @Then("(?:the)?\s*{element} should have (\d+) items")

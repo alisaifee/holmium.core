@@ -5,26 +5,13 @@ import re
 from nose.tools import assert_equals, assert_true
 from .logger import log
 
-class FacetMeta(type):
-    __metaclass__ = ABCMeta
-
-    def __new__(cls, name, bases, attrs):
-        _t = super(FacetMeta, cls).__new__(cls, name, bases, attrs)
-        extra_doc = """
-    :param bool debug: if True a failure to evaluate will not result in an exception, only a log warning
-    :param bool required: if False a failure to evaluate will be treated as a noop.
-"""
-        _t.__doc__ = (_t.__doc__ or "") + extra_doc
-        return _t
-
-
 class Facet(object):
     """
     base class to implement an attribute of a page
     """
     __ARGS__ = []
     __OPTIONS__ = {}
-    __metaclass__ = FacetMeta
+    __metaclass__ = ABCMeta
 
     def __init__(self, required=True, debug=False, **kwargs):
         self.arguments = {}
@@ -172,6 +159,8 @@ class defer(Facet):
     :param holmium.core.Page page: the page object that is expected to be deferred to
     :param function action: a callable that takes the page object instance as the first argument
     :param dict action_arguments: (optional) dictionary of arguments to pass to `action`
+    :param bool debug: if True a failure to evaluate will not result in an exception, only a log warning
+    :param bool required: if False a failure to evaluate will be treated as a noop.
     """
     __ARGS__ = ["page", "action"]
     __OPTIONS__ = {"action_arguments": {}}
@@ -189,6 +178,8 @@ class title(Facet):
     enforces the title of the current page.
 
     :param str title: a regular expression to match the title.
+    :param bool debug: if True a failure to evaluate will not result in an exception, only a log warning
+    :param bool required: if False a failure to evaluate will be treated as a noop.
     """
     __ARGS__ = ["title"]
 
@@ -205,6 +196,8 @@ class cookie(Facet):
 
     :param str name: name of the cookie
     :param dict value: (optional) dict (or callable) to validate the value of the cookie.
+    :param bool debug: if True a failure to evaluate will not result in an exception, only a log warning
+    :param bool required: if False a failure to evaluate will be treated as a noop.
 
     """
     __ARGS__ = ["name"]
@@ -225,6 +218,9 @@ class strict(Facet):
     """
     enforces that every element declared in the :class:`Page` or :class:`Section`
     be present.
+
+    :param bool debug: if True a failure to evaluate will not result in an exception, only a log warning
+    :param bool required: if False a failure to evaluate will be treated as a noop.
     """
 
     def evaluate(self, driver):
