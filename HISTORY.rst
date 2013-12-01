@@ -10,6 +10,10 @@
 History
 *******
 
+0.5.0 2013-12-01
+================
+* Python 3.3 now supported and tested.
+
 0.4.2 2013-12-01
 ================
 * New parameter **only_if** (callable that accepts the webelement that was
@@ -95,6 +99,7 @@ History
 * Bug fix 
   
   - fixed phantomjs build in travis
+
 
 
 
