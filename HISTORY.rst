@@ -10,6 +10,10 @@
 History
 *******
 
+0.5.1 2013-12-01
+================
+* Re-added python 2.6 support 
+
 0.5.0 2013-12-01
 ================
 * Python 3.3 now supported and tested.
@@ -99,6 +103,7 @@ History
 * Bug fix 
   
   - fixed phantomjs build in travis
+
 
 
 
