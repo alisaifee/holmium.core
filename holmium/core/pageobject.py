@@ -198,6 +198,7 @@ class ElementGetter(object):
                  base_element=None,
                  timeout=1,
                  value=lambda el: el,
+                 only_if=lambda el: el != None,
                  facet=False):
         """
         :param holmium.core.Locators locator_type: selenium locator to use when locating the element
@@ -205,7 +206,12 @@ class ElementGetter(object):
         :param holmium.core.Element base_element: a reference to another element under which to locate this element.
         :param int timeout: time to implicitely wait for the element
         :param lambda value: transform function for the value of the element.
-         The located :class:`selenium.webdriver.remote.webelement.WebElement` instance is passed as the only argument to the function.
+         The located :class:`selenium.webdriver.remote.webelement.WebElement`
+         instance is passed as the only argument to the function.
+        :param function only_if: extra validation function that is called repeatedly upto :attr:`timeout`
+         after the element is located transform function for the value of the element.
+         The located :class:`selenium.webdriver.remote.webelement.WebElement`
+         instance is passed as the only argument to the function.
         :param bool facet: flag to  treat this element as a facet.
         """
         self.query_string = query_string
@@ -216,6 +222,7 @@ class ElementGetter(object):
         self.base_element = base_element
         self.value_mapper = value
         self.root_fn = lambda: Page.get_driver()
+        self.only_if = only_if
         holmium.core.log.debug("locator:%s, query_string:%s, timeout:%d" %
                                (locator_type, query_string, timeout))
         self.is_facet = facet
@@ -255,12 +262,14 @@ class ElementGetter(object):
 
         if self.timeout:
             try:
-                WebDriverWait(self.root, self.timeout).until(
-                    lambda _: _meth(self.locator_type, self.query_string))
+                callback = lambda _: _meth(self.locator_type, self.query_string) \
+                    and self.only_if( _meth(self.locator_type, self.query_string))
+                WebDriverWait(self.root, self.timeout).until(callback)
             except TimeoutException:
                 holmium.core.log.debug(
                     "unable to find element %s after waiting for %d seconds" % (
                         self.query_string, self.timeout))
+                raise
         return _meth(self.locator_type, self.query_string)
 
 
@@ -275,6 +284,10 @@ class Element(ElementGetter):
     :param int timeout: time to implicitely wait for the element
     :param lambda value: transform function for the value of the element.
      The located :class:`selenium.webdriver.remote.webelement.WebElement` instance is passed as the only argument to the function.
+    :param function only_if: extra validation function that is called repeatedly upto :attr:`timeout`
+     after the element is located transform function for the value of the element.
+     The located :class:`selenium.webdriver.remote.webelement.WebElement`
+     instance is passed as the only argument to the function.
     :param bool facet: flag to  treat this element as a facet.
     """
 
@@ -285,7 +298,7 @@ class Element(ElementGetter):
             return self.value_mapper(
                 enhanced(self.get_element(self.root.find_element))
             ) if self.root else None
-        except NoSuchElementException:
+        except (NoSuchElementException, TimeoutException):
             return None
 
 
@@ -300,6 +313,10 @@ class Elements(ElementGetter):
     :param int timeout: time to implicitely wait for the element
     :param lambda value: transform function for each element in the collection.
      The located :class:`selenium.webdriver.remote.webelement.WebElement` instance is passed as the only argument to the function.
+    :param function only_if: extra validation function that is called repeatedly upto :attr:`timeout`
+     after the element is located transform function for the value of the element.
+     The located :class:`selenium.webdriver.remote.webelement.WebElement`
+     instance is passed as the only argument to the function.
     :param bool facet: flag to  treat this element as a facet.
     """
 
@@ -309,9 +326,11 @@ class Elements(ElementGetter):
     def __get__(self, instance, owner):
         if not instance:
             return self
-        return [self.value_mapper(enhanced(el)) for el in
+        try:
+            return [self.value_mapper(enhanced(el)) for el in
                 self.get_element(self.root.find_elements)] if self.root else []
-
+        except (NoSuchElementException, TimeoutException):
+            return []
 
 class ElementMap(Elements):
     """
@@ -329,6 +348,10 @@ class ElementMap(Elements):
      The located :class:`selenium.webdriver.remote.webelement.WebElement` instance is passed as the only argument to the function.
     :param lambda value: transform function for the value when accessed via the key.
      The located :class:`selenium.webdriver.remote.webelement.WebElement` instance is passed as the only argument to the function.
+    :param function only_if: extra validation function that is called repeatedly upto :attr:`timeout`
+     after the element is located transform function for the value of the element.
+     The located :class:`selenium.webdriver.remote.webelement.WebElement`
+     instance is passed as the only argument to the function.
     """
 
     def __init__(self, locator_type,
@@ -337,6 +360,7 @@ class ElementMap(Elements):
                  timeout=1,
                  key=lambda el: el.text,
                  value=lambda el: el,
+                 only_if=lambda el: el != None,
                  facet=False):
         super(ElementMap, self).__init__(locator_type, query_string,
                                          base_element,
@@ -347,10 +371,12 @@ class ElementMap(Elements):
     def __get__(self, instance, owner):
         if not instance:
             return self
-        return OrderedDict(
+        try:
+            return OrderedDict(
             (self.key_mapper(el), self.value_mapper(enhanced(el))) for el in
             self.get_element(self.root.find_elements)) if self.root else {}
-
+        except (NoSuchElementException, TimeoutException):
+            return {}
 
     def __getitem__(self, key):
         return lambda: self.__get__(self, self.__class__)[key]
@@ -415,7 +441,7 @@ class Section(Faceted):
             return self.__root_val or Page.get_driver().find_element(
                 self.locator_type, self.query_string
             )
-        except NoSuchElementException:
+        except (NoSuchElementException, TimeoutException):
             return None
 
     @root.setter

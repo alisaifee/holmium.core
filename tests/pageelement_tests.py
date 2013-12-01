@@ -1,7 +1,8 @@
 import unittest
+import time
 from  holmium.core import Page, Element, Locators
 from tests.utils import get_driver, make_temp_page
-
+import hiro
 
 class ElementTest(unittest.TestCase):
     page_content = """
@@ -51,3 +52,21 @@ class ElementTest(unittest.TestCase):
         assert page.elements[1].text == "simple_class"
 
 
+    def test_basic_element_with_only_if(self):
+
+        class SimplePage(Page):
+            id_el = Element(Locators.ID, "simple_id")
+            id_el_changed = Element(Locators.ID, "simple_id", timeout=10,
+                                    only_if=lambda el: el.text == "changed")
+
+        uri = make_temp_page(ElementTest.page_content)
+        page = SimplePage(self.driver, uri)
+        self.assertEquals(page.id_el.text, "simple_id")
+        script = 'document.getElementById("simple_id").firstChild.nodeValue="changed";'
+        runner = hiro.run_async(5, lambda: time.sleep(1) or self.driver.execute_script(script))
+        with hiro.ScaledTimeline(10):
+            self.assertEquals(page.id_el_changed.text, "changed")
+        self.assertTrue(runner.get_response() == None)
+        self.driver.refresh()
+        with hiro.ScaledTimeline(10):
+            self.assertEquals(page.id_el_changed, None)
