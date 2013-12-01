@@ -11,10 +11,6 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException,
 from selenium.webdriver.support.ui import WebDriverWait, Select
 from selenium.webdriver.remote.webelement import WebElement
 
-if hasattr(collections, "OrderedDict"):
-    OrderedDict = collections.OrderedDict
-else:
-    from ordereddict import OrderedDict
 
 from .facets import Faceted, ElementFacet
 from .logger import log
@@ -373,9 +369,9 @@ class ElementMap(Elements):
         if not instance:
             return self
         try:
-            return OrderedDict(
-            (self.key_mapper(el), self.value_mapper(enhanced(el))) for el in
-            self.get_element(self.root.find_elements)) if self.root else {}
+            return collections.OrderedDict(
+                (self.key_mapper(el), self.value_mapper(enhanced(el))) for el in
+                self.get_element(self.root.find_elements)) if self.root else {}
         except (NoSuchElementException, TimeoutException):
             return {}
 
