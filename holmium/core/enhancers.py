@@ -7,10 +7,10 @@ class ElementEnhancer(object):
     add functionality to located webelements based on the
     element type (tag name)
     """
-    __TAG__ = ""
 
     def __init__(self, element):
         self.element = element
+        super(ElementEnhancer, self).__init__()
 
     @classmethod
     def matches(self, element):
@@ -23,20 +23,25 @@ class ElementEnhancer(object):
     def __getattribute__(self, key):
         element = object.__getattribute__(self, "element")
         try:
-            return object.__getattribute__(self, key)
+            try:
+                return super(ElementEnhancer, self).__getattribute__(key)
+            except Exception, e:
+                return element.__getattribute__(key)
         except:
-            return element.__getattribute__(key)
+            raise AttributeError(
+                "neither %s, nor %s object has an attribute %s" % (
+                self.__class__.__name__, element.__class__.__name__, key))
 
 
-class _Select(Select, object):
+class _SelectMixin(Select, object):
     """
     cooperative super version of Select
     """
-    def __init__(self, webelement):
-        super(_Select, self).__init__(webelement)
-        Select.__init__(self, webelement)
+    def __init__(self):
+        super(_SelectMixin, self).__init__(self.element)
+        Select.__init__(self, self.element)
 
-class SelectEnhancer(ElementEnhancer, _Select):
+class SelectEnhancer(ElementEnhancer, _SelectMixin):
     __TAG__ = "select"
     def __init__(self, element):
         super(SelectEnhancer, self).__init__(element)
@@ -52,6 +57,9 @@ def register_enhancer(enhancer):
     if not issubclass(enhancer, ElementEnhancer):
         raise TypeError(
             "Only subclasses of holmium.core.ElementEnhancer can be registered")
+    if not hasattr(enhancer, "__TAG__"):
+        raise AttributeError("ElementEnhancer implementations must declare a __TAG__ property to match against")
+
     registered_enhancers.insert(0, enhancer)
 
 def reset_enhancers():
