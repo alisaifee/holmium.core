@@ -426,8 +426,8 @@ web element is made available to the subclass as ``self.element``.
 In the sample below, the ``SelectEnhancer`` enhancer will be used to hijack any web element that has the tag name
 `select`. All properties and methods exposed by the :class:`selenium.webdriver.remote.webelement.WebElement` object
 will still be accessible, and extra methods/properties (such as 'options') will be added on. You can register your own
-:class:`ElementEnhancer` via a call to :func:`holmium.core.register_enhancer` and subsequently reset them via a call to
-:func:`holmium.core.reset_enhancers`.
+:class:`ElementEnhancer` via a call to :func:`register_enhancer` and subsequently reset them via a call to
+:func:`reset_enhancers`.
 
 
 By default, holmium only installs a SelectEnhancer that shadows :class:`selenium.webdriver.support.select.Select`.
