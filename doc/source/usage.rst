@@ -434,10 +434,15 @@ By default, holmium only installs a SelectEnhancer that shadows :class:`selenium
 
     class SelectEnhancer(ElementEnhancer):
         __TAG__ = "select"
+        @property
         def options(self):
             return self.element.find_elements_by_tag_name("option")
+        
+        def has_option(self, option_name):
+            return any([k.text == option_name for k in self.options])
 
-    holmium.core.register_element_enhancer(SelectEnhancer)
+    holmium.core.register_enhancer(SelectEnhancer)
+
 
 More Examples
 =============
