@@ -43,8 +43,6 @@ class _SelectMixin(Select, object):
 
 class SelectEnhancer(ElementEnhancer, _SelectMixin):
     __TAG__ = "select"
-    def __init__(self, element):
-        super(SelectEnhancer, self).__init__(element)
 
 
 registered_enhancers = [SelectEnhancer]
