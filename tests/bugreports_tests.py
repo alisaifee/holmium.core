@@ -2,7 +2,7 @@
 import unittest
 import threading
 import os
-
+from selenium.webdriver.support.ui import Select
 import mock
 
 import holmium.core
@@ -84,3 +84,13 @@ class BugReports(unittest.TestCase):
         self.assertEqual({}, p1.f4())
         self.assertEqual("",p1.f5())
 
+    def test_select_element(self):
+        """ https://github.com/alisaifee/holmium.core/issues/13
+        """
+        class SimplePage(holmium.core.Page):
+            id_el = holmium.core.Element(holmium.core.Locators.ID, "simple_id")
+        driver = mock.Mock()
+        driver.find_element.return_value.tag_name = "select"
+        self.assertTrue(isinstance(SimplePage(driver).id_el, Select))
+        driver.find_element.return_value.tag_name = "SELECT"
+        self.assertTrue(isinstance(SimplePage(driver).id_el, Select))

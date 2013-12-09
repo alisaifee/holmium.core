@@ -33,8 +33,8 @@ def enhanced(web_element):
     :class:`selenium.webdriver.support.ui.Select`)
     """
     abstraction_mapping = {'select': Select}
-    if web_element.tag_name in abstraction_mapping.keys():
-        return abstraction_mapping[web_element.tag_name](web_element)
+    if web_element.tag_name.lower() in abstraction_mapping.keys():
+        return abstraction_mapping[web_element.tag_name.lower()](web_element)
     return web_element
 
 
