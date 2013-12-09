@@ -69,5 +69,4 @@ def reset_enhancers():
     registered_enhancers = [SelectEnhancer]
 
 def get_enhancers():
-    global registered_enhancers
     return registered_enhancers
