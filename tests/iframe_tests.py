@@ -2,6 +2,7 @@ import mock
 import unittest
 from  holmium.core import Page, Element, Elements, Section, Locators
 import holmium.core.pageobject
+from contextlib import closing
 
 from tests.utils import get_driver, make_temp_page
 
@@ -23,8 +24,10 @@ class IFrameTest(unittest.TestCase):
         frame1 = "<html><body><div class='section'><div class='frame_el'>frame 1 el</div></div></body></html>"
         frame2 = "<html><body><div class='section'><div class='frame_el'>frame 2 el</div></div></body></html>"
 
-        open("/var/tmp/frame1.html","w").write(frame1)
-        open("/var/tmp/frame2.html","w").write(frame2)
+        with closing(open("/var/tmp/frame1.html","w")) as f:
+            f.write(frame1)
+        with closing(open("/var/tmp/frame2.html","w")) as f:
+            f.write(frame2)
 
         p1 = '<html><body><iframe id="frame_1" src="file:///var/tmp/frame1.html"/></body></html>'
         p2 = '<html><body><iframe id="frame_1" src="file:///var/tmp/frame1.html"></iframe><iframe id="frame_2" src="file:///var/tmp/frame2.html"></iframe></body></html>'

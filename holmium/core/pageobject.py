@@ -109,15 +109,20 @@ class Page(Faceted):
                     if el.is_facet:
                         facet = ElementFacet(el, name, debug=el.is_debug_facet)
                         facet.register(self)
-
+                    return True
+                return False
             if issubclass(el[1].__class__, list):
+                hit = True
                 for item in el[1]:
-                    update_element(item, el[0])
-                self.__setattr__(el[0], ElementList(self, el[1]))
+                    hit &= update_element(item, el[0])
+                if hit:
+                    self.__setattr__(el[0], ElementList(self, el[1]))
             elif issubclass(el[1].__class__, dict):
+                hit = True
                 for item in el[1].values():
-                    update_element(item, el[0])
-                self.__setattr__(el[0], ElementDict(self, el[1]))
+                    hit &= update_element(item, el[0])
+                if hit:
+                    self.__setattr__(el[0], ElementDict(self, el[1]))
             else:
                 update_element(el[1], el[0])
 
