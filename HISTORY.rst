@@ -5,10 +5,16 @@
 .. _Facets: http://holmiumcore.readthedocs.org/en/latest/usage.html#page-facets 
 .. _Cucumber Features: http://holmiumcore.readthedocs.org/en/latest/cucumber.html 
 .. _fresher: https://github.com/lddubeau/fresher 
+.. _ElementEnhancer: http://holmiumcore.readthedocs.org/en/latest/usage.html#customizing-page-elements
 
 *******
 History
 *******
+
+0.5.2 2013-12-09
+================
+* PyPy support 
+* Allow customization of WebElements by exposing `ElementEnhancer`_
 
 0.5.1 2013-12-01
 ================
@@ -103,6 +109,7 @@ History
 * Bug fix 
   
   - fixed phantomjs build in travis
+
 
 
 
