@@ -419,7 +419,9 @@ Customizing page elements
 =========================
 
 To further customize domain / page specific behaviors of certain web elements, the :class:`ElementEnhancer`
-base class can be extended to hijack :class:`selenium.webdriver.remote.webelement.WebElement`.
+base class can be extended to hijack :class:`selenium.webdriver.remote.webelement.WebElement`. The located
+web element is made available to the subclass as ``self.element``.
+
 
 In the sample below, the ``SelectEnhancer`` enhancer will be used to hijack any web element that has the tag name
 `select`. All properties and methods exposed by the :class:`selenium.webdriver.remote.webelement.WebElement` object
