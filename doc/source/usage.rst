@@ -415,6 +415,29 @@ The chain of execution when calling `p.section.required_element` is as follows
 * check `required` element exists in `MySection`
 * return `optional_element`
 
+Customizing page elements
+=========================
+
+To further customize domain / page specific behaviors of certain web elements, the :class:`ElementEnhancer`
+base class can be extended to hijack :class:`selenium.webdriver.remote.webelement.WebElement`.
+
+In the sample below, the ``SelectEnhancer`` enhancer will be used to hijack any web element that has the tag name
+`select`. All properties and methods exposed by the :class:`selenium.webdriver.remote.webelement.WebElement` object
+will still be accessible, and extra methods/properties (such as 'options') will be added on. You can register your own
+:class:`ElementEnhancer` via a call to :func:`holmium.core.register_enhancer` and subsequently reset them via a call to
+:func:`holmium.core.reset_enhancers`.
+
+
+By default, holmium only installs a SelectEnhancer that shadows :class:`selenium.webdriver.support.select.Select`.
+
+.. code-block:: python
+
+    class SelectEnhancer(ElementEnhancer):
+        __TAG__ = "select"
+        def options(self):
+            return self.element.find_elements_by_tag_name("option")
+
+    holmium.core.register_element_enhancer(SelectEnhancer)
 
 More Examples
 =============

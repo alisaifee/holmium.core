@@ -38,6 +38,10 @@ Deprecated Classes
 Utilities
 ---------
 .. autoclass:: TestCase
+.. autoclass:: ElementEnhancer
+.. autofunction:: register_enhancer
+.. autofunction:: reset_enhancers
+
 
 Internal Classes
 ================ 
@@ -54,8 +58,6 @@ Page Object Helpers
 
 .. autoclass:: ElementGetter
     :members:
-
-.. autofunction:: enhanced
 
 .. currentmodule:: holmium.core.facets
 

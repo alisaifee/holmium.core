@@ -10,6 +10,7 @@ import selenium.webdriver.common.by
 from selenium.common.exceptions import NoSuchElementException, TimeoutException, NoSuchFrameException
 from selenium.webdriver.support.ui import WebDriverWait, Select
 from selenium.webdriver.remote.webelement import WebElement
+from .enhancers import get_enhancers
 
 if hasattr(collections, "OrderedDict"):
     OrderedDict = collections.OrderedDict
@@ -24,18 +25,6 @@ class Locators(selenium.webdriver.common.by.By):
     proxy class to access locator types
     """
     pass
-
-
-def enhanced(web_element):
-    """
-    incase a higher level abstraction for a WebElement is available
-    we will use that in Pages. (e.g. a select element is converted into
-    :class:`selenium.webdriver.support.ui.Select`)
-    """
-    abstraction_mapping = {'select': Select}
-    if web_element.tag_name.lower() in abstraction_mapping.keys():
-        return abstraction_mapping[web_element.tag_name.lower()](web_element)
-    return web_element
 
 
 class ElementList(list):
@@ -273,6 +262,16 @@ class ElementGetter(object):
                 raise
         return _meth(self.locator_type, self.query_string)
 
+    def enhance(self, element):
+        """
+        incase a higher level abstraction for a WebElement is available
+        we will use that in Pages. (e.g. a select element is converted into
+        :class:`selenium.webdriver.support.ui.Select`)
+        """
+        for enhancer in get_enhancers():
+            if enhancer.matches(element):
+                return enhancer(element)
+        return element
 
 class Element(ElementGetter):
     """
@@ -297,7 +296,7 @@ class Element(ElementGetter):
             return self
         try:
             return self.value_mapper(
-                enhanced(self.get_element(self.root.find_element))
+                self.enhance(self.get_element(self.root.find_element))
             ) if self.root else None
         except (NoSuchElementException, TimeoutException):
             return None
@@ -328,7 +327,7 @@ class Elements(ElementGetter):
         if not instance:
             return self
         try:
-            return [self.value_mapper(enhanced(el)) for el in
+            return [self.value_mapper(self.enhance(el)) for el in
                 self.get_element(self.root.find_elements)] if self.root else []
         except (NoSuchElementException, TimeoutException):
             return []
@@ -374,7 +373,7 @@ class ElementMap(Elements):
             return self
         try:
             return OrderedDict(
-            (self.key_mapper(el), self.value_mapper(enhanced(el))) for el in
+            (self.key_mapper(el), self.value_mapper(self.enhance(el))) for el in
             self.get_element(self.root.find_elements)) if self.root else {}
         except (NoSuchElementException, TimeoutException):
             return {}

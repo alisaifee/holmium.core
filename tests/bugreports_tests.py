@@ -6,6 +6,7 @@ from selenium.webdriver.support.ui import Select
 import mock
 
 import holmium.core
+from holmium.core import ElementEnhancer
 
 
 support = os.path.join(os.path.dirname(__file__), "support")
@@ -94,3 +95,25 @@ class BugReports(unittest.TestCase):
         self.assertTrue(isinstance(SimplePage(driver).id_el, Select))
         driver.find_element.return_value.tag_name = "SELECT"
         self.assertTrue(isinstance(SimplePage(driver).id_el, Select))
+
+    def test_custom_enhancement(self):
+        """ https://github.com/alisaifee/holmium.core/issues/14
+        """
+        class CustomSelect(ElementEnhancer):
+            __TAG__ = "select"
+            def get_text_upper(self):
+                return self.element.text.upper()
+
+        holmium.core.register_enhancer(CustomSelect)
+        class SimplePage(holmium.core.Page):
+            id_el = holmium.core.Element(holmium.core.Locators.ID, "simple_id")
+        driver = mock.Mock()
+        driver.find_element.return_value.tag_name = "select"
+        driver.find_element.return_value.text = "fOo"
+        self.assertTrue(issubclass(SimplePage(driver).id_el.__class__, CustomSelect))
+        self.assertEquals(SimplePage(driver).id_el.get_text_upper(), "FOO")
+
+
+    def tearDown(self):
+        holmium.core.reset_enhancers()
+        super(BugReports,self).tearDown()
