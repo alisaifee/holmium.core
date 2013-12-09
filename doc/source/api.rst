@@ -38,6 +38,8 @@ Deprecated Classes
 Utilities
 ---------
 .. autoclass:: TestCase
+.. autoclass:: Config
+    :members:
 .. autoclass:: ElementEnhancer
 .. autofunction:: register_enhancer
 .. autofunction:: reset_enhancers
@@ -79,12 +81,7 @@ Test configuration / execution
 
 .. autoclass:: HolmiumNose
     :members:
-
-.. autoclass:: Config
-    :members:
-
 .. currentmodule:: holmium.core.config 
-
 .. autoclass:: HolmiumConfig
     :members:
 
