@@ -119,6 +119,7 @@ if ``HO_ENV`` or ``--holmium-env`` are ``development``:
 
 browser_mapping = {"firefox": webdriver.Firefox,
                    "chrome": webdriver.Chrome,
+                   "safari": webdriver.Safari,
                    "ie": webdriver.Ie,
                    "opera": webdriver.Opera,
                    "remote": webdriver.Remote,
@@ -130,6 +131,7 @@ browser_mapping = {"firefox": webdriver.Firefox,
 #:
 capabilities = {"firefox": webdriver.DesiredCapabilities.FIREFOX,
                 "chrome": webdriver.DesiredCapabilities.CHROME,
+                "safari": webdriver.DesiredCapabilities.SAFARI,
                 "ie": webdriver.DesiredCapabilities.INTERNETEXPLORER,
                 "opera": webdriver.DesiredCapabilities.OPERA,
                 "phantomjs": webdriver.DesiredCapabilities.PHANTOMJS,
