@@ -66,4 +66,4 @@ class TestCaseTests(unittest.TestCase):
             assert "firefox_profile" in call_args[1]
             ff_profile = call_args[1]["firefox_profile"]
             ua = ff_profile.default_preferences["general.useragent.override"]
-            self.assertEqual(ua, '"holmium.core"')
+            self.assertEqual(ua, 'holmium.core')
