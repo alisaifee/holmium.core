@@ -1,4 +1,4 @@
-selenium==2.37.2
+selenium
 ordereddict
 nose
 jinja2 
