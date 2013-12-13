@@ -13,9 +13,9 @@ from selenium.webdriver.remote.webelement import WebElement
 from .enhancers import get_enhancers
 
 if hasattr(collections, "OrderedDict"):
-    OrderedDict = collections.OrderedDict
+    OrderedDict = collections.OrderedDict # pragma: no cover
 else:
-    from ordereddict import OrderedDict
+    from ordereddict import OrderedDict # pragma: no cover
 
 from .facets import Faceted, ElementFacet
 from .logger import log
