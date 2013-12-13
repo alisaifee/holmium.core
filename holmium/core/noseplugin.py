@@ -17,11 +17,11 @@ def load_source(name, path):
     abstracted out for 2.7 versus 3.x support
     """
     if sys.version_info >= (3,0,0):
-        from importlib import machinery
-        return machinery.SourceFileLoader(name, path).load_module(name)
+        from importlib import machinery  # pragma: no cover
+        return machinery.SourceFileLoader(name, path).load_module(name)  # pragma: no cover
     else:
-        import imp
-        return imp.load_source(name, path)
+        import imp  # pragma: no cover
+        return imp.load_source(name, path)  # pragma: no cover
 
 class HolmiumNose(Plugin):
     """
