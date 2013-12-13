@@ -1,4 +1,5 @@
 import unittest
+import hiro
 import holmium.core
 from tests.utils import get_driver, make_temp_page
 
@@ -47,3 +48,36 @@ class ElementsTest(unittest.TestCase):
                            {"link": "http://el3.com/", "text": "element 3"}])
         self.assertEqual(page.first_el.text, "element 1")
 
+
+    def test_missing_elements(self):
+        class SimplePage(holmium.core.Page):
+            el_list = holmium.core.Elements(holmium.core.Locators.CLASS_NAME,
+                                            "element")
+            el_list_wait = holmium.core.Elements(
+                holmium.core.Locators.CLASS_NAME, "elements", timeout=1)
+            el_list_only_if = holmium.core.Elements(
+                holmium.core.Locators.CLASS_NAME, "elements", timeout=1,
+                only_if=lambda els: len(els) == 1)
+
+        uri = make_temp_page("""
+            <body>
+                <div class="_">
+                </div>
+            </body>
+        """)
+        with hiro.Timeline().scale(10):
+            page = SimplePage(self.driver, uri)
+            self.assertEqual(page.el_list, [])
+            self.assertEqual(page.el_list_wait, [])
+            self.assertEqual(page.el_list_only_if, [])
+            uri = make_temp_page("""
+                <body>
+                    <div class="elements">
+                        element_text
+                    </div>
+                </body>
+            """)
+            page = SimplePage(self.driver, uri)
+            self.assertEqual(page.el_list, [])
+            self.assertEqual(len(page.el_list_wait), 1)
+            self.assertEqual(len(page.el_list_only_if), 1)

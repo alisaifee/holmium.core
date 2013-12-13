@@ -1,4 +1,5 @@
 import unittest
+import hiro
 import holmium.core
 from tests.utils import get_driver, make_temp_page
 
@@ -42,3 +43,35 @@ class ElementMapTest(unittest.TestCase):
         self.assertEqual(list(page.el_map_keyvaluemapper.keys()) , ["element 1", "element 2", "element 3"] )
         self.assertEqual(list(page.el_map_keyvaluemapper.values()) , ["http://el1.com/", u"http://el2.com/", u"http://el3.com/"])
 
+    def test_missing_elements(self):
+        class SimplePage(holmium.core.Page):
+            el_list = holmium.core.ElementMap(holmium.core.Locators.CLASS_NAME,
+                                            "element")
+            el_list_wait = holmium.core.ElementMap(
+                holmium.core.Locators.CLASS_NAME, "elements", timeout=1)
+            el_list_only_if = holmium.core.ElementMap(
+                holmium.core.Locators.CLASS_NAME, "elements", timeout=1,
+                only_if=lambda els: len(els) == 1)
+
+        uri = make_temp_page("""
+            <body>
+                <div class="_">
+                </div>
+            </body>
+        """)
+        with hiro.Timeline().scale(10):
+            page = SimplePage(self.driver, uri)
+            self.assertEqual(page.el_list, {})
+            self.assertEqual(page.el_list_wait, {})
+            self.assertEqual(page.el_list_only_if, {})
+            uri = make_temp_page("""
+                <body>
+                    <div class="elements">
+                        element_text
+                    </div>
+                </body>
+            """)
+            page = SimplePage(self.driver, uri)
+            self.assertEqual(page.el_list, {})
+            self.assertEqual(len(page.el_list_wait), 1)
+            self.assertEqual(len(page.el_list_only_if), 1)
