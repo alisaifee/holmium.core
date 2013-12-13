@@ -15,13 +15,13 @@ class ElementEnhancerTest(unittest.TestCase):
 
         self.driver.find_element.return_value.tag_name = "select"
         self.driver.find_element.return_value.text = "foo"
-        self.driver.find_element.return_value.is_displayed = True
+        self.driver.find_element.return_value.is_displayed = lambda: True
         p = SimplePage(self.driver)
         self.assertTrue(isinstance(p.id_el, Select))
         self.assertTrue(isinstance(p.id_el, ElementEnhancer))
-        self.assertRaises(AttributeError, lambda:p.id_el.jump)
+        self.assertRaises(AttributeError, lambda: p.id_el.jump)
         self.assertEquals(p.id_el.text, "foo")
-        self.assertTrue(p.id_el.is_displayed)
+        self.assertTrue(p.id_el.is_displayed())
 
     def test_custom_enhancer(self):
         class DivEnhancer(ElementEnhancer):
