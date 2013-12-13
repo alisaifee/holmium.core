@@ -63,3 +63,35 @@ class TestCase(unittest.TestCase):
         if hasattr(self, "driver"):
             self.driver.delete_all_cookies()
         super(TestCase,self).tearDown()
+
+
+    # helper assertions
+
+    def assertElementTextEqual(self, element, text, msg=None):
+        """ Fail if the text attribute of the element does not match
+        """
+        self.assertEqual(element.text, text, msg)
+
+    def assertElementDisplayed(self, element, msg=None):
+        """ Fail if the element is not visible
+        """
+        self.assertTrue(element.is_displayed(), msg)
+
+    def assertElementsDisplayed(self, elements, msg=None):
+        """ Fail if any of the elements in the element collection are not visible
+        """
+        _elements = elements.values() if isinstance(elements, dict) else elements
+        self.assertTrue(all((el.is_displayed() for el in _elements)), msg)
+
+    def assertElementCSS(self, element, property, value, msg=None):
+        """ Fail if the element does not exhibit the correct css property value
+        """
+        print element.value_of_css_property(property)
+        self.assertEqual(element.value_of_css_property(property), value, msg)
+
+    def assertElementSize(self, element,  width, height, msg=None):
+        """ Fail if the element size does not match the provided values
+        """
+        _expected = {"height":height, "width":width}
+        self.assertEqual(_expected, element.size, msg)
+
