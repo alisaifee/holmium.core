@@ -1,29 +1,27 @@
 """
 
 """
-import functools
 import unittest
 import os
 
 import mock
 
-import holmium.core
+from holmium.core import TestCase, Page, Element, Elements, ElementMap, Locators
 import holmium.core.testcase
-
-from .utils import mock_open, build_mock_mapping
+from .utils import build_mock_mapping
 
 
 def runtc(env, validations, validator = lambda c,s:c(s)):
     try:
         _pre_env = dict(os.environ)
         os.environ.update(env)
-        class t(holmium.core.TestCase):
+        class t(TestCase):
 
             def setUp(self):
-                class P(holmium.core.Page):
-                    e = holmium.core.Element(holmium.core.Locators.CLASS_NAME, "el")
-                    es = holmium.core.Elements(holmium.core.Locators.CLASS_NAME, "el")
-                    em = holmium.core.ElementMap(holmium.core.Locators.CLASS_NAME, "el")
+                class P(Page):
+                    e = Element(Locators.CLASS_NAME, "el")
+                    es = Elements(Locators.CLASS_NAME, "el")
+                    em = ElementMap(Locators.CLASS_NAME, "el")
                 self.page = P(self.driver)
             def runTest(self):
                 for validation in validations:

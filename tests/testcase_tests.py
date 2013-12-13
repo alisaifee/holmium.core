@@ -3,7 +3,7 @@ import os
 
 import mock
 
-import holmium.core
+from holmium.core import TestCase, Element, Elements, ElementMap, Locators
 import holmium.core.testcase
 
 from .utils import mock_open, build_mock_mapping
@@ -13,7 +13,7 @@ def runtc(env, validations):
     try:
         _pre_env = dict(os.environ)
         os.environ.update(env)
-        class t(holmium.core.TestCase):
+        class t(TestCase):
             def runTest(self):
                 for validation in validations:
                     self.assertTrue(validation(self))

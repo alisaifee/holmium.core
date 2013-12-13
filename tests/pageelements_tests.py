@@ -1,6 +1,6 @@
 import unittest
 import hiro
-import holmium.core
+from holmium.core import Elements, Element, Locators, Page
 from tests.utils import get_driver, make_temp_page
 
 
@@ -9,15 +9,15 @@ class ElementsTest(unittest.TestCase):
         self.driver = get_driver()
 
     def test_basic_element(self):
-        class SimplePage(holmium.core.Page):
-            el_list_default = holmium.core.Elements(holmium.core.Locators.CLASS_NAME, "simple_class")
-            el_list_valuemapper = holmium.core.Elements(holmium.core.Locators.CLASS_NAME, "simple_class"
+        class SimplePage(Page):
+            el_list_default = Elements(Locators.CLASS_NAME, "simple_class")
+            el_list_valuemapper = Elements(Locators.CLASS_NAME, "simple_class"
                                                             , value = lambda el: el.find_element_by_tag_name("a").text)
-            el_list_valuemapper_complex = holmium.core.Elements(holmium.core.Locators.CLASS_NAME, "simple_class"
+            el_list_valuemapper_complex = Elements(Locators.CLASS_NAME, "simple_class"
                                                                     , value = lambda el : {
                                                                         "link":el.find_element_by_tag_name("a").get_attribute("href")
                                                                         ,"text" : el.find_element_by_tag_name("a").text } )
-            first_el = holmium.core.Element( holmium.core.Locators.TAG_NAME, "a" , base_element = el_list_default[0] )
+            first_el = Element( Locators.TAG_NAME, "a" , base_element = el_list_default[0] )
 
         uri = make_temp_page("""
             <body>
@@ -50,13 +50,13 @@ class ElementsTest(unittest.TestCase):
 
 
     def test_missing_elements(self):
-        class SimplePage(holmium.core.Page):
-            el_list = holmium.core.Elements(holmium.core.Locators.CLASS_NAME,
+        class SimplePage(Page):
+            el_list = Elements(Locators.CLASS_NAME,
                                             "element")
-            el_list_wait = holmium.core.Elements(
-                holmium.core.Locators.CLASS_NAME, "elements", timeout=1)
-            el_list_only_if = holmium.core.Elements(
-                holmium.core.Locators.CLASS_NAME, "elements", timeout=1,
+            el_list_wait = Elements(
+                Locators.CLASS_NAME, "elements", timeout=1)
+            el_list_only_if = Elements(
+                Locators.CLASS_NAME, "elements", timeout=1,
                 only_if=lambda els: len(els) == 1)
 
         uri = make_temp_page("""

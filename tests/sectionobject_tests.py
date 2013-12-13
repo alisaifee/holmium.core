@@ -1,28 +1,28 @@
 import unittest
-import holmium.core
+from holmium.core import Locators, Page, Elements, Section, Sections
 import mock
 from tests.utils import get_driver, make_temp_page
 
 
-class BasicSection(holmium.core.Section):
-    tokens = holmium.core.Elements(holmium.core.Locators.CSS_SELECTOR,
+class BasicSection(Section):
+    tokens = Elements(Locators.CSS_SELECTOR,
                                    "div.token")
 
 
-class BasicSectionList(holmium.core.Sections):
-    tokens = holmium.core.Elements(holmium.core.Locators.CSS_SELECTOR,
+class BasicSectionList(Sections):
+    tokens = Elements(Locators.CSS_SELECTOR,
                                    "div.token")
 
 
-class BasicPage(holmium.core.Page):
-    section = BasicSection(holmium.core.Locators.ID, "section")
-    section_2 = BasicSection(holmium.core.Locators.ID, "section_2")
-    tokens = holmium.core.Elements(holmium.core.Locators.CLASS_NAME, "token")
+class BasicPage(Page):
+    section = BasicSection(Locators.ID, "section")
+    section_2 = BasicSection(Locators.ID, "section_2")
+    tokens = Elements(Locators.CLASS_NAME, "token")
 
 
-class BasicPageWithSections(holmium.core.Page):
-    sections = BasicSectionList( holmium.core.Locators.CLASS_NAME, "section", timeout=1)
-    missing_sections = BasicSectionList( holmium.core.Locators.CLASS_NAME, "missing_section", timeout=1)
+class BasicPageWithSections(Page):
+    sections = BasicSectionList( Locators.CLASS_NAME, "section", timeout=1)
+    missing_sections = BasicSectionList( Locators.CLASS_NAME, "missing_section", timeout=1)
 
 class SectionTest(unittest.TestCase):
 

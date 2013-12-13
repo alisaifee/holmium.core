@@ -1,12 +1,12 @@
 import unittest
-import holmium.core
+from holmium.core import Page, Element, Locators, Elements, ElementMap
 import mock
 from tests.utils import get_driver, make_temp_page
 
 
 class PageTest(unittest.TestCase):
-    class BasicPage(holmium.core.Page):
-        element = holmium.core.Element( holmium.core.Locators.ID, "test_id" )
+    class BasicPage(Page):
+        element = Element( Locators.ID, "test_id" )
     def test_basic_po(self):
         with mock.patch('selenium.webdriver.Firefox') as driver:
             with mock.patch('selenium.webdriver.remote.webelement.WebElement') as element:
@@ -46,28 +46,28 @@ class PageTest(unittest.TestCase):
         web_element = driver.find_element_by_name("e2")
 
 
-        class ExhaustivePage(holmium.core.Page):
-            element = holmium.core.Element(holmium.core.Locators.NAME, "e1")
-            element_invalid = holmium.core.Element(holmium.core.Locators.NAME, "3e")
-            elements = holmium.core.Elements(holmium.core.Locators.NAME, "e2")
-            elements_invalid = holmium.core.Elements(holmium.core.Locators.NAME, "3e")
-            elementmap = holmium.core.ElementMap(holmium.core.Locators.NAME, "e3")
-            elementmap_for_ref = holmium.core.ElementMap(holmium.core.Locators.NAME, "e2")
-            elementmap_invalid = holmium.core.ElementMap(holmium.core.Locators.NAME, "3e")
-            elementmap_raw = { "e4": holmium.core.Element(holmium.core.Locators.NAME, "e4")
-                            , "e2": holmium.core.Elements(holmium.core.Locators.NAME, "e2")
-                            , "e3": holmium.core.ElementMap(holmium.core.Locators.NAME, "e3")
+        class ExhaustivePage(Page):
+            element = Element(Locators.NAME, "e1")
+            element_invalid = Element(Locators.NAME, "3e")
+            elements = Elements(Locators.NAME, "e2")
+            elements_invalid = Elements(Locators.NAME, "3e")
+            elementmap = ElementMap(Locators.NAME, "e3")
+            elementmap_for_ref = ElementMap(Locators.NAME, "e2")
+            elementmap_invalid = ElementMap(Locators.NAME, "3e")
+            elementmap_raw = { "e4": Element(Locators.NAME, "e4")
+                            , "e2": Elements(Locators.NAME, "e2")
+                            , "e3": ElementMap(Locators.NAME, "e3")
                             }
-            elements_raw = [ holmium.core.Element(holmium.core.Locators.NAME, "e4")
-                            , holmium.core.Elements(holmium.core.Locators.NAME, "e2")
-                            , holmium.core.ElementMap(holmium.core.Locators.NAME, "e3")
+            elements_raw = [ Element(Locators.NAME, "e4")
+                            , Elements(Locators.NAME, "e2")
+                            , ElementMap(Locators.NAME, "e3")
                             ]
-            element_second = holmium.core.Element(holmium.core.Locators.NAME, "e2")
-            element_ref = holmium.core.Element( holmium.core.Locators.NAME, "e6", base_element = elements[0] )
-            element_map_ref = holmium.core.Element( holmium.core.Locators.NAME, "e6", base_element = elementmap_for_ref["e2 - 1\ne6"] )
-            element_ref_direct = holmium.core.Element( holmium.core.Locators.NAME, "e6", base_element = element_second )
-            element_ref_webelement = holmium.core.Element( holmium.core.Locators.NAME, "e6", base_element = web_element )
-            element_ref_invalid = holmium.core.Element( holmium.core.Locators.NAME, "e6", base_element = 42 )
+            element_second = Element(Locators.NAME, "e2")
+            element_ref = Element( Locators.NAME, "e6", base_element = elements[0] )
+            element_map_ref = Element( Locators.NAME, "e6", base_element = elementmap_for_ref["e2 - 1\ne6"] )
+            element_ref_direct = Element( Locators.NAME, "e6", base_element = element_second )
+            element_ref_webelement = Element( Locators.NAME, "e6", base_element = web_element )
+            element_ref_invalid = Element( Locators.NAME, "e6", base_element = 42 )
 
         page = ExhaustivePage(driver)
         self.assertEqual( page.element.text, "e1" )
@@ -89,8 +89,8 @@ class PageTest(unittest.TestCase):
         self.assertEqual(page.elementmap_invalid, {})
 
     def test_fluent(self):
-        class FluentPage(holmium.core.Page):
-            thing = holmium.core.Element(holmium.core.Locators.NAME, "thing")
+        class FluentPage(Page):
+            thing = Element(Locators.NAME, "thing")
             def get_text(self):
                 return self.thing.text
             def click_thing(self):
