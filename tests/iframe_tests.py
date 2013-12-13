@@ -24,13 +24,11 @@ class IFrameTest(unittest.TestCase):
         frame1 = "<html><body><div class='section'><div class='frame_el'>frame 1 el</div></div></body></html>"
         frame2 = "<html><body><div class='section'><div class='frame_el'>frame 2 el</div></div></body></html>"
 
-        with closing(open("/var/tmp/frame1.html","w")) as f:
-            f.write(frame1)
-        with closing(open("/var/tmp/frame2.html","w")) as f:
-            f.write(frame2)
+        uri_frame_1 = make_temp_page(frame1)
+        uri_frame_2 = make_temp_page(frame2)
 
-        p1 = '<html><body><iframe id="frame_1" src="file:///var/tmp/frame1.html"/></body></html>'
-        p2 = '<html><body><iframe id="frame_1" src="file:///var/tmp/frame1.html"></iframe><iframe id="frame_2" src="file:///var/tmp/frame2.html"></iframe></body></html>'
+        p1 = '<html><body><iframe id="frame_1" src="%s"/></body></html>' % uri_frame_1
+        p2 = '<html><body><iframe id="frame_1" src="%s"></iframe><iframe id="frame_2" src="%s"></iframe></body></html>' % ( uri_frame_1, uri_frame_2)
 
         driver = get_driver()
         uri = make_temp_page(p1)
