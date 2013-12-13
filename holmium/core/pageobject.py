@@ -191,7 +191,7 @@ class ElementGetter(object):
     def __init__(self, locator_type,
                  query_string,
                  base_element=None,
-                 timeout=1,
+                 timeout=0,
                  value=lambda el: el,
                  only_if=lambda el: el is not None,
                  facet=False):
@@ -362,7 +362,7 @@ class ElementMap(Elements):
     def __init__(self, locator_type,
                  query_string=None,
                  base_element=None,
-                 timeout=1,
+                 timeout=0,
                  key=lambda el: el.text,
                  value=lambda el: el,
                  only_if=lambda el: el is not None,
