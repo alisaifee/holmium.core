@@ -319,9 +319,9 @@ class Elements(ElementGetter):
     :param lambda value: transform function for each element in the collection.
      The located :class:`selenium.webdriver.remote.webelement.WebElement` instance is passed as the only argument to the function.
     :param function only_if: extra validation function that is called repeatedly upto :attr:`timeout`
-     after the element is located. If not provided the default function used checks that the element is displayed.
-     The located :class:`selenium.webdriver.remote.webelement.WebElement`
-     instance is passed as the only argument to the function.
+     after the elements are located. If not provided the default function used checks that all the elements are displayed.
+     The list of located :class:`selenium.webdriver.remote.webelement.WebElement`
+     instances is passed as the only argument to the function.
     :param bool facet: flag to  treat this element as a facet.
     """
     def __init__(self, locator_type,
@@ -364,9 +364,9 @@ class ElementMap(Elements):
     :param lambda value: transform function for the value when accessed via the key.
      The located :class:`selenium.webdriver.remote.webelement.WebElement` instance is passed as the only argument to the function.
     :param function only_if: extra validation function that is called repeatedly upto :attr:`timeout`
-     after the element is located transform function for the value of the element.
-     The located :class:`selenium.webdriver.remote.webelement.WebElement`
-     instance is passed as the only argument to the function.
+     after the elements are located. If not provided the default function used checks that all the elements are displayed.
+     The list of located :class:`selenium.webdriver.remote.webelement.WebElement`
+     instances is passed as the only argument to the function.
     """
 
     def __init__(self, locator_type,
