@@ -375,7 +375,7 @@ Sample
     from holmium.core import facets, Page, Element, Section, Locators
 
     class MySection(Section):
-        required_element = Element(Locators.CLASS_NAME, "main_element", trait=True)
+        required_element = Element(Locators.CLASS_NAME, "main_element", facet=True)
         optional_element = Element(Locators.CLASS_NAME, "secondary_element")
 
     @facets.title(title='login page')
