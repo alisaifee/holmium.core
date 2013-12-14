@@ -22,7 +22,7 @@ setup(
     name='holmium.core',
     author = __author__,
     author_email = __email__,
-    license = "MIT",
+    license = open("LICENSE.txt").read(),
     url="https://holmiumcore.readthedocs.org/en/latest/",
     zip_safe = False,
     version=holmium.version.__version__,
