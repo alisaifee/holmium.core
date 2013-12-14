@@ -38,6 +38,8 @@ similarly to the following code block (using seleniumhq.org).
             self.driver.get(self.url)
             elements = self.driver.find_elements_by_css_selector("div#header ul>li")
             self.assertTrue(len(elements) > 0)
+            for element in elements:
+                self.assertTrue(element.is_displayed())
             expected_link_list = ["Projects", "Download", "Documentation",
                                   "Support", "About"]
             actual_link_list = [el.text for el in elements]
@@ -103,6 +105,7 @@ Lets take the above test case for a spin with holmium. Take note of the followin
 
         def test_header_links(self):
             self.assertTrue(len(self.page.nav_links) > 0)
+            self.assertElementsDisplayed(self.page.nav_links)
             self.assertEquals(
                 sorted(
                     ["Projects", "Download", "Documentation", "Support", "About"]
@@ -111,7 +114,7 @@ Lets take the above test case for a spin with holmium. Take note of the followin
 
         def test_about_selenium_heading(self):
             self.page.nav_links["About"].click()
-            self.assertEquals(self.page.header_text.text, "About Selenium")
+            self.assertElementTextEqual(self.page.header_text, "About Selenium")
 
 
     if __name__ == "__main__":
