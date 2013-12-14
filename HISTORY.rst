@@ -11,6 +11,20 @@
 History
 *******
 
+0.6 2013-12-14
+==============
+* Lazy driver initialization. The webdriver is created 
+  when the test first accesses it.
+* Support for using multiple browsers (drivers) in test cases. The original
+  self.driver is still available along with a self.drivers list which lazily 
+  initializes new drivers as they are accessed via index. drivers[0] == driver.
+* New environment variable / nose option to force browser(s) to be shutdown and
+  restarted between tests. (it is disabled by default, but cookies are still 
+  always cleared between tests)
+* New assertions added to the TestCase base class 
+* Documentation cleanups
+* Bug fixes for default timeout/only_if arugment for Element/Elements/ElementMap 
+
 0.5.2 2013-12-09
 ================
 * PyPy support 
@@ -109,6 +123,7 @@ History
 * Bug fix 
   
   - fixed phantomjs build in travis
+
 
 
 
