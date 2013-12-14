@@ -5,9 +5,9 @@ uses the old class named
 from .pageobject import Page, Element, Elements, ElementMap
 from .testcase import TestCase
 
-#pylint: disable=invalid-name
-#pylint: disable=too-few-public-methods
-#pylint: disable=no-member
+# pylint: disable=invalid-name
+# pylint: disable=too-few-public-methods
+# pylint: disable=no-member
 
 class Deprecated(object):
     """

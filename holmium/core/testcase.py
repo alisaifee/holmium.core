@@ -61,7 +61,7 @@ class TestCase(unittest.TestCase):
         quit the driver after the test run (or after all the test methods
         in the class have finished if ``HO_BROWSER_PER_TEST`` is set).
         """
-        #pylint:disable=no-member
+        # pylint:disable=no-member
         if ENV.get("driver", None) and cls.holmium_config.fresh_instance:
             for driver in ENV["drivers"]:
                 driver.safe_quit()
@@ -101,7 +101,7 @@ class TestCase(unittest.TestCase):
         self.assertTrue(all((el.is_displayed() for el in _)), msg)
 
     def assertElementCSS(self, element, css_property, value, msg=None):
-        #pylint:disable=line-too-long
+        # pylint:disable=line-too-long
         """
         Fail if the element does not exhibit the correct css property value.
         The value of the elements css property is the one returned by

@@ -135,7 +135,7 @@ class FacetCollection(list):
         for facet in self:
             try:
                 facet.evaluate(driver)
-            #pylint: disable=broad-except
+            # pylint: disable=broad-except
             except Exception as _:
                 if facet.debug:
                     log.warn(FacetError(facet, _))
@@ -299,7 +299,7 @@ class ElementFacet(Facet):
     def get_name(self):
         return self.element_name
 
-#pylint: disable=invalid-name
+# pylint: disable=invalid-name
 cookie = Cookie
 strict = Strict
 defer = Defer

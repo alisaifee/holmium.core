@@ -26,7 +26,7 @@ else:
 from .facets import Faceted, ElementFacet
 from .logger import log
 
-#pylint: disable=unnecessary-lambda,too-few-public-methods,too-many-arguments
+# pylint: disable=unnecessary-lambda,too-few-public-methods,too-many-arguments
 class Locators(selenium.webdriver.common.by.By):
     """
     proxy class to access locator types
@@ -210,7 +210,7 @@ class ElementGetter(object):
     & :class:`holmium.core.Elements`
     """
 
-    #pylint: disable=too-many-instance-attributes
+    # pylint: disable=too-many-instance-attributes
     def __init__(self, locator_type,
                  query_string,
                  base_element=None,
@@ -373,7 +373,7 @@ class Elements(ElementGetter):
      instances is passed as the only argument to the function.
     :param bool facet: flag to  treat this element as a facet.
     """
-    #pylint: disable=incomplete-protocol,line-too-long
+    # pylint: disable=incomplete-protocol,line-too-long
     def __init__(self, locator_type,
                  query_string = None,
                  base_element=None,
