@@ -36,7 +36,7 @@ class LazyWebDriver(object):
                     browser = safe_getter("_holmium_config").browser
                     raise SkipTest("unable to initialize %s driver"
                                    % browser), None, traceback
-                object.__getattribute__(self, "_post_create_callback")()
+                safe_getter("_post_create_callback")()
                 safe_setter("_instance", instance)
 
             return getattr(instance, item)
