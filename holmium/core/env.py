@@ -12,9 +12,6 @@ class LazyWebDriver(object):
         self._holmium_config = holmium_config
         self._instance = None
 
-    def _post_create_callback(self):
-        return
-
     def __getattribute__(self, item):
         safe_getter = lambda i: object.__getattribute__(self, i)
         safe_setter = lambda i, v: object.__setattr__(self, i, v)
@@ -76,7 +73,7 @@ class LazyWebDriverList(list):
                 _d._instance = None
                 self.insert(item, _d)
                 return _d
-            return None
+            return None # pragma: no cover
     def __iter__(self):
         yield Env["driver"]
         for item in self[1:]:
