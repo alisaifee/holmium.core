@@ -1,3 +1,8 @@
+"""
+implementation of page objects, element(s) and sections
+"""
+
+
 import inspect
 import weakref
 import types
@@ -7,8 +12,9 @@ import collections
 from functools import wraps
 
 import selenium.webdriver.common.by
-from selenium.common.exceptions import NoSuchElementException, TimeoutException, NoSuchFrameException
-from selenium.webdriver.support.ui import WebDriverWait, Select
+from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import TimeoutException, NoSuchFrameException
+from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.remote.webelement import WebElement
 from .enhancers import get_enhancers
 
@@ -20,6 +26,7 @@ else:
 from .facets import Faceted, ElementFacet
 from .logger import log
 
+#pylint: disable=unnecessary-lambda,too-few-public-methods,too-many-arguments
 class Locators(selenium.webdriver.common.by.By):
     """
     proxy class to access locator types
@@ -61,8 +68,8 @@ class Registry(type):
     simple meta class to keep track of all page objects registered
     """
     pages = {}
-    def __new__(cls, *args, **kwargs):
-        page = super(Registry, cls).__new__(cls, *args, **kwargs)
+    def __new__(mcs, *args, **kwargs):
+        page = super(Registry, mcs).__new__(mcs, *args, **kwargs)
         Registry.pages[args[0]] = page
         return page
 
@@ -74,22 +81,23 @@ class Page(Faceted):
     with fluent wrappers to facilitate with writing code such as::
 
         class Google(Page):
-            def enter_query(self):
+            def query(self):
                 ....
 
-            def submit_search(self):
+            def submit(self):
                 ....
 
             def get_results(self):
                 ....
 
-        assert len(Google().enter_query("page objects").submit_search().get_results()) > 0
+        assert len(Google().query("page objects").submit().get_results()) > 0
 
     """
     __metaclass__ = Registry
     local = threading.local()
 
     def __init__(self, driver, url=None, iframe=None):
+        # pylint: disable=too-many-branches
         super(Page, self).__init__()
         self.driver = driver
         self.touched = False
@@ -102,29 +110,36 @@ class Page(Faceted):
             self.home = None
 
         self.iframe = iframe
-        for el in inspect.getmembers(self.__class__):
-            def update_element(el, name):
-                if issubclass(el.__class__, ElementGetter):
-                    el.iframe = self.iframe
-                    if el.is_facet:
-                        facet = ElementFacet(el, name, debug=el.is_debug_facet)
-                        facet.register(self)
-                    return True
-                return False
-            if issubclass(el[1].__class__, list):
+        def update_element(element, name):
+            """
+            check if the element is a facet
+            and register it.
+            """
+            if issubclass(element.__class__, ElementGetter):
+                element.iframe = self.iframe
+                if element.is_facet:
+                    facet = ElementFacet(element,
+                                         name,
+                                         debug=element.is_debug_facet
+                    )
+                    facet.register(self)
+                return True
+            return False
+        for element in inspect.getmembers(self.__class__):
+            if issubclass(element[1].__class__, list):
                 hit = True
-                for item in el[1]:
-                    hit &= update_element(item, el[0])
+                for item in element[1]:
+                    hit &= update_element(item, element[0])
                 if hit:
-                    self.__setattr__(el[0], ElementList(self, el[1]))
-            elif issubclass(el[1].__class__, dict):
+                    self.__setattr__(element[0], ElementList(self, element[1]))
+            elif issubclass(element[1].__class__, dict):
                 hit = True
-                for item in el[1].values():
-                    hit &= update_element(item, el[0])
+                for item in element[1].values():
+                    hit &= update_element(item, element[0])
                 if hit:
-                    self.__setattr__(el[0], ElementDict(self, el[1]))
+                    self.__setattr__(element[0], ElementDict(self, element[1]))
             else:
-                update_element(el[1], el[0])
+                update_element(element[1], element[0])
 
         if url:
             self.driver.get(url)
@@ -132,12 +147,19 @@ class Page(Faceted):
 
     @contextlib.contextmanager
     def scope(self):
+        """
+        context manager to manage the current webdriver
+        in use.
+        """
         Page.local.driver = object.__getattribute__(self, "driver")
         yield
 
-    @staticmethod
-    def get_driver():
-        return Page.local.driver
+    @classmethod
+    def get_driver(cls):
+        """
+        returns the thread local driver
+        """
+        return cls.local.driver
 
     def go_home(self):
         """
@@ -156,7 +178,6 @@ class Page(Faceted):
 
         with attr_getter("scope")():
             if not attr_getter("touched") and attr_getter("initialized"):
-                driver = attr_getter("driver")
                 attr_getter("evaluate")()
                 attr_setter("touched", True)
             attr = attr_getter(key)
@@ -169,10 +190,11 @@ class Page(Faceted):
             if isinstance(attr, types.MethodType):
                 @wraps(attr)
                 def wrap(*args, **kwargs):
+                    """
+                    fluent wrapper
+                    """
                     resp = attr(*args, **kwargs)
                     if None == resp:
-                        log.debug(
-                            "method %s returned None, using fluent response" % attr.__name__)
                         resp = self
                     return resp
 
@@ -188,6 +210,7 @@ class ElementGetter(object):
     & :class:`holmium.core.Elements`
     """
 
+    #pylint: disable=too-many-instance-attributes
     def __init__(self, locator_type,
                  query_string,
                  base_element=None,
@@ -196,15 +219,18 @@ class ElementGetter(object):
                  only_if=lambda el: el is not None and el.is_displayed(),
                  facet=False):
         """
-        :param holmium.core.Locators locator_type: selenium locator to use when locating the element
+        :param holmium.core.Locators locator_type: selenium locator to use when
+         locating the element
         :param str query_string: the value to pass to the locator
-        :param holmium.core.Element base_element: a reference to another element under which to locate this element.
+        :param holmium.core.Element base_element: a reference to another element
+         under which to locate this element.
         :param int timeout: time to implicitely wait for the element
         :param lambda value: transform function for the value of the element.
          The located :class:`selenium.webdriver.remote.webelement.WebElement`
          instance is passed as the only argument to the function.
-        :param function only_if: extra validation function that is called repeatedly upto :attr:`timeout`
-         after the element is located. If not provided the default function used checks that the element is displayed.
+        :param function only_if: extra validation function that is called
+         repeatedly until :attr:`timeout` has elapsed. If not provided the
+         default function used checks that the element is displayed.
          The located :class:`selenium.webdriver.remote.webelement.WebElement`
          instance is passed as the only argument to the function.
         :param bool facet: flag to  treat this element as a facet.
@@ -225,18 +251,23 @@ class ElementGetter(object):
 
     @property
     def root(self):
+        "returns the root webelement"
         return self.root_fn()
 
     @root.setter
     def root(self, root_fn):
+        "sets the root element extraction function"
         self.root_fn = root_fn
 
-    def get_element(self, method=None):
-
+    def _get_element(self, method=None):
+        """
+        extracts the webelement(s)
+        :param function method: the method used to query the webdriver
+        """
         if self.base_element:
             if isinstance(self.base_element, types.LambdaType):
-                el = self.base_element()
-                _meth = getattr(el, method.__name__)
+                _ = self.base_element()
+                _meth = getattr(_, method.__name__)
             elif isinstance(self.base_element, Element):
                 _meth = getattr(self.base_element.__get__(self, self.__class__),
                                 method.__name__)
@@ -257,17 +288,26 @@ class ElementGetter(object):
 
         if self.timeout:
             try:
-                callback = lambda _: _meth(self.locator_type, self.query_string) \
-                    and self.only_if( _meth(self.locator_type, self.query_string))
+                def callback(_):
+                    """
+                    timeout & only_if explicit wait.
+                    """
+                    return _meth(self.locator_type, self.query_string) and \
+                        self.only_if(
+                            _meth(self.locator_type, self.query_string)
+                        )
+
                 WebDriverWait(self.root, self.timeout).until(callback)
             except TimeoutException:
                 log.debug(
                     "unable to find element %s after waiting for %d seconds" % (
-                        self.query_string, self.timeout))
+                        self.query_string, self.timeout)
+                )
                 raise
         return _meth(self.locator_type, self.query_string)
 
-    def enhance(self, element):
+    @classmethod
+    def enhance(cls, element):
         """
         incase a higher level abstraction for a WebElement is available
         we will use that in Pages. (e.g. a select element is converted into
@@ -280,18 +320,22 @@ class ElementGetter(object):
 
 class Element(ElementGetter):
     """
-    Utility class to get a :class:`selenium.webdriver.remote.webelement.WebElement`
+    Utility to get a :class:`selenium.webdriver.remote.webelement.WebElement`
     by querying via one of :class:`holmium.core.Locators`
 
-    :param holmium.core.Locators locator_type: selenium locator to use when locating the element
+    :param holmium.core.Locators locator_type: selenium locator to use when
+     locating the element
     :param str query_string: the value to pass to the locator
-    :param holmium.core.Element base_element: a reference to another element under which to locate this element.
+    :param holmium.core.Element base_element: a reference to another element
+     under which to locate this element.
     :param int timeout: time to implicitely wait for the element
     :param lambda value: transform function for the value of the element.
-     The located :class:`selenium.webdriver.remote.webelement.WebElement` instance is passed as the only argument to the function.
-    :param function only_if: extra validation function that is called repeatedly upto :attr:`timeout`
-     after the element is located. If not provided the default function used checks that the element is displayed.
      The located :class:`selenium.webdriver.remote.webelement.WebElement`
+     instance is passed as the only argument to the function.
+    :param function only_if: extra validation function that is called repeatedly
+     until :attr:`timeout` elapases. If not provided the default function used
+     checks that the element is displayed. The located
+     :class:`selenium.webdriver.remote.webelement.WebElement`
      instance is passed as the only argument to the function.
     :param bool facet: flag to  treat this element as a facet.
     """
@@ -301,7 +345,7 @@ class Element(ElementGetter):
             return self
         try:
             return self.value_mapper(
-                self.enhance(self.get_element(self.root.find_element))
+                self.enhance(self._get_element(self.root.find_element))
             ) if self.root else None
         except (NoSuchElementException, TimeoutException):
             return None
@@ -309,21 +353,27 @@ class Element(ElementGetter):
 
 class Elements(ElementGetter):
     """
-    Utility class to get a collection of :class:`selenium.webdriver.remote.webelement.WebElement`
-    objects by querying via one of :class:`holmium.core.Locators`
+    Utility to get a collection of
+    :class:`selenium.webdriver.remote.webelement.WebElement` objects by
+    querying via one of :class:`holmium.core.Locators`
 
-    :param holmium.core.Locators locator_type: selenium locator to use when locating the element
+    :param holmium.core.Locators locator_type: selenium locator to use when
+     locating the element
     :param str query_string: the value to pass to the locator
-    :param holmium.core.Element base_element: a reference to another element under which to locate this element.
+    :param holmium.core.Element base_element: a reference to another element
+     under which to locate this element.
     :param int timeout: time to implicitely wait for the element
     :param lambda value: transform function for each element in the collection.
-     The located :class:`selenium.webdriver.remote.webelement.WebElement` instance is passed as the only argument to the function.
-    :param function only_if: extra validation function that is called repeatedly upto :attr:`timeout`
-     after the elements are located. If not provided the default function used checks that all the elements are displayed.
-     The list of located :class:`selenium.webdriver.remote.webelement.WebElement`
+     The located :class:`selenium.webdriver.remote.webelement.WebElement`
+     instance is passed as the only argument to the function.
+    :param function only_if: extra validation function that is called repeatedly
+     until :attr:`timeout` elapses. If not provided the default function used
+     checks that all the elements are displayed. The list of located
+     :class:`selenium.webdriver.remote.webelement.WebElement`
      instances is passed as the only argument to the function.
     :param bool facet: flag to  treat this element as a facet.
     """
+    #pylint: disable=incomplete-protocol,line-too-long
     def __init__(self, locator_type,
                  query_string = None,
                  base_element=None,
@@ -332,8 +382,10 @@ class Elements(ElementGetter):
                  only_if=lambda el: el is not None and [_.is_displayed() for _ in el],
                  facet=False):
         super(Elements, self).__init__(locator_type, query_string,
-                                       base_element = base_element, timeout=timeout,
-                                       facet = facet, value = value, only_if = only_if)
+                                       base_element=base_element,
+                                       timeout=timeout,
+                                       facet=facet, value=value,
+                                       only_if=only_if)
 
     def __getitem__(self, idx):
         return lambda: self.__get__(self, self.__class__)[idx]
@@ -343,32 +395,38 @@ class Elements(ElementGetter):
             return self
         try:
             return [self.value_mapper(self.enhance(el)) for el in
-                self.get_element(self.root.find_elements)] if self.root else []
+                self._get_element(self.root.find_elements)] if self.root else []
         except (NoSuchElementException, TimeoutException):
             return []
 
 class ElementMap(Elements):
     """
-    Used to create dynamic dictionaries based on an element locator specified by one of
-    :class:`holmium.core.Locators`.
+    Used to create dynamic dictionaries based on an element locator specified by
+    one of :class:`holmium.core.Locators`.
 
     The wrapped dictionary is an :class:`collections.OrderedDict` instance.
 
-    :param holmium.core.Locators locator_type: selenium locator to use when locating the element
+    :param holmium.core.Locators locator_type: selenium locator to use when
+     locating the element
     :param str query_string: the value to pass to the locator
-    :param holmium.core.Element base_element: a reference to another element under which to locate this element.
+    :param holmium.core.Element base_element: a reference to another element
+     under which to locate this element.
     :param int timeout: time to implicitely wait for the element
     :param bool facet: flag to  treat this element as a facet.
-    :param lambda key: transform function for mapping a key to a WebElement in the collection.
-     The located :class:`selenium.webdriver.remote.webelement.WebElement` instance is passed as the only argument to the function.
-    :param lambda value: transform function for the value when accessed via the key.
-     The located :class:`selenium.webdriver.remote.webelement.WebElement` instance is passed as the only argument to the function.
-    :param function only_if: extra validation function that is called repeatedly upto :attr:`timeout`
-     after the elements are located. If not provided the default function used checks that all the elements are displayed.
-     The list of located :class:`selenium.webdriver.remote.webelement.WebElement`
-     instances is passed as the only argument to the function.
+    :param lambda key: transform function for mapping a key to a WebElement in
+     the collection. The located
+     :class:`selenium.webdriver.remote.webelement.WebElement` instance is passed
+     as the only argument to the function.
+    :param lambda value: transform function for the value when accessed via the
+     key. The located :class:`selenium.webdriver.remote.webelement.WebElement`
+     instance is passed as the only argument to the function.
+    :param function only_if: extra validation function that is called repeatedly
+     until :attr:`timeout`. If not provided the default function used checks
+     that all the elements are displayed. The list of located
+     :class:`selenium.webdriver.remote.webelement.WebElement` instances is
+     passed as the only argument to the function.
     """
-
+    # pylint: disable=incomplete-protocol,line-too-long
     def __init__(self, locator_type,
                  query_string=None,
                  base_element=None,
@@ -389,7 +447,7 @@ class ElementMap(Elements):
         try:
             return OrderedDict(
             (self.key_mapper(el), self.value_mapper(self.enhance(el))) for el in
-            self.get_element(self.root.find_elements)) if self.root else {}
+            self._get_element(self.root.find_elements)) if self.root else {}
         except (NoSuchElementException, TimeoutException):
             return {}
 
@@ -423,7 +481,10 @@ class Section(Faceted):
             if issubclass(element[1].__class__, ElementGetter):
                 self.element_members[element[0]] = element[1]
                 if element[1].is_facet:
-                    facet = ElementFacet(element[1], element[0], debug=element[1].is_debug_facet)
+                    facet = ElementFacet(element[1],
+                                         element[0],
+                                         debug=element[1].is_debug_facet
+                    )
                     facet.register(self)
 
     def __get__(self, instance, owner):
@@ -445,6 +506,9 @@ class Section(Faceted):
 
     @property
     def root(self):
+        """
+        returns the element the section is rooted at
+        """
         if self.iframe:
             try:
                 Page.get_driver().switch_to_default_content()
@@ -461,13 +525,16 @@ class Section(Faceted):
 
     @root.setter
     def root(self, val):
+        """
+        sets the root of the section
+        """
         self.__root_val = val
 
 
 class Sections(Section, collections.Sequence):
     """
-    Base class for an Iterable view of a collection of :class:`holmium.core.Section`
-    objects.
+    Base class for an Iterable view of a collection of
+    :class:`holmium.core.Section` objects.
     """
 
     def __init__(self, locator_type, query_string, iframe=None, timeout=0):
@@ -478,11 +545,14 @@ class Sections(Section, collections.Sequence):
         if self.timeout:
             try:
                 WebDriverWait(Page.get_driver(), self.timeout).until(
-                    lambda _: Page.get_driver().find_elements(self.locator_type, self.query_string))
+                    lambda _: Page.get_driver().find_elements(self.locator_type,
+                                                              self.query_string)
+                )
             except TimeoutException:
                 log.debug(
                     "unable to find element %s after waiting for %d seconds" % (
-                        self.query_string, self.timeout))
+                        self.query_string, self.timeout)
+                )
         return Page.get_driver().find_elements(self.locator_type,
                                                self.query_string)
 
@@ -496,7 +566,7 @@ class Sections(Section, collections.Sequence):
 
     def __getitem__(self, idx):
         _idx = 0
-        for item in self:
+        for _ in self:
             if idx == _idx:
                 break
             _idx += 1

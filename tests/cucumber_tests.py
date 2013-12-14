@@ -24,9 +24,9 @@ class TestFresherIntegration(PluginTester, unittest.TestCase):
     suitepath = os.path.join(support, 'cucumber')
     plugins = [holmium.core.HolmiumNose(), FresherNosePlugin()]
     def setUp(self):
-        self.old_mapping = holmium.core.config.browser_mapping
-        holmium.core.noseplugin.browser_mapping = utils.build_mock_mapping("firefox")
-        self.driver = holmium.core.noseplugin.browser_mapping["firefox"]
+        self.old_mapping = holmium.core.config.BROWSER_MAPPING
+        holmium.core.noseplugin.BROWSER_MAPPING = utils.build_mock_mapping("firefox")
+        self.driver = holmium.core.noseplugin.BROWSER_MAPPING["firefox"]
         self.driver.return_value.title = "test"
         e1 = mock.Mock()
         e1.text = "e"
@@ -55,6 +55,6 @@ class TestFresherIntegration(PluginTester, unittest.TestCase):
         self.driver.return_value.get.assert_any_call("http://www.google.com/login")
         assert self.driver.return_value.delete_all_cookies.call_count == 10, self.driver.return_value.delete_all_cookies.call_count
     def tearDown(self):
-        holmium.core.noseplugin.browser_mapping = self.old_mapping
+        holmium.core.noseplugin.BROWSER_MAPPING = self.old_mapping
         self.sleep_patcher.stop()
 

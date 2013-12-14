@@ -7,7 +7,7 @@ import os
 import mock
 
 from holmium.core import TestCase, Page, Element, Elements, ElementMap, Locators
-from holmium.core.env import Env
+from holmium.core.env import ENV
 import holmium.core.testcase
 from .utils import build_mock_mapping
 
@@ -39,11 +39,11 @@ def runtc(env, validations, validator = lambda c,s:c(s)):
 
 class TestCaseTests(unittest.TestCase):
     def setUp(self):
-        Env.clear()
+        ENV.clear()
 
     def test_assert_element_positive(self):
-        with mock.patch.dict('holmium.core.testcase.browser_mapping', build_mock_mapping("firefox")):
-            driver_cls = holmium.core.testcase.browser_mapping["firefox"]
+        with mock.patch.dict('holmium.core.testcase.BROWSER_MAPPING', build_mock_mapping("firefox")):
+            driver_cls = holmium.core.testcase.BROWSER_MAPPING["firefox"]
             driver_cls.return_value.find_element.return_value = mock.Mock(
                 text="foo", size={"width": 1, "height": 1},
                 is_displayed=lambda: True, value_of_css_property=lambda p:"test")
@@ -61,8 +61,8 @@ class TestCaseTests(unittest.TestCase):
             runtc({"HO_BROWSER":"firefox"}, validations)
 
     def test_assert_element_negative(self):
-        with mock.patch.dict('holmium.core.testcase.browser_mapping', build_mock_mapping("firefox")):
-            driver_cls = holmium.core.testcase.browser_mapping["firefox"]
+        with mock.patch.dict('holmium.core.testcase.BROWSER_MAPPING', build_mock_mapping("firefox")):
+            driver_cls = holmium.core.testcase.BROWSER_MAPPING["firefox"]
             driver_cls.return_value.find_element.return_value = mock.Mock(
                 text="foobar", size={"width": 2, "height": 1},
                 is_displayed=lambda: False, value_of_css_property=lambda p:"testing")

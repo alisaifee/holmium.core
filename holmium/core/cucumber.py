@@ -1,26 +1,39 @@
+"""
+implementation of cucumber steps for use with fresher/n
+"""
 from functools import wraps
 import inspect
 import re
 import time
 
 from selenium.webdriver.common.keys import Keys
+# pylint: disable=E0611
 from nose.tools import assert_equals, assert_true
 
 from fresher import Transform, When, scc, Then, NamedTransform, ftc
 from .pageobject import Registry, Section, Sections
 
 
-def paramfromconfig(fn):
-    @wraps(fn)
+def paramfromconfig(function):
+    """
+    decorator for internal use. maps arguments from ftc.config
+    """
+    @wraps(function)
     def __inner(*args):
-        def get_and_set(v):
-            ftc.config["_holmium_cucumber_temp_var"] = v
+        """
+        wrapper
+        """
+        # pylint: disable=star-args
+        def get_and_set(value):
+            """
+            lol.
+            """
+            ftc.config["_holmium_cucumber_temp_var"] = value
             return ftc.config["_holmium_cucumber_temp_var"]
-        _a = []
-        _k = {}
+        _args = []
         for arg in args:
-            _a.append(get_and_set(arg))
-        return fn(*_a)
+            _args.append(get_and_set(arg))
+        return function(*_args)
     return __inner
 
 
@@ -53,10 +66,10 @@ def word_to_index(word):
         if i % 10 == 0:
             rest[i] = ones_rev[i // 10]
         else:
-            _f = ones_rev[i // 10]
-            _s = anomolies[i % 10]
-            rest["%s %s" % (_f, _s)] = i
-    easy = re.compile("(\d+)(st|rd|th)")
+            first = ones_rev[i // 10]
+            second = anomolies[i % 10]
+            rest["%s %s" % (first, second)] = i
+    easy = re.compile(r"(\d+)(st|rd|th)")
 
     if easy.match(word):
         return int(easy.findall(word)[0][0]) - 1
@@ -74,21 +87,28 @@ def init_steps():
     frm = inspect.stack()[1]
     mod = inspect.getmodule(frm[0])
     from fresher.stepregistry import StepImpl, TransformImpl, NamedTransformImpl
-    for k,v in globals().items():
-        if any(((v, t) for t in (StepImpl, TransformImpl, NamedTransformImpl))):
-            setattr(mod, k, v )
+    fresher_types = (StepImpl, TransformImpl, NamedTransformImpl)
+    for key, value in globals().items():
+        if any(((value, _type) for _type in fresher_types)):
+            setattr(mod, key, value)
 
 
-@Transform("^the page (\w+)$")
+@Transform(r"^the page (\w+)$")
 def transform_page(name):
+    """
+    looks up the page in the Registry
+    """
     if name not in Registry.pages:
         raise AttributeError(
             "page object %s not found. did you import it?" % name)
     return Registry.pages[name]
 
 
-@NamedTransform("{element}", "(element (\w+))", "element (\w+)")
+@NamedTransform(r"{element}", r"(element (\w+))", r"element (\w+)")
 def transform_element(name):
+    """
+    looks up the element in the page currently registered on the context
+    """
     if not hasattr(scc.page, name):
         raise AttributeError(
             "page object %s does not contain an element named %s" % (
@@ -99,16 +119,19 @@ def transform_element(name):
     return element
 
 
-@NamedTransform("{item_in_elements}", "((.*?)\s+item\s+in\s+(\w+))",
-                "(.*?)\s+item\s+in\s+(\w+)")
+@NamedTransform(r"{item_in_elements}", r"((.*?)\s+item\s+in\s+(\w+))",
+                r"(.*?)\s+item\s+in\s+(\w+)")
 def transform_sub_element(key, name):
+    """
+    looks up a subelement (either index, key or section memeber)
+    """
     if not hasattr(scc.page, name):
         raise AttributeError(
             "page object %s does not contain an element named %s" % (
                 scc.page.__class__.__name__, name
             )
         )
-    sub_expr = re.compile("(\w+)(?:\s* item)? (?:of|for) the (.*)$")
+    sub_expr = re.compile(r"(\w+)(?:\s* item)? (?:of|for) the (.*)$")
     element = getattr(scc.page, name)
     sub = None
     if sub_expr.match(key):
@@ -128,114 +151,171 @@ def transform_sub_element(key, name):
     return sub_element
 
 
-@When("^I?\s*access (the page .*?) at url (.*?)$")
+@When(r"^I?\s*access (the page .*?) at url (.*?)$")
 @paramfromconfig
 def access_page(page, url):
+    """
+    loads the pageobject with the given url
+    into the scenario context
+    """
     scc.page = page(ftc.driver, url)
 
-@When("^I?\s*access the url (.*?)$")
+@When(r"^I?\s*access the url (.*?)$")
 @paramfromconfig
 def access_url(url):
+    """
+    switch the driver to the provided url
+    """
     ftc.driver.get(url)
 
-@When("^I?\s*perform (\w+) with (?:arguments)?\s*(.*?)$")
+@When(r"^I?\s*perform (\w+) with (?:arguments)?\s*(.*?)$")
 @paramfromconfig
 def page_action_with_args(action, args):
+    """
+    execute a method of the page with arguments
+    """
     if not hasattr(scc.page, action):
         raise AttributeError("page object %s does not contain a method %s" % (
             scc.page.__class__.__name__, action)
         )
     arg_list = [k for k in args.split(",") if k.strip()]
+    # pylint: disable=star-args
     getattr(scc.page, action)(*arg_list)
 
-@When("^I?\s*perform (\w+)\s*$")
+@When(r"^I?\s*perform (\w+)\s*$")
 @paramfromconfig
 def page_action(action):
+    """
+    execute a method of the page
+    """
     if not hasattr(scc.page, action):
         raise AttributeError("page object %s does not contain a method %s" % (
             scc.page.__class__.__name__, action)
         )
     getattr(scc.page, action)()
 
-@Then("(?:the)?\s*{element} should be visible\s*$")
+@Then(r"(?:the)?\s*{element} should be visible\s*$")
 @paramfromconfig
-def element_visible(element, *args):
+def element_visible(element, *_):
+    """
+    assert element is visible
+    """
     assert_true(element is not None)
 
 
-@Then("(?:the)?\s*{item_in_elements} should be visible\s*$")
+@Then(r"(?:the)?\s*{item_in_elements} should be visible\s*$")
 @paramfromconfig
-def item_in_element_visible(element, *args):
+def item_in_element_visible(element, *_):
+    """
+    assert sub element is visible
+    """
     assert_true(element is not None)
 
 
-@Then("(?:the)?\s*{element} should have (\d+) items")
+@Then(r"(?:the)?\s*{element} should have (\d+) items")
 @paramfromconfig
-def element_count(element, name, count):
+def element_count(element, _, count):
+    """
+    assert number of subelements
+    """
     assert_equals(int(count), len(element))
 
 
-@When("^I?\s*type (.*?) in {element}\s*$")
+@When(r"^I?\s*type (.*?) in {element}\s*$")
 @paramfromconfig
-def element_type(text, element, *args):
+def element_type(text, element, *_):
+    """
+    type inside the element
+    """
     element.send_keys(text)
 
-@When("^I?\s*type (.*?) in {item_in_elements}\s*$")
+@When(r"^I?\s*type (.*?) in {item_in_elements}\s*$")
 @paramfromconfig
-def item_in_elements_type(text, element, *args):
+def item_in_elements_type(text, element, *_):
+    """
+    type inside the sub element
+    """
     element.send_keys(text)
 
-@When("^I?\s*(?:press|pressed)\s*(?:enter|Enter) in (?:.*?){element}\s*$")
+@When(r"^I?\s*(?:press|pressed)\s*(?:enter|Enter) in (?:.*?){element}\s*$")
 @paramfromconfig
-def press_enter(element, *args):
+def press_enter(element, *_):
+    """
+    press the enter key in the element
+    """
     element.send_keys(Keys.ENTER)
 
 
-@When("^I?\s*(?:press|pressed)\s*(?:enter|Enter) in {item_in_elements}\s*$")
+@When(r"^I?\s*(?:press|pressed)\s*(?:enter|Enter) in {item_in_elements}\s*$")
 @paramfromconfig
-def press_enter_in_item_in_element(element, *args):
+def press_enter_in_item_in_element(element, *_):
+    """
+    press the enter key in the sub element
+    """
     element.send_keys(Keys.ENTER)
 
 
-@When("^I?\s*click the {element}\s*$")
+@When(r"^I?\s*click the {element}\s*$")
 @paramfromconfig
-def element_click(element, *args):
+def element_click(element, *_):
+    """
+    click the element
+    """
     element.click()
 
 
-@When("^I?\s*click the {item_in_elements}\s*$")
+@When(r"^I?\s*click the {item_in_elements}\s*$")
 @paramfromconfig
-def item_in_element_click(element, *args):
+def item_in_element_click(element, *_):
+    """
+    click the sub element
+    """
     element.click()
 
 
-@Then("^I?\s*should see the title (.*?)\s*$")
+@Then(r"^I?\s*should see the title (.*?)\s*$")
 @paramfromconfig
 def assert_title(title):
+    """
+    assert the title of the page
+    """
     assert_equals(ftc.driver.title, title)
 
-@Then("(?:the)?\s*{element} should have (?:the)?\s*text (.*?)\s*$")
+@Then(r"(?:the)?\s*{element} should have (?:the)?\s*text (.*?)\s*$")
 @paramfromconfig
 def text_in_element(*args):
+    """
+    assert the text of the element
+    """
+    # pylint: disable=unbalanced-tuple-unpacking
     element, _, text = args
     assert_equals(element.text, text)
 
-@Then("(?:the)?\s*{item_in_elements} should have (?:the)?\s*text (.*?)\s*$")
+@Then(r"(?:the)?\s*{item_in_elements} should have (?:the)?\s*text (.*?)\s*$")
 @paramfromconfig
 def text_in_elements_item(*args):
+    """
+    assert the text of the sub element
+    """
     element, text = args[0], args[-1]
     assert_equals(element.text, text)
 
 
-@When("^I?\s*wait for (\d+) (second|seconds)")
+@When(r"^I?\s*wait for (\d+) (second|seconds)")
 @paramfromconfig
-def wait(seconds, *args):
+def wait(seconds, *_):
+    """
+    sleep if you must...
+    """
     time.sleep(int(seconds))
 
 
-@When("^I?\s*go (back|forward)")
+@When(r"^I?\s*go (back|forward)")
 @paramfromconfig
 def back_or_forward(direction):
+    """
+    move the browser back/forward
+    """
     if direction.strip() == "back":
         ftc.driver.back()
     else:

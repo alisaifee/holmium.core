@@ -1,7 +1,13 @@
+"""
+implementation of facet bases and builtin facets
+"""
+
+
 from abc import ABCMeta, abstractmethod
 import inspect
 import weakref
 import re
+# pylint: disable=no-name-in-module,abstract-class-not-used
 from nose.tools import assert_equals, assert_true
 from .logger import log
 
@@ -40,7 +46,8 @@ class Facet(object):
         """
         registers a :class:`Facet` on an object
 
-        :param holmium.core.facets.Faceted obj: the object to register the facet on.
+        :param holmium.core.facets.Faceted obj: the object to register the
+         facet on.
         """
         if inspect.isclass(obj):
             obj.get_class_facets().append(self)
@@ -55,17 +62,29 @@ class Facet(object):
         return obj
 
     def get_name(self):
+        """
+        returns the class name of the facet
+        """
         return self.__class__.__name__
 
     @property
     def parent_class(self):
+        """
+        returns the parent class
+        """
         return self._parent_class()
 
     @parent_class.setter
     def parent_class(self, parent):
+        """
+        sets the parent class
+        """
         self._parent_class = weakref.ref(parent)
 
     def get_parent_name(self):
+        """
+        returns the class name of the parent
+        """
         return (self.parent_class and self.parent_class.__name__) or None
 
     @abstractmethod
@@ -74,9 +93,9 @@ class Facet(object):
         evaluate whether this facet holds true. Raise an Exception
         if not.
 
-        :param selenium.webdriver.remote.webdriver.WebDriver driver: the webdriver
+        :param selenium.webdriver.remote.webdriver.WebDriver driver: the
+         webdriver
         """
-        raise NotImplementedError
 
 
 class FacetError(Exception):
@@ -110,16 +129,18 @@ class FacetCollection(list):
         """
         iterate over all registered :class:`Facet` objects and validate them
 
-        :param selenium.webdriver.remote.webdriver.WebDriver driver: the webdriver
+        :param selenium.webdriver.remote.webdriver.WebDriver driver:
+         the webdriver
         """
         for facet in self:
             try:
                 facet.evaluate(driver)
-            except Exception as e:
+            #pylint: disable=broad-except
+            except Exception as _:
                 if facet.debug:
-                    log.warn(FacetError(facet, e))
+                    log.warn(FacetError(facet, _))
                 elif facet.required:
-                    raise FacetError(facet, e)
+                    raise FacetError(facet, _)
 
 
 class Faceted(object):
@@ -134,15 +155,25 @@ class Faceted(object):
 
     @classmethod
     def get_class_facets(cls):
+        """
+        returns the facets registered on the class (presumably
+        via a decorator)
+        """
         if not hasattr(cls, "class_facets"):
             cls.class_facets = FacetCollection()
         return cls.class_facets
 
     def get_instance_facets(self):
+        """
+        returns the facets registered on the instance
+        """
         return object.__getattribute__(self, "instance_facets")
 
 
     def evaluate(self):
+        """
+        evaluates all registered facets (class & instance)
+        """
         from .pageobject import Page
 
         safe_get = lambda e: object.__getattribute__(self, e)
@@ -154,13 +185,18 @@ class Faceted(object):
         instance_facets.evaluate_all(driver)
 
 
-class defer(Facet):
+class Defer(Facet):
     """
-    :param holmium.core.Page page: the page object that is expected to be deferred to
-    :param function action: a callable that takes the page object instance as the first argument
-    :param dict action_arguments: (optional) dictionary of arguments to pass to `action`
-    :param bool debug: if True a failure to evaluate will not result in an exception, only a log warning
-    :param bool required: if False a failure to evaluate will be treated as a noop.
+    :param holmium.core.Page page: the page object that is expected to be
+     deferred to
+    :param function action: a callable that takes the page object instance as
+     the first argument
+    :param dict action_arguments: (optional) dictionary of arguments to pass to
+     `action`
+    :param bool debug: if True a failure to evaluate will not result in an
+     exception, only a log warning
+    :param bool required: if False a failure to evaluate will be treated as a
+     noop.
     """
     __ARGS__ = ["page", "action"]
     __OPTIONS__ = {"action_arguments": {}}
@@ -173,13 +209,15 @@ class defer(Facet):
         )
 
 
-class title(Facet):
+class Title(Facet):
     """
     enforces the title of the current page.
 
     :param str title: a regular expression to match the title.
-    :param bool debug: if True a failure to evaluate will not result in an exception, only a log warning
-    :param bool required: if False a failure to evaluate will be treated as a noop.
+    :param bool debug: if True a failure to evaluate will not result in an
+     exception, only a log warning
+    :param bool required: if False a failure to evaluate will be treated as
+     a noop.
     """
     __ARGS__ = ["title"]
 
@@ -189,15 +227,17 @@ class title(Facet):
         )
 
 
-
-class cookie(Facet):
+class Cookie(Facet):
     """
     enforces the existence (and optionally the value) of a cookie.
 
     :param str name: name of the cookie
-    :param dict value: (optional) dict (or callable) to validate the value of the cookie.
-    :param bool debug: if True a failure to evaluate will not result in an exception, only a log warning
-    :param bool required: if False a failure to evaluate will be treated as a noop.
+    :param dict value: (optional) dict (or callable) to validate the value of
+     the cookie.
+    :param bool debug: if True a failure to evaluate will not result in an
+     exception, only a log warning
+    :param bool required: if False a failure to evaluate will be treated as
+     a noop.
 
     """
     __ARGS__ = ["name"]
@@ -211,20 +251,24 @@ class cookie(Facet):
             else:
                 assert_equals( cookie_value , self.options["value"] )
         else:
-            assert_true(cookie_value != None, "cookie %s does not exist" % self.arguments["name"])
+            assert_true(cookie_value != None,
+                        "cookie %s does not exist" % self.arguments["name"]
+            )
 
 
-class strict(Facet):
+class Strict(Facet):
     """
-    enforces that every element declared in the :class:`Page` or :class:`Section`
-    be present.
+    enforces that every element declared in the :class:`Page` or
+    :class:`Section` be present.
 
-    :param bool debug: if True a failure to evaluate will not result in an exception, only a log warning
-    :param bool required: if False a failure to evaluate will be treated as a noop.
+    :param bool debug: if True a failure to evaluate will not result in an
+     exception, only a log warning
+    :param bool required: if False a failure to evaluate will be treated as a
+     noop.
     """
 
     def evaluate(self, driver):
-        raise NotImplementedError
+        pass # pragma: no cover
 
     def __call__(self, obj):
         from .pageobject import ElementGetter
@@ -248,8 +292,16 @@ class ElementFacet(Facet):
         super(ElementFacet, self).__init__(required=True, **kwargs)
 
     def evaluate(self, driver):
-        assert_true (self.element.__get__(self.parent_class,
-                                            self.parent_class), "No such element")
+        assert_true(self.element.__get__(self.parent_class, self.parent_class),
+                     "No such element"
+        )
 
     def get_name(self):
         return self.element_name
+
+#pylint: disable=invalid-name
+cookie = Cookie
+strict = Strict
+defer = Defer
+title = Title
+

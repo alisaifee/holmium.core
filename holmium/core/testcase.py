@@ -1,12 +1,16 @@
+"""
+the testcase base class
+"""
 import unittest
 import inspect
 import imp
 import json
 import os
-from .config import HolmiumConfig, Config, browser_mapping
-from .env import Env
+from .config import HolmiumConfig, Config, BROWSER_MAPPING
+from .env import ENV
 from holmium.core.env import LazyWebDriver, LazyWebDriverList
 
+# pylint: disable=too-many-public-methods
 
 class TestCase(unittest.TestCase):
     """
@@ -18,8 +22,8 @@ class TestCase(unittest.TestCase):
     def setUpClass(cls):
         """
         prepare the driver initialization based on the environment variables
-        that have been set. The driver is not actually initialized until the test
-        itself actually refers to it via `self.driver`.
+        that have been set. The driver is not actually initialized until the
+        test itself actually refers to it via `self.driver`.
         """
         cls.driver = None
         base_file = inspect.getfile(cls)
@@ -38,14 +42,16 @@ class TestCase(unittest.TestCase):
         elif os.path.isfile(config_path + ".py"):
             config = imp.load_source("config", config_path + ".py").config
         if config:
-            cls.config = Config(config,
-                                             {"holmium": cls.holmium_config})
+            cls.config = Config(config, {"holmium": cls.holmium_config})
+        # pylint: disable=no-member
         if remote:
-            driver_cls = browser_mapping["remote"]
+            driver_cls = BROWSER_MAPPING["remote"]
         else:
-            driver_cls = browser_mapping[cls.holmium_config.browser]
-        cls.driver = Env.setdefault("driver", LazyWebDriver(driver_cls, cls.holmium_config))
-        cls.drivers = Env.setdefault("drivers", LazyWebDriverList())
+            driver_cls = BROWSER_MAPPING[cls.holmium_config.browser]
+        cls.driver = ENV.setdefault("driver", LazyWebDriver(driver_cls,
+                                                            cls.holmium_config)
+        )
+        cls.drivers = ENV.setdefault("drivers", LazyWebDriverList())
         if hasattr(super(TestCase, cls), "setUpClass"):
             super(TestCase, cls).setUpClass()
 
@@ -55,8 +61,10 @@ class TestCase(unittest.TestCase):
         quit the driver after the test run (or after all the test methods
         in the class have finished if ``HO_BROWSER_PER_TEST`` is set).
         """
-        if Env.get("driver", None) and cls.holmium_config.fresh_instance:
-            [_d.safe_quit() for _d in Env["drivers"]]
+        #pylint:disable=no-member
+        if ENV.get("driver", None) and cls.holmium_config.fresh_instance:
+            for driver in ENV["drivers"]:
+                driver.safe_quit()
         if hasattr(super(TestCase, cls), "tearDownClass"):
             super(TestCase, cls).tearDownClass()
 
@@ -64,35 +72,45 @@ class TestCase(unittest.TestCase):
         """
         clear the cookies on the driver after each test
         """
-        if Env.get("driver", None):
-            [_d.safe_clear() for _d in Env["drivers"]]
-        super(TestCase,self).tearDown()
+        if ENV.get("driver", None):
+            for driver in ENV["drivers"]:
+                driver.safe_clear()
+        super(TestCase, self).tearDown()
 
 
     # helper assertions
-
+    # pylint: disable=invalid-name
     def assertElementTextEqual(self, element, text, msg=None):
-        """ Fail if the text attribute of the element does not match
+        """
+        Fail if the text attribute of the element does not match
         """
         self.assertEqual(element.text, text, msg)
 
     def assertElementDisplayed(self, element, msg=None):
-        """ Fail if the element is not visible
+        """
+        Fail if the element is not visible
         """
         self.assertTrue(element.is_displayed(), msg)
 
     def assertElementsDisplayed(self, elements, msg=None):
-        """ Fail if any of the elements in the element collection are not visible
         """
-        _elements = elements.values() if isinstance(elements, dict) else elements
-        self.assertTrue(all((el.is_displayed() for el in _elements)), msg)
+        Fail if any of the elements in the element collection are not
+        visible
+        """
+        _ = elements.values() if isinstance(elements, dict) else elements
+        self.assertTrue(all((el.is_displayed() for el in _)), msg)
 
-    def assertElementCSS(self, element, property, value, msg=None):
-        """ Fail if the element does not exhibit the correct css property value.
+    def assertElementCSS(self, element, css_property, value, msg=None):
+        #pylint:disable=line-too-long
+        """
+        Fail if the element does not exhibit the correct css property value.
         The value of the elements css property is the one returned by
         :meth:`selenium.webdriver.remote.webelement.WebElement.value_of_css_property`
         """
-        self.assertEqual(element.value_of_css_property(property), value, msg)
+        self.assertEqual(element.value_of_css_property(css_property),
+                         value,
+                         msg
+        )
 
     def assertElementSize(self, element,  width, height, msg=None):
         """ Fail if the element size does not match the provided values

@@ -1,3 +1,6 @@
+"""
+configuration objects for holmium
+"""
 import sys
 import os
 import inspect
@@ -8,21 +11,26 @@ from selenium.webdriver import FirefoxProfile
 
 
 class Config(dict):
-    """Dictionary like helper class for maintaining test data configurations per environment.
+    """Dictionary like helper class for maintaining test data configurations
+    per environment.
 
 :class:`holmium.core.TestCase` and :class:`holmium.core.HolmiumNose` both
 look for either a config.json or config.py file in the same directory as the
-test file, and will make a ``config`` object available to the test case instance.
+test file, and will make a ``config`` object available to the test case
+instance.
 
-The :class:`holmium.core.Config` object is aware of the environment (specified with ``--holmium-env``
-when using nose or ``HO_ENV`` as an environment variable and will return the config variable from that
+The :class:`holmium.core.Config` object is aware of the environment
+(specified with ``--holmium-env`` when using nose or ``HO_ENV`` as an
+environment variable) and will return the config variable from that
 environment or from the `default` key.
 
-Values in the config file can use :class:`jinja2.Template` templates to access either values from itself, environment variables
-or a select magic holmium variables: ``holmium.environment``, ``holmium.browser``, ``holmium.user_agent``
+Values in the config file can use :class:`jinja2.Template` templates to access
+either values from itself, environment variables or a select magic holmium
+variables: ``holmium.environment``, ``holmium.browser``, ``holmium.user_agent``
 and ``holmium.remote``.
 
-Example config structure (which uses a magic variable ``holmium.environment`` and an environment variable ``$PATH``).
+Example config structure (which uses a magic variable ``holmium.environment``
+and an environment variable ``$PATH``).
 
 JSON
 
@@ -56,7 +64,8 @@ Python
 
 When accessing ``self.config`` within a test, due to the default:
 
-* ``self.config['path']`` will always return the value of the environment variable `PATH`,
+* ``self.config['path']`` will always return the value of the environment
+   variable `PATH`,
 * ``self.config['password']`` will always return 'sekret'
 
 if ``HO_ENV`` or ``--holmium-env`` are ``production``:
@@ -73,17 +82,28 @@ if ``HO_ENV`` or ``--holmium-env`` are ``development``:
 
     """
 
+    # pylint: disable=dangerous-default-value
     def __init__(self, dct,
                  environment={"holmium": {"environment": "development"}}):
         self.env = environment
         dict.__init__(self, dct)
 
     def __getitem__(self, key):
+        """
+        override to evaluate the values through the template
+        """
         def __render(item, context):
+            """
+            renders the string given the context using the jinja template
+            """
             def _check_string_type(_item):
+                """
+                meh python2/3 stuff.
+                """
+
                 if isinstance(_item, str):
                     return True
-                elif sys.version_info < (3,0,0):
+                elif sys.version_info < (3, 0, 0):
                     if isinstance(_item, eval("unicode")):
                         return True
                 return False
@@ -102,7 +122,7 @@ if ``HO_ENV`` or ``--holmium-env`` are ``development``:
         default_ctx = dict.setdefault(self, "default", {})
         try:
             item = env_ctx[key]
-        except KeyError as e:
+        except KeyError:
             item = default_ctx[key]
 
         context = dict(self)
@@ -113,11 +133,14 @@ if ``HO_ENV`` or ``--holmium-env`` are ``development``:
         return __render(item, context)
 
     def __setitem__(self, key, value):
+        """
+        override to put the value in the right environment bucket
+        """
         sub_dict = dict.setdefault(self, self.env["holmium"]["environment"], {})
         sub_dict[key] = value
 
 
-browser_mapping = {"firefox": webdriver.Firefox,
+BROWSER_MAPPING = {"firefox": webdriver.Firefox,
                    "chrome": webdriver.Chrome,
                    "safari": webdriver.Safari,
                    "ie": webdriver.Ie,
@@ -129,7 +152,7 @@ browser_mapping = {"firefox": webdriver.Firefox,
                    "android": webdriver.Remote}
 
 #:
-capabilities = {"firefox": webdriver.DesiredCapabilities.FIREFOX,
+CAPABILITIES = {"firefox": webdriver.DesiredCapabilities.FIREFOX,
                 "chrome": webdriver.DesiredCapabilities.CHROME,
                 "safari": webdriver.DesiredCapabilities.SAFARI,
                 "ie": webdriver.DesiredCapabilities.INTERNETEXPLORER,
@@ -147,13 +170,14 @@ class HolmiumConfig(dict):
     with the additional behavior that any attributes set on it are available
     as keys in the dictionary and vice versa.
     """
+    # pylint: disable=unused-argument,too-many-arguments,star-args
     def __init__(self, browser, remote, capabilities, user_agent, environment,
                  ignore_ssl, fresh_instance):
-        _d = {}
+        data = {}
         for arg in inspect.getargspec(HolmiumConfig.__init__).args[1:]:
             setattr(self, arg, locals()[arg])
-            _d[arg] = locals()[arg]
-        super(HolmiumConfig, self).__init__(**_d)
+            data[arg] = locals()[arg]
+        super(HolmiumConfig, self).__init__(**data)
 
 
     def __setattr__(self, key, value):
@@ -164,7 +188,7 @@ class HolmiumConfig(dict):
         super(HolmiumConfig, self).__setattr__(key, value)
         super(HolmiumConfig, self).__setitem__(key, value)
 
-
+# pylint: disable=too-few-public-methods
 class DriverConfig(object):
     """
     base class for configuring a webdriver
@@ -175,6 +199,9 @@ class DriverConfig(object):
 
 
 class FirefoxConfig(DriverConfig):
+    """
+    configuration for firefox
+    """
     def __call__(self, config, args):
         profile = FirefoxProfile()
         if config.user_agent:
@@ -189,6 +216,9 @@ class FirefoxConfig(DriverConfig):
 
 
 class ChromeConfig(DriverConfig):
+    """
+    configuration for chrome
+    """
     def __call__(self, config, args):
         args["desired_capabilities"].setdefault("chrome.switches", [])
         if config.user_agent:
@@ -202,6 +232,9 @@ class ChromeConfig(DriverConfig):
 
 
 class PhantomConfig(DriverConfig):
+    """
+    configuration for phantomjs
+    """
     def __call__(self, config, args):
         if config.ignore_ssl:
             args.setdefault("service_args", []).append(
@@ -210,6 +243,10 @@ class PhantomConfig(DriverConfig):
 
 
 class RemoteConfig(DriverConfig):
+    """
+    configuration for remote driver (and anything that doesnt have a
+    specific configuration)
+    """
     def __call__(self, config, args):
         if config.browser == "firefox" and "firefox_profile" in args:
             args["browser_profile"] = args["firefox_profile"]
@@ -218,7 +255,7 @@ class RemoteConfig(DriverConfig):
         return super(RemoteConfig, self).__call__(config, args)
 
 
-configurator_mapping = {
+CONFIGURATOR_MAPPER = {
     "firefox": FirefoxConfig(),
     "chrome": ChromeConfig(),
     "phantomjs": PhantomConfig(),
@@ -233,15 +270,15 @@ def configure(config):
     based on the :class:`holmium.core.config.HolmiumConfig`
     object that is passed in.
     """
-    if config.browser not in browser_mapping.keys():
+    if config.browser not in BROWSER_MAPPING.keys():
         raise RuntimeError("unknown browser %s" % config.browser)
-    merged_capabilities = capabilities[config.browser]
+    merged_capabilities = CAPABILITIES[config.browser]
     merged_capabilities.update(config.capabilities)
     args = {"desired_capabilities": merged_capabilities}
-    if config.browser in configurator_mapping:
-        args = configurator_mapping[config.browser](config, args)
+    if config.browser in CONFIGURATOR_MAPPER:
+        args = CONFIGURATOR_MAPPER[config.browser](config, args)
     if config.remote:
-        args = configurator_mapping["remote"](config, args)
+        args = CONFIGURATOR_MAPPER["remote"](config, args)
 
     return args
 
