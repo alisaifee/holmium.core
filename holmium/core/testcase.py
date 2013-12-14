@@ -88,7 +88,9 @@ class TestCase(unittest.TestCase):
         self.assertTrue(all((el.is_displayed() for el in _elements)), msg)
 
     def assertElementCSS(self, element, property, value, msg=None):
-        """ Fail if the element does not exhibit the correct css property value
+        """ Fail if the element does not exhibit the correct css property value.
+        The value of the elements css property is the one returned by
+        :meth:`selenium.webdriver.remote.webelement.WebElement.value_of_css_property`
         """
         self.assertEqual(element.value_of_css_property(property), value, msg)
 
