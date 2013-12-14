@@ -28,21 +28,26 @@ similarly to the following code block (using seleniumhq.org).
     import selenium.webdriver
     import unittest
 
+
     class SeleniumHQTest(unittest.TestCase):
         def setUp(self):
             self.driver = selenium.webdriver.Firefox()
             self.url = "http://seleniumhq.org"
+
         def test_header_links(self):
             self.driver.get(self.url)
             elements = self.driver.find_elements_by_css_selector("div#header ul>li")
             self.assertTrue(len(elements) > 0)
-            expected_link_list = ["Projects", "Download", "Documentation", "Support", "About"]
+            expected_link_list = ["Projects", "Download", "Documentation",
+                                  "Support", "About"]
             actual_link_list = [el.text for el in elements]
-            self.assertEquals( sorted(expected_link_list), sorted(actual_link_list))
+            self.assertEquals(sorted(expected_link_list), sorted(actual_link_list))
 
         def test_about_selenium_heading(self):
             self.driver.get(self.url)
-            about_link = self.driver.find_element_by_css_selector("div#header ul>li#menu_about>a")
+            about_link = self.driver.find_element_by_css_selector(
+                "div#header ul>li#menu_about>a"
+            )
             about_link.click()
             heading = self.driver.find_element_by_css_selector("#mainContent>h2")
             self.assertEquals(heading.text, "About Selenium")
@@ -51,9 +56,9 @@ similarly to the following code block (using seleniumhq.org).
             if self.driver:
                 self.driver.quit()
 
+
     if __name__ == "__main__":
         unittest.main()
-
 
 
 The above example does what most selenium tests do:
@@ -81,11 +86,13 @@ Lets take the above test case for a spin with holmium. Take note of the followin
     from holmium.core import TestCase, Page, Element, Locators, ElementMap
     import unittest
 
+
     class SeleniumHQPage(Page):
-        nav_links = ElementMap( Locators.CSS_SELECTOR
-                                , "div#header ul>li"
-                                , key = lambda element : element.find_element_by_tag_name("a").text
-                                , value = lambda element: element.find_element_by_tag_name("a") )
+        nav_links = ElementMap(Locators.CSS_SELECTOR
+            , "div#header ul>li"
+            , key=lambda element: element.find_element_by_tag_name("a").text
+            , value=lambda element: element.find_element_by_tag_name("a")
+        )
 
         header_text = Element(Locators.CSS_SELECTOR, "#mainContent>h2")
 
@@ -95,13 +102,17 @@ Lets take the above test case for a spin with holmium. Take note of the followin
             self.page = SeleniumHQPage(self.driver, "http://seleniumhq.org")
 
         def test_header_links(self):
-            self.assertTrue( len(self.page.nav_links) > 0 )
-            self.assertEquals( sorted(["Projects", "Download", "Documentation", "Support", "About"])
-                            ,  sorted(self.page.nav_links.keys() ) )
+            self.assertTrue(len(self.page.nav_links) > 0)
+            self.assertEquals(
+                sorted(
+                    ["Projects", "Download", "Documentation", "Support", "About"]
+                )
+                , sorted(self.page.nav_links.keys()))
 
         def test_about_selenium_heading(self):
             self.page.nav_links["About"].click()
             self.assertEquals(self.page.header_text.text, "About Selenium")
+
 
     if __name__ == "__main__":
         unittest.main()
@@ -127,7 +138,8 @@ Feature Summary
 .. _Cucumber Features: http://holmiumcore.readthedocs.org/en/latest/cucumber.html
 .. _TestCase: http://holmiumcore.readthedocs.org/en/latest/api.html#holmium.core.TestCase
 
-* Automatic provisioning and configuration of webdriver instances based either on environment variables or nosetest arguments. (`Unit test integration`_)
+* Automatic provisioning and configuration of webdriver instances based either on
+  environment variables or nosetest arguments. (`Unit test integration`_)
 * Shorthand assertions for web pages (`TestCase`_)
 * Declarative model for defining pages, sections, page elements and element collections (`Page Objects`_)
 * Built in cucumber step definitions for accessing and navigating pages (`Cucumber Features`_)
