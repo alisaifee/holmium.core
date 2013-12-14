@@ -8,7 +8,7 @@ Holmium provides two utilities to ease integration with automated tests.
 
 .. _testing-unittest:
 
-The :class:`TestCase` base class
+The TestCase base class
 ================================
 This base class extends :class:`unittest.TestCase` and adds the following functionality:
     
@@ -22,6 +22,10 @@ This base class extends :class:`unittest.TestCase` and adds the following functi
 
 The following environment variables are respected by :class:`TestCase` when :meth:`unittest.TestCase.setUpClass` is executed.
 
+.. _testing-environment-variables:
+
+Environment Variables
+---------------------
 ===========================  ===========================================================================================================================================
 variable                     description
 ===========================  ===========================================================================================================================================
@@ -87,7 +91,7 @@ option                              description
 
 .. note::
 
-   The environment variables specified in :ref:`testing-unittest` may be used cooperatively when using the nose plugin,
+   :ref:`testing-environment-variables` may be used cooperatively when using the nose plugin,
    however, the options passed to nose will take precedence.
 
 
