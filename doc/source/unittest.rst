@@ -75,7 +75,8 @@ and the :class:`TestCase` class as the base of your test class. adding the ``--w
 flag will result in the :attr:`driver` and :attr:`drivers` attributes to be injected into your
 test class and be made available during test execution.
 
-The following command line options are registered to nose:
+Command line options
+--------------------
 
 ===============================     ===========================================================================================================================================
 option                              description
