@@ -86,7 +86,6 @@ class TestCase(unittest.TestCase):
     def assertElementCSS(self, element, property, value, msg=None):
         """ Fail if the element does not exhibit the correct css property value
         """
-        print element.value_of_css_property(property)
         self.assertEqual(element.value_of_css_property(property), value, msg)
 
     def assertElementSize(self, element,  width, height, msg=None):
