@@ -38,9 +38,11 @@ Deprecated Classes
 Utilities
 ---------
 .. autoclass:: TestCase
+    :members:
 .. autoclass:: Config
     :members:
 .. autoclass:: ElementEnhancer
+    :members:
 .. autofunction:: register_enhancer
 .. autofunction:: reset_enhancers
 

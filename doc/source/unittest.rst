@@ -8,14 +8,15 @@ Holmium provides two utilities to ease integration with automated tests.
 
 .. _testing-unittest:
 
-The :class:`TestCase` base class.
-=================================
+The :class:`TestCase` base class
+================================
 This base class extends :class:`unittest.TestCase` and adds the following functionality:
     
     * automatically provision a selenium webdriver :attr:`driver` to the testcase which is selected based on the environment variable HO_BROWSER. 
     * A remote selenium server can also be used by setting the value of HO_REMOTE to the fully qualified url to the selenium server (e.g. http://localhost:4444/wd/hub)
     * clears the browser cookies between each test case 
     * quits the driver at the end of the test class.
+    * extra assertion methods relevant to :class:`selenium.webdriver.remote.webelement.WebElement` (refer to :class:`TestCase`)
 
 The following environment variables are respected by :class:`TestCase` when :meth:`unittest.TestCase.setUpClass` is executed.
 

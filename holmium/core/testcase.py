@@ -10,7 +10,7 @@ from .config import HolmiumConfig, configure, Config, browser_mapping
 class TestCase(unittest.TestCase):
     """
     Base class for creating test classes for writing holmium driven
-    test cases. More details can be found at :ref:`testing-unittest`.
+    test cases. More details can be found at :ref:`testing-unittest`
     """
 
     @classmethod
