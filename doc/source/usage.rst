@@ -345,13 +345,10 @@ element and optionally, the `background-image`.
         __ARGS__ = ["color"]
         __OPTIONS__ = {"image": None}
         def validate(self, driver):
-            get_css = """var body=window.document.getElementsByTagName("body")[0];
-            return window.document.defaultView.getComputedStyle(body,null).getPropertyValue("%s");"""
-            color = driver.execute_script(get_css % "background-color")
-            assert_equals( self.arguments["color"], color)
+            body = driver.find_element_by_tag_name("body")
+            assert_equals( self.arguments["color"], body.value_of_css_property("background-color")
             if self.options["image"]:
-                image = driver.execute_script(get_css % "background-image")
-                assert_equals( self.options["image"], image)
+                assert_equals( self.options["image"], body.value_of_css_property("background-image")
 
 
 
