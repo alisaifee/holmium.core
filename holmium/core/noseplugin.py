@@ -4,7 +4,9 @@ import sys
 import json
 from nose.plugins.base import Plugin
 from nose.plugins.skip import SkipTest
-from .config import HolmiumConfig, Config,  configure, browser_mapping
+from .config import HolmiumConfig, Config, browser_mapping
+from .env import Env, LazyWebDriverList
+from holmium.core.env import LazyWebDriver
 from .logger import log
 
 try:
@@ -33,10 +35,8 @@ class HolmiumNose(Plugin):
 
     def __init__(self):
         Plugin.__init__(self)
-        self.driver = None
         self.config = {}
         self.environment = None
-        self.driver_initializer_fn = lambda _: None
         self.logger = log
 
     def options(self, parser, env):
@@ -62,6 +62,10 @@ class HolmiumNose(Plugin):
         parser.add_option("", "--holmium-ignore-ssl-errors",
                           action="store_true", dest="ho_ignore_ssl",
                           help="Ignore ssl errors while running tests")
+        parser.add_option("", "--holmium-browser-per-test",
+                          action="store_true", dest="ho_fresh_instance",
+                          help="Create a fresh browser per test class",
+                          default=False)
 
     def configure(self, options, conf):
         if options.ho_enabled:
@@ -69,6 +73,7 @@ class HolmiumNose(Plugin):
             environment = options.ho_env or os.environ.get("HO_ENVIRONMENT", "")
             remote_url = options.ho_remote or os.environ.get("HO_REMOTE", "")
             user_agent = options.ho_ua or os.environ.get("HO_USERAGENT", "")
+            fresh_instance = options.ho_fresh_instance or bool(int(os.environ.get("HO_BROWSER_PER_TEST",0)))
             ignore_ssl = options.ho_ignore_ssl or os.environ.get(
                 "HO_IGNORE_SSL_ERRORS", False)
             caps = options.ho_cap and json.loads(options.ho_cap) or {}
@@ -78,24 +83,21 @@ class HolmiumNose(Plugin):
                                                                  caps,
                                                                  user_agent,
                                                                  environment,
-                                                                 ignore_ssl)
+                                                                 ignore_ssl,
+                                                                 fresh_instance)
 
-            args = configure(holmium_config)
             if holmium_config.remote:
-                driver = browser_mapping["remote"]
+                driver_cls = browser_mapping["remote"]
             else:
-                driver = browser_mapping[holmium_config.browser]
-            self.driver_initializer_fn = lambda: driver(**args)
+                driver_cls = browser_mapping[holmium_config.browser]
+            self.driver = LazyWebDriver(driver_cls, holmium_config)
             self.enabled = True
 
     def beforeTest(self, test):
-        try:
-            if not self.driver:
-                self.driver = self.driver_initializer_fn()
-        except Exception as e:
-            self.logger.exception("failed to initialize selenium driver")
-            raise SkipTest(
-                "holmium could not be initialized due to a problem with the required selenium driver")
+        if not (Env.has_key("driver") and Env["driver"] == self.driver):
+            Env["driver"] = self.driver
+        if not Env.has_key("drivers"):
+            Env["drivers"] = LazyWebDriverList()
 
         base_file = test.address()[0] if not hasattr(test.test,
                                                      "feature") else test.test.feature.src_file
@@ -119,19 +121,22 @@ class HolmiumNose(Plugin):
         if HolmiumNose.is_freshen_test(test) and ftc:
             ftc.config = self.config
         else:
-            setattr(test.test, "config", self.config)
+            setattr(test.test.__class__, "config", self.config)
 
     def startTest(self, test):
-        if self.driver:
+        if Env.get("driver", None):
             if HolmiumNose.is_freshen_test(test) and ftc:
-                ftc.driver = self.driver
+                ftc.driver = Env["driver"]
+                ftc.drivers = Env["drivers"]
             else:
-                setattr(test.test, "driver", self.driver)
-            self.driver.delete_all_cookies()
+                setattr(test.test.__class__, "driver", Env["driver"])
+                setattr(test.test.__class__, "drivers", Env["drivers"])
 
-    def finalize(self, result):
-        if self.driver:
-            self.driver.quit()
+    def afterTest(self, test):
+        if Env.get("driver", None) and self.holmium_config.fresh_instance:
+            [_d.safe_quit() for _d in Env["drivers"]]
+        elif Env.get("driver"):
+            [_d.safe_clear() for _d in Env["drivers"]]
 
     @staticmethod
     def is_freshen_test(test):

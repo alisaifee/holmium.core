@@ -95,7 +95,7 @@ class ConfigTests(unittest.TestCase):
 
     def test_holmium_config_object(self):
 
-        cfg = HolmiumConfig(1,2,3,4,5,6)
+        cfg = HolmiumConfig(1,2,3,4,5,6,7)
         self.assertEqual(cfg,  {
             "browser":1,
             "remote":2,
@@ -103,6 +103,7 @@ class ConfigTests(unittest.TestCase):
             "user_agent":4,
             "environment":5,
             "ignore_ssl":6,
+            "fresh_instance":7,
         })
 
         self.assertEqual(cfg.browser, 1)
@@ -111,6 +112,7 @@ class ConfigTests(unittest.TestCase):
         self.assertEqual(cfg.user_agent, 4)
         self.assertEqual(cfg.environment, 5)
         self.assertEqual(cfg.ignore_ssl, 6)
+        self.assertEqual(cfg.fresh_instance, 7)
 
         cfg.browser = 2
         self.assertEqual(cfg.browser, 2)
@@ -132,5 +134,6 @@ class ConfigTests(unittest.TestCase):
             "",
             "development",
             False,
+            False
         )
         self.assertRaises(RuntimeError, configure, cfg)

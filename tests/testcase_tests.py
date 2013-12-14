@@ -2,8 +2,10 @@ import unittest
 import os
 
 import mock
+from nose.plugins.attrib import attr
 
 from holmium.core import TestCase, Element, Elements, ElementMap, Locators
+from holmium.core.env import Env
 import holmium.core.testcase
 
 from .utils import mock_open, build_mock_mapping
@@ -13,12 +15,32 @@ def runtc(env, validations):
     try:
         _pre_env = dict(os.environ)
         os.environ.update(env)
-        class t(TestCase):
+        class t1(TestCase):
             def runTest(self):
+                self.driver.get("http://nowhere.org")
                 for validation in validations:
                     self.assertTrue(validation(self))
+        test = t1()
+        test.setUpClass()
+        test.setUp()
+        test.runTest()
+        test.tearDown()
+        test.tearDownClass()
+    finally:
+        os.environ = _pre_env
 
-        test = t()
+def runtc2drivers(env, validations):
+    try:
+        _pre_env = dict(os.environ)
+        os.environ.update(env)
+        class t2(TestCase):
+            def runTest(self):
+                self.driver.get("http://nowhere.org")
+                self.drivers[0].get("http://nowhere.org")
+                self.drivers[1].get("http://nowhere.org")
+                for validation in validations:
+                    self.assertTrue(validation(self))
+        test = t2()
         test.setUpClass()
         test.setUp()
         test.runTest()
@@ -28,6 +50,10 @@ def runtc(env, validations):
         os.environ = _pre_env
 
 class TestCaseTests(unittest.TestCase):
+    def setUp(self):
+        if Env.has_key("driver"):
+            Env.pop("driver")
+
     def test_set_browser(self):
         with mock.patch.dict('holmium.core.testcase.browser_mapping', build_mock_mapping("phantomjs")):
             runtc({"HO_BROWSER":"phantomjs"}, [lambda s:s.driver!=None])
@@ -67,3 +93,23 @@ class TestCaseTests(unittest.TestCase):
             ff_profile = call_args[1]["firefox_profile"]
             ua = ff_profile.default_preferences["general.useragent.override"]
             self.assertEqual(ua, 'holmium.core')
+
+    def test_browser_per_test(self):
+        with mock.patch.dict('holmium.core.testcase.browser_mapping', build_mock_mapping("firefox")):
+            runtc({"HO_BROWSER":"firefox", "HO_BROWSER_PER_TEST":"1"}, [])
+            self.assertEquals(holmium.core.testcase.browser_mapping["firefox"].return_value.quit.call_count, 1)
+        Env.clear()
+        with mock.patch.dict('holmium.core.testcase.browser_mapping', build_mock_mapping("firefox")):
+            runtc({"HO_BROWSER":"firefox", "HO_BROWSER_PER_TEST":"0"}, [])
+            self.assertEquals(holmium.core.testcase.browser_mapping["firefox"].return_value.quit.call_count, 0)
+
+    def test_multiple_browser_per_test(self):
+        with mock.patch.dict('holmium.core.testcase.browser_mapping', build_mock_mapping("firefox")):
+            runtc2drivers({"HO_BROWSER":"firefox", "HO_BROWSER_PER_TEST":"0"}, [])
+            self.assertEquals(holmium.core.testcase.browser_mapping["firefox"].call_count, 2)
+        Env.clear()
+        with mock.patch.dict('holmium.core.testcase.browser_mapping', build_mock_mapping("firefox")):
+            runtc2drivers({"HO_BROWSER":"firefox", "HO_BROWSER_PER_TEST":"1"}, [])
+            self.assertEquals(holmium.core.testcase.browser_mapping["firefox"].call_count, 2)
+            self.assertEquals(holmium.core.testcase.browser_mapping["firefox"].return_value.quit.call_count, 2)
+

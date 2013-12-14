@@ -18,8 +18,8 @@ support = os.path.join(os.path.dirname(__file__), "support")
 class TestFresherIntegration(PluginTester, unittest.TestCase):
     activate = "--with-holmium"
     args = ['--holmium-environment=development'
-        , '--holmium-browser=firefox'
-        , '--with-fresher'
+            , '--holmium-browser=firefox'
+            , '--with-fresher'
     ]
     suitepath = os.path.join(support, 'cucumber')
     plugins = [holmium.core.HolmiumNose(), FresherNosePlugin()]
@@ -39,7 +39,6 @@ class TestFresherIntegration(PluginTester, unittest.TestCase):
         self.driver.return_value.find_element.return_value.find_elements.return_value = [mock_section_element]
         self.sleep_patcher = mock.patch("time.sleep")
         self.sleep_mock = self.sleep_patcher.start()
-
         super(TestFresherIntegration,self).setUp()
     def runTest(self):
         assert "Ran 10 tests" in self.output, self.output

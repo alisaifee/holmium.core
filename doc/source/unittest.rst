@@ -12,10 +12,12 @@ The :class:`TestCase` base class
 ================================
 This base class extends :class:`unittest.TestCase` and adds the following functionality:
     
-    * automatically provision a selenium webdriver :attr:`driver` to the testcase which is selected based on the environment variable HO_BROWSER. 
+    * automatically provision any number of selenium webdrivers (:attr:`driver`/:attr:`drivers`) to the testcase
+      based on the environment variable HO_BROWSER. The webdrivers are generated lazily upon access of the :attr:`driver` or :attr:`drivers`
+      attributes.
     * A remote selenium server can also be used by setting the value of HO_REMOTE to the fully qualified url to the selenium server (e.g. http://localhost:4444/wd/hub)
     * clears the browser cookies between each test case 
-    * quits the driver at the end of the test class.
+    * quits the driver(s) at the end of the test class or at the end of the test run (depending on the configuration).
     * extra assertion methods relevant to :class:`selenium.webdriver.remote.webelement.WebElement` (refer to :class:`TestCase`)
 
 The following environment variables are respected by :class:`TestCase` when :meth:`unittest.TestCase.setUpClass` is executed.
@@ -26,13 +28,10 @@ variable                     description
 ``HO_BROWSER``               one of chrome,firefox,opera,safari, ie,phantomjs,android,iphone or ipad
 ``HO_REMOTE``                the full qualified url of the selenium server. If not provided the browsers will be attempted to be launched using the built in webdrivers.
 ``HO_USERAGENT``             useragent to use as an override. only works with firefox & chrome 
-``HO_IGNORE_SSL_ERRORS``     ignore ssl errors when accessing pages served under untrusted certificates.
+``HO_IGNORE_SSL_ERRORS``     ignore ssl errors when accessing pages served under untrusted certificates (default False).
+``HO_BROWSER_PER_TEST``      if the variable is set the browser is created/destroyed for each test class (default False).
 ===========================  ===========================================================================================================================================
 
-.. note::
-
-   These environment variables may also be used when using the :ref:`testing-nose`.
-   The options passed to nose however will take precedence.
 
 
 Example test case
@@ -59,16 +58,20 @@ Execution
 .. code-block:: bash 
     
     # against the builtin firefox driver 
-    export HO_BROWSER=firefox;python test_simple.py 
+    HO_BROWSER=firefox python test_simple.py
     # against a firefox instance under a remote selenium server 
-    export HO_BROWSER=firefox;export HO_REMOTE=http://localhost:5555/wd/hub;python test_simple.py 
+    HO_BROWSER=firefox HO_REMOTE=http://localhost:5555/wd/hub python test_simple.py
 
 .. _testing-nose:
 
 Plugin for nosetest
 ===================
+The plugin provides a way to configure holmium without the use of environment variables
+and the :class:`TestCase` class as the base of your test class. adding the ``--with-holmium``
+flag will result in the :attr:`driver` and :attr:`drivers` attributes to be injected into your
+test class and be made available during test execution.
 
-This plugin registers the following command line options to nose:
+The following command line options are registered to nose:
 
 ===============================     ===========================================================================================================================================
 option                              description
@@ -78,8 +81,16 @@ option                              description
 ``--holmium-remote``                the full qualified url of the selenium server. If not provided the browsers will be attempted to be launched using the built in webdrivers.
 ``--holmium-useragent``             useragent to use as an override. only works with firefox & chrome 
 ``--holmium-capabilities``          a json dictionary of extra desired capabilities to pass to the webdriver. 
-``--holmium-ignore-ssl-errors``     ignore ssl errors when accessing pages served under untrusted certificates. 
+``--holmium-ignore-ssl-errors``     ignore ssl errors when accessing pages served under untrusted certificates (default False).
+``--holmium-browser-per-test``      creates/destroys the browser for each test case (default False).
 ===============================     ===========================================================================================================================================
+
+.. note::
+
+   The environment variables specified in :ref:`testing-unittest` may be used cooperatively when using the nose plugin,
+   however, the options passed to nose will take precedence.
+
+
 
 Example test case
 -----------------

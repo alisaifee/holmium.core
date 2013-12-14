@@ -148,7 +148,7 @@ class HolmiumConfig(dict):
     as keys in the dictionary and vice versa.
     """
     def __init__(self, browser, remote, capabilities, user_agent, environment,
-                 ignore_ssl):
+                 ignore_ssl, fresh_instance):
         _d = {}
         for arg in inspect.getargspec(HolmiumConfig.__init__).args[1:]:
             setattr(self, arg, locals()[arg])

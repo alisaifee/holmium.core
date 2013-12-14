@@ -2,9 +2,10 @@ import unittest
 import inspect
 import imp
 import json
-
 import os
-from .config import HolmiumConfig, configure, Config, browser_mapping
+from .config import HolmiumConfig, Config, browser_mapping
+from .env import Env
+from holmium.core.env import LazyWebDriver, LazyWebDriverList
 
 
 class TestCase(unittest.TestCase):
@@ -16,7 +17,9 @@ class TestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """
-        create the driver and configure it before any of the tests run.
+        prepare the driver initialization based on the environment variables
+        that have been set. The driver is not actually initialized until the test
+        itself actually refers to it via `self.driver`.
         """
         cls.driver = None
         base_file = inspect.getfile(cls)
@@ -26,9 +29,9 @@ class TestCase(unittest.TestCase):
         remote = os.environ.get("HO_REMOTE", None)
         environment = os.environ.get("HO_ENV", "development")
         ignore_ssl = os.environ.get("HO_IGNORE_SSL_ERRORS", False)
-        holmium_config = HolmiumConfig(browser, remote, {}, user_agent,
-                                       environment, ignore_ssl)
-        args = configure(holmium_config)
+        fresh_instance = bool(int(os.environ.get("HO_BROWSER_PER_TEST", 0)))
+        cls.holmium_config = HolmiumConfig(browser, remote, {}, user_agent,
+                                       environment, ignore_ssl, fresh_instance)
         config = None
         if os.path.isfile(config_path + ".json"):
             config = json.loads(open(config_path + ".json").read())
@@ -36,23 +39,24 @@ class TestCase(unittest.TestCase):
             config = imp.load_source("config", config_path + ".py").config
         if config:
             cls.config = Config(config,
-                                             {"holmium": holmium_config})
+                                             {"holmium": cls.holmium_config})
         if remote:
-            driver = browser_mapping["remote"]
+            driver_cls = browser_mapping["remote"]
         else:
-            driver = browser_mapping[holmium_config.browser]
-        cls.driver = driver(**args)
+            driver_cls = browser_mapping[cls.holmium_config.browser]
+        cls.driver = Env.setdefault("driver", LazyWebDriver(driver_cls, cls.holmium_config))
+        cls.drivers = Env.setdefault("drivers", LazyWebDriverList())
         if hasattr(super(TestCase, cls), "setUpClass"):
             super(TestCase, cls).setUpClass()
 
     @classmethod
     def tearDownClass(cls):
         """
-        quit the driver after all the test methods in the class have
-        finished.
+        quit the driver after the test run (or after all the test methods
+        in the class have finished if ``HO_BROWSER_PER_TEST`` is set).
         """
-        if cls.driver:
-            cls.driver.quit()
+        if Env.get("driver", None) and cls.holmium_config.fresh_instance:
+            [_d.safe_quit() for _d in Env["drivers"]]
         if hasattr(super(TestCase, cls), "tearDownClass"):
             super(TestCase, cls).tearDownClass()
 
@@ -60,8 +64,8 @@ class TestCase(unittest.TestCase):
         """
         clear the cookies on the driver after each test
         """
-        if hasattr(self, "driver"):
-            self.driver.delete_all_cookies()
+        if Env.get("driver", None):
+            [_d.safe_clear() for _d in Env["drivers"]]
         super(TestCase,self).tearDown()
 
 

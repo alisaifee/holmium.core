@@ -1,4 +1,5 @@
 .. _PageObjects: http://code.google.com/p/selenium/wiki/PageObjects
+.. _Selenium: http://www.seleniumhq.org/
 .. |travis-ci| image:: https://secure.travis-ci.org/alisaifee/holmium.core.png?branch=master
     :target: https://travis-ci.org/#!/alisaifee/holmium.core?branch=master
 .. |coveralls| image:: https://coveralls.io/repos/alisaifee/holmium.core/badge.png?branch=master
@@ -17,9 +18,10 @@ holmium.core
 Introduction
 ************
 
-holmium.core provides utility classes to simplify writing pageobjects for webpages using selenium.
+holmium.core provides utilities for simplifying the creation and maintenance of tests that rely on `Selenium`_.
 
-Nothing beats an example. Conventionally automated tests integrating with python-selenium are written similarly to the following code block (using seleniumhq.org).
+Nothing beats an example. Conventionally automated tests integrating with python-selenium are written
+similarly to the following code block (using seleniumhq.org).
 
 .. code-block:: python
 
@@ -58,16 +60,19 @@ The above example does what most selenium tests do:
 
 * initialize a webdriver upon setUp
 * query for one or more web elements using either class name, id, css_selector or xpath
-* assert on the number of occurances / value of certain elements.
+* assert on the number of occurrences / value of certain elements.
 * tear down the webdriver after each test case
 
-It suffers from the typical web development problem of coupling the test case with the HTML plumbing of the page its testing rather than the functionality its meant to excercise.
-The concept of `PageObjects`_ reduces this coupling and allow for test authors to separate the layout of the page under test and the functional behavior being tested. This separation also results
-in more maintainable test code (i.e. if an element name changes - all tests dont have to be updated, just the pageobject).
+It suffers from the typical web development problem of coupling the test case with the HTML plumbing of
+the page its testing rather than the functionality its meant to exercise. The concept of `PageObjects`_
+reduces this coupling and allow for test authors to separate the layout of the page under test and the
+functional behavior being tested. This separation also results in more maintainable test code
+(*i.e. if an element name changes - all tests don't have to be updated, just the PageObject*).
 
 Lets take the above test case for a spin with holmium. Take note of the following:
 
-* The initialization and reset of the webdriver is delegated to the TestCase base class (alternatively the class could subclass unittest.TestCase and be run with the holmium nose plugin.
+* The initialization and reset of the webdriver is delegated to the TestCase base class
+  (*alternatively the class could subclass unittest.TestCase and be run with the holmium nose plugin*).
 * the page elements are accessed in the test only via Element & ElementMap.
 
 
@@ -106,10 +111,25 @@ Which can then be executed in a few different ways as shown below.
 .. code-block:: bash
 
     # if using TestCase as the base class run as:
-    export HO_BROWSER=firefox;nosetests test_selenium_hq.py
+    HO_BROWSER=firefox nosetests test_selenium_hq.py
     # or..
-    export HO_BROWSER=firefox;python test_selenium_hq.py
+    HO_BROWSER=firefox python test_selenium_hq.py
     # if using unittest.TestCase as the base class run as:
-    nosetests test_selenium_hq.py --holmium-browser=firefox
+    nosetests test_selenium_hq.py --with-holmium --holmium-browser=firefox
+
+
+***************
+Feature Summary
+***************
+
+.. _Unit test integration: http://holmiumcore.readthedocs.org/en/latest/unittest.html
+.. _Page Objects: http://holmiumcore.readthedocs.org/en/latest/usage.html
+.. _Cucumber Features: http://holmiumcore.readthedocs.org/en/latest/cucumber.html
+.. _TestCase: http://holmiumcore.readthedocs.org/en/latest/api.html#holmium.core.TestCase
+
+* Automatic provisioning and configuration of webdriver instances based either on environment variables or nosetest arguments. (`Unit test integration`_)
+* Shorthand assertions for web pages (`TestCase`_)
+* Declarative model for defining pages, sections, page elements and element collections (`Page Objects`_)
+* Built in cucumber step definitions for accessing and navigating pages (`Cucumber Features`_)
 
 

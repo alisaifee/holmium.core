@@ -7,6 +7,7 @@ import os
 import mock
 
 from holmium.core import TestCase, Page, Element, Elements, ElementMap, Locators
+from holmium.core.env import Env
 import holmium.core.testcase
 from .utils import build_mock_mapping
 
@@ -37,6 +38,8 @@ def runtc(env, validations, validator = lambda c,s:c(s)):
         os.environ = _pre_env
 
 class TestCaseTests(unittest.TestCase):
+    def setUp(self):
+        Env.clear()
 
     def test_assert_element_positive(self):
         with mock.patch.dict('holmium.core.testcase.browser_mapping', build_mock_mapping("firefox")):
