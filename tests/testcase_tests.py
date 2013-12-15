@@ -3,6 +3,7 @@ import os
 
 import mock
 from nose.plugins.attrib import attr
+from nose.plugins.skip import SkipTest
 
 from holmium.core import TestCase, Element, Elements, ElementMap, Locators
 from holmium.core.env import ENV
@@ -93,6 +94,9 @@ class TestCaseTests(unittest.TestCase):
             ff_profile = call_args[1]["firefox_profile"]
             ua = ff_profile.default_preferences["general.useragent.override"]
             self.assertEqual(ua, 'holmium.core')
+
+    def test_invalid_browser(self):
+        self.assertRaises(SkipTest, runtc, {"HO_BROWSER":"direfox", "HO_BROWSER_PER_TEST":"1"}, [])
 
     def test_browser_per_test(self):
         with mock.patch.dict('holmium.core.testcase.BROWSER_MAPPING', build_mock_mapping("firefox")):
