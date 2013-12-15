@@ -99,7 +99,7 @@ class HolmiumNose(Plugin):
             if holmium_config.remote:
                 driver_cls = BROWSER_MAPPING["remote"]
             else:
-                driver_cls = BROWSER_MAPPING[holmium_config.browser]
+                driver_cls = BROWSER_MAPPING.get(holmium_config.browser, None)
             self.driver = LazyWebDriver(driver_cls, holmium_config)
             self.enabled = True
 

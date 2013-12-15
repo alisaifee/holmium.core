@@ -193,13 +193,28 @@ class TestDriverBroken(PluginTester, unittest.TestCase):
     def setUp(self):
         self.old_mapping = holmium.core.noseplugin.BROWSER_MAPPING
         mock_browsers = build_mock_mapping("chrome")
-        self.plugins[0].logger = mock.Mock()
         def fake_construct(*a, **k):
             raise Exception("failed to initialize")
         mock_browsers["chrome"].side_effect = fake_construct
         holmium.core.noseplugin.BROWSER_MAPPING.update(mock_browsers)
         ENV.clear()
         super(TestDriverBroken,self).setUp()
+    def runTest(self):
+        assert "Ran 1 test" in self.output, self.output
+        assert "SKIP=1" in self.output, self.output
+    def tearDown(self):
+        holmium.core.noseplugin.BROWSER_MAPPING = self.old_mapping
+
+class TestNoDriver(PluginTester, unittest.TestCase):
+    activate = "--with-holmium"
+    suitepath = os.path.join(support, 'broken_driver')
+    plugins = [holmium.core.HolmiumNose(), Skip()]
+    def setUp(self):
+        self.old_mapping = holmium.core.noseplugin.BROWSER_MAPPING
+        mock_browsers = build_mock_mapping("chrome")
+        holmium.core.noseplugin.BROWSER_MAPPING.update(mock_browsers)
+        ENV.clear()
+        super(TestNoDriver,self).setUp()
     def runTest(self):
         assert "Ran 1 test" in self.output, self.output
         assert "SKIP=1" in self.output, self.output

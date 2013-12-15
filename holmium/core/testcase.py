@@ -8,7 +8,8 @@ import json
 import os
 from .config import HolmiumConfig, Config, BROWSER_MAPPING
 from .env import ENV
-from holmium.core.env import LazyWebDriver, LazyWebDriverList
+from .env import LazyWebDriver, LazyWebDriverList
+from nose.plugins.skip import SkipTest
 
 # pylint: disable=too-many-public-methods
 
@@ -47,6 +48,10 @@ class TestCase(unittest.TestCase):
         if remote:
             driver_cls = BROWSER_MAPPING["remote"]
         else:
+            if not cls.holmium_config.browser in BROWSER_MAPPING:
+                raise SkipTest("Unknown browser (%s) specified in HO_BROWSER"
+                    % ( cls.holmium_config.browser)
+                )
             driver_cls = BROWSER_MAPPING[cls.holmium_config.browser]
         cls.driver = ENV.setdefault("driver", LazyWebDriver(driver_cls,
                                                             cls.holmium_config)
