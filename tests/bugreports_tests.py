@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 import unittest
 import threading
+from holmium.core.facets import cookie,title
 import os
 from selenium.webdriver.support.ui import Select
 import mock
 
-import holmium.core
-from holmium.core import ElementEnhancer
-
+from holmium.core import Element, ElementEnhancer, Page, Locators
+from holmium.core import reset_enhancers, register_enhancer
 
 support = os.path.join(os.path.dirname(__file__), "support")
 
@@ -16,8 +16,8 @@ class BugReports(unittest.TestCase):
     def test_multiple_pageinstances(self):
         """ https://github.com/alisaifee/holmium.core/issues/4
         """
-        class p(holmium.core.Page):
-            el = holmium.core.Element(holmium.core.Locators.NAME, "name")
+        class p(Page):
+            el = Element(Locators.NAME, "name")
         d1,d2=mock.Mock(), mock.Mock()
         p1,p2=p(d1, "http://p1"),p(d2, "http://p2")
         e1,e2=mock.Mock(), mock.Mock()
@@ -33,10 +33,10 @@ class BugReports(unittest.TestCase):
     def test_multiple_pageinstances_multithreaded(self):
         """ https://github.com/alisaifee/holmium.core/issues/4
         """
-        class p(holmium.core.Page):
-            el = holmium.core.Element(holmium.core.Locators.NAME, "name")
-        class p2(holmium.core.Page):
-            el = holmium.core.Element(holmium.core.Locators.NAME, "name")
+        class p(Page):
+            el = Element(Locators.NAME, "name")
+        class p2(Page):
+            el = Element(Locators.NAME, "name")
 
         def exec_page_in_thread(p):
             p.go_home()
@@ -65,8 +65,8 @@ class BugReports(unittest.TestCase):
     def test_fluent_response(self):
         """ https://github.com/alisaifee/holmium.core/issues/8
         """
-        class p(holmium.core.Page):
-            el = holmium.core.Element(holmium.core.Locators.NAME, "name")
+        class p(Page):
+            el = Element(Locators.NAME, "name")
             def f1(self):
                 self.el.click()
             def f2(self):
@@ -88,8 +88,8 @@ class BugReports(unittest.TestCase):
     def test_select_element(self):
         """ https://github.com/alisaifee/holmium.core/issues/13
         """
-        class SimplePage(holmium.core.Page):
-            id_el = holmium.core.Element(holmium.core.Locators.ID, "simple_id")
+        class SimplePage(Page):
+            id_el = Element(Locators.ID, "simple_id")
         driver = mock.Mock()
         driver.find_element.return_value.tag_name = "select"
         self.assertTrue(isinstance(SimplePage(driver).id_el, Select))
@@ -104,16 +104,34 @@ class BugReports(unittest.TestCase):
             def get_text_upper(self):
                 return self.element.text.upper()
 
-        holmium.core.register_enhancer(CustomSelect)
-        class SimplePage(holmium.core.Page):
-            id_el = holmium.core.Element(holmium.core.Locators.ID, "simple_id")
+        register_enhancer(CustomSelect)
+        class SimplePage(Page):
+            id_el = Element(Locators.ID, "simple_id")
         driver = mock.Mock()
         driver.find_element.return_value.tag_name = "select"
         driver.find_element.return_value.text = "fOo"
         self.assertTrue(issubclass(SimplePage(driver).id_el.__class__, CustomSelect))
         self.assertEquals(SimplePage(driver).id_el.get_text_upper(), "FOO")
 
+    def test_class_inheritance_with_facets(self):
+        """ https://github.com/alisaifee/issues/18
+        """
+        @cookie(name="foo")
+        class BasePage(Page):
+            pass
+
+        @title(title="one")
+        class ExtOne(BasePage):
+            pass
+
+        @title(title="two")
+        class ExtTwo(BasePage):
+            pass
+
+        self.assertEquals(len(BasePage.get_class_facets()), 1)
+        self.assertEquals(len(ExtOne.get_class_facets()), 2)
+        self.assertEquals(len(ExtTwo.get_class_facets()), 2)
 
     def tearDown(self):
-        holmium.core.reset_enhancers()
+        reset_enhancers()
         super(BugReports,self).tearDown()
