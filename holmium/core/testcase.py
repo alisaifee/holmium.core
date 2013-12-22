@@ -91,6 +91,12 @@ class TestCase(unittest.TestCase):
         """
         self.assertEqual(element.text, text, msg)
 
+    def assertElementAttributeEqual(self, element, key, value, msg=None):
+        """
+        Fail if the element does not have the specified attribute value
+        """
+        self.assertEqual(element.get_attribute(key), value, msg)
+
     def assertElementDisplayed(self, element, msg=None):
         """
         Fail if the element is not visible
