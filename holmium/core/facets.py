@@ -4,6 +4,7 @@ implementation of facet bases and builtin facets
 
 
 from abc import ABCMeta, abstractmethod
+import copy
 import inspect
 import weakref
 import re
@@ -142,12 +143,25 @@ class FacetCollection(list):
                 elif facet.required:
                     raise FacetError(facet, _)
 
-
+class CopyOnCreateFacetCollectionMeta(ABCMeta):
+    """
+    makes a new copy of any :class:`FacetCollection`
+    instances upon creating the class. This is to ensure
+    that different derived classes of :class:`Page`
+    do not clobber the class facets of the base class.
+    """
+    def __init__(self, *args):
+        super(CopyOnCreateFacetCollectionMeta, self).__init__(*args)
+        for superclass in self.__mro__:
+            for k,v in vars(superclass).items():
+                if isinstance(v, (FacetCollection)):
+                    setattr(self, k, copy.copy(v))
 class Faceted(object):
     """
     mixin for objects that want to have facets registered
     on them.
     """
+    __metaclass__ = CopyOnCreateFacetCollectionMeta
 
     def __init__(self):
         self.instance_facets = FacetCollection()

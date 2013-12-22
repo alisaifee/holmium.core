@@ -23,7 +23,7 @@ if hasattr(collections, "OrderedDict"):
 else:
     from ordereddict import OrderedDict # pragma: no cover
 
-from .facets import Faceted, ElementFacet
+from .facets import Faceted, ElementFacet, CopyOnCreateFacetCollectionMeta
 from .logger import log
 
 # pylint: disable=unnecessary-lambda,too-few-public-methods,too-many-arguments
@@ -63,7 +63,7 @@ class ElementDict(dict):
         return dict.__getitem__(self, key).__get__(self.instance(),
                                                    self.instance().__class__)
 
-class Registry(type):
+class Registry(CopyOnCreateFacetCollectionMeta):
     """
     simple meta class to keep track of all page objects registered
     """
