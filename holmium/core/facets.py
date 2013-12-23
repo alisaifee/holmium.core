@@ -52,10 +52,10 @@ class Facet(object):
          facet on.
         """
         if inspect.isclass(obj):
-            obj.get_class_facets().add(self)
+            obj.get_class_facets().append(self)
             self.parent_class = obj
         else:
-            obj.get_instance_facets().add(self)
+            obj.get_instance_facets().append(self)
             self.parent_class = obj.__class__
 
 
@@ -117,7 +117,7 @@ class FacetError(Exception):
         super(FacetError, self).__init__(self.message)
 
 
-class FacetCollection(set):
+class FacetCollection(list):
     """
     utility collection class for pageobjects to encapsulate
     facets
@@ -137,7 +137,7 @@ class FacetCollection(set):
             type_mmap.setdefault(type(item), []).append(item)
         return type_mmap
 
-    def add(self, item):
+    def append(self, item):
         """
         overridden add method to pop the last
         item if its type does not support multiple
@@ -148,7 +148,8 @@ class FacetCollection(set):
             and not type(item).__ALLOW_MULTIPLE__
         ):
             self.remove(self.type_map[type(item)].pop())
-        super(FacetCollection, self).add(item)
+        if item not in self:
+            super(FacetCollection, self).append(item)
 
 
 
@@ -185,7 +186,7 @@ class CopyOnCreateFacetCollectionMeta(ABCMeta):
                 if isinstance(value, (FacetCollection)):
                     visited.setdefault(key, FacetCollection())
                     for facet in value:
-                        visited[key].add(facet)
+                        visited[key].append(facet)
                     setattr(cls, key, FacetCollection(visited[key]))
 class Faceted(object):
     """
