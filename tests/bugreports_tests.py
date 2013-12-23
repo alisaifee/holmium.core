@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import unittest
 import threading
-from holmium.core.facets import cookie,title
+from holmium.core.facets import cookie,title, defer
+from nose.plugins.attrib import attr
 import os
 from selenium.webdriver.support.ui import Select
 import mock
@@ -113,24 +114,49 @@ class BugReports(unittest.TestCase):
         self.assertTrue(issubclass(SimplePage(driver).id_el.__class__, CustomSelect))
         self.assertEquals(SimplePage(driver).id_el.get_text_upper(), "FOO")
 
+    @attr("sigh")
     def test_class_inheritance_with_facets(self):
         """ https://github.com/alisaifee/issues/18
         """
         @cookie(name="foo")
-        class BasePage(Page):
-            pass
+        class B1(Page):
+            def dance(self):
+                return
 
         @title(title="one")
-        class ExtOne(BasePage):
+        class ExtOne(B1):
             pass
 
-        @title(title="two")
-        class ExtTwo(BasePage):
+        @defer(page=ExtOne, action=ExtOne.dance)
+        class ExtTwo(B1):
             pass
 
-        self.assertEquals(len(BasePage.get_class_facets()), 1)
+        @title(title="three")
+        @cookie(name="bar")
+        class ExtThree(ExtOne, ExtTwo):
+            pass
+
+        @title(title="four")
+        class B2(Page):
+            pass
+
+        @cookie(name="foo")
+        class B3(Page):
+            pass
+
+        class ExtFour(B2,B3):
+            pass
+
+
+        self.assertEquals(len(B1.get_class_facets()), 1)
         self.assertEquals(len(ExtOne.get_class_facets()), 2)
         self.assertEquals(len(ExtTwo.get_class_facets()), 2)
+        self.assertEquals(len(ExtThree.get_class_facets()), 4)
+        # ensure the last title is the one used
+        self.assertEquals(ExtThree.get_class_facets().type_map[title].pop().arguments,
+            {"title":"three"})
+
+        self.assertEquals(len(ExtFour.get_class_facets()), 2)
 
     def tearDown(self):
         reset_enhancers()

@@ -2,12 +2,12 @@
 implementation of facet bases and builtin facets
 """
 
-
-from abc import ABCMeta, abstractmethod
-import copy
 import inspect
 import weakref
+
+from abc import ABCMeta, abstractmethod
 import re
+
 # pylint: disable=no-name-in-module,abstract-class-not-used
 from nose.tools import assert_equals, assert_true
 from .logger import log
@@ -18,6 +18,7 @@ class Facet(object):
     """
     __ARGS__ = []
     __OPTIONS__ = {}
+    __ALLOW_MULTIPLE__ = True
     __metaclass__ = ABCMeta
 
     def __init__(self, required=True, debug=False, **kwargs):
@@ -51,10 +52,10 @@ class Facet(object):
          facet on.
         """
         if inspect.isclass(obj):
-            obj.get_class_facets().append(self)
+            obj.get_class_facets().add(self)
             self.parent_class = obj
         else:
-            obj.get_instance_facets().append(self)
+            obj.get_instance_facets().add(self)
             self.parent_class = obj.__class__
 
 
@@ -116,14 +117,39 @@ class FacetError(Exception):
         super(FacetError, self).__init__(self.message)
 
 
-class FacetCollection(list):
+class FacetCollection(set):
     """
     utility collection class for pageobjects to encapsulate
     facets
     """
 
-    def __init__(self):
-        super(FacetCollection, self).__init__()
+    def __init__(self, *a):
+        super(FacetCollection, self).__init__(*a)
+
+    @property
+    def type_map(self):
+        """
+        view on the list to help with figuring out
+        if a facet of the same type already exists
+        """
+        type_mmap = {}
+        for item in self:
+            type_mmap.setdefault(type(item), []).append(item)
+        return type_mmap
+
+    def add(self, item):
+        """
+        overridden add method to pop the last
+        item if its type does not support multiple
+        facets on the same object.
+        """
+        if (
+            self.type_map.has_key(type(item))
+            and not type(item).__ALLOW_MULTIPLE__
+        ):
+            self.remove(self.type_map[type(item)].pop())
+        super(FacetCollection, self).add(item)
+
 
 
     def evaluate_all(self, driver):
@@ -150,12 +176,17 @@ class CopyOnCreateFacetCollectionMeta(ABCMeta):
     that different derived classes of :class:`Page`
     do not clobber the class facets of the base class.
     """
-    def __init__(self, *args):
-        super(CopyOnCreateFacetCollectionMeta, self).__init__(*args)
-        for superclass in self.__mro__:
-            for k,v in vars(superclass).items():
-                if isinstance(v, (FacetCollection)):
-                    setattr(self, k, copy.copy(v))
+
+    def __init__(cls, *args):
+        super(CopyOnCreateFacetCollectionMeta, cls).__init__(*args)
+        visited = {}
+        for superclass in cls.__mro__:
+            for key, value in vars(superclass).items():
+                if isinstance(value, (FacetCollection)):
+                    visited.setdefault(key, FacetCollection())
+                    for facet in value:
+                        visited[key].add(facet)
+                    setattr(cls, key, FacetCollection(visited[key]))
 class Faceted(object):
     """
     mixin for objects that want to have facets registered
@@ -234,7 +265,7 @@ class Title(Facet):
      a noop.
     """
     __ARGS__ = ["title"]
-
+    __ALLOW_MULTIPLE__ = False
     def evaluate(self, driver):
         assert_true(re.compile(self.arguments["title"]).match(driver.title),
                     "title did not match %s" % self.arguments["title"]

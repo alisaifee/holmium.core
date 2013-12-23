@@ -305,7 +305,6 @@ class ElementGetter(object):
                 )
                 raise
         return _meth(self.locator_type, self.query_string)
-
     @classmethod
     def enhance(cls, element):
         """

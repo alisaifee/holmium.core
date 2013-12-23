@@ -319,20 +319,34 @@ Builtin facets
 --------------
 
 .. currentmodule:: holmium.core.facets
+.. autoclass:: Title
+.. autoclass:: Cookie
+.. autoclass:: Strict
+.. autoclass:: Defer
+
+For good measure, lowercased aliases are available for builtin facets:
+
 .. autoclass:: title
-.. autoclass:: cookie
 .. autoclass:: strict
+.. autoclass:: cookie
 .. autoclass:: defer
-.. currentmodule:: holmium.core 
+
+.. currentmodule:: holmium.core
 
 Rolling your own
 ----------------
 You can create your own facet decorator by subclassing :class:`facets.Facet` and implementing the
-:func:`facets.Facet.evaluate` method. Any additional arguments that you want to access during evaluate
-should be declared as class members:
+:func:`facets.Facet.evaluate` method. Any additional arguments that you want to access during evaluation
+should be declared as the following class members:
 
     * required arguments as an **__ARGS__** list
     * optional arguments as an **__OPTIONS__** dictionary.
+
+
+You can also declare an **__ALLOW_MUTLIPLE__** property on your facet which will control
+the expectation from multiple decorations of the same facet type. If set to ``False``
+the last facet decorator applied will be respected (for example as with the :class:`facets.title`
+facet - for which it only makes sense to respect the last decorator applied).
 
 The example facet below would require that `color` as an argument, and would optionally
 accept `image`. When the  facet is evaluated it would assert on the `background-color` of the body
