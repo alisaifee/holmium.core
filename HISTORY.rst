@@ -11,6 +11,15 @@
 History
 *******
 
+0.6.1 2013-12-23
+================
+* `Bug fix <https://github.com/alisaifee/holmium.core/issues/18>`_ for facet 
+  clobbering when page inheritance was involved
+* `Bug fix
+  <https://github.com/alisaifee/holmium.core/commit/issues/17>`_
+  for case of no browser specified
+* new assertion for TestCase class : ``assertElementAttributeEqual``
+
 0.6 2013-12-14
 ==============
 * Lazy driver initialization. The webdriver is created 
@@ -123,6 +132,7 @@ History
 * Bug fix 
   
   - fixed phantomjs build in travis
+
 
 
 
