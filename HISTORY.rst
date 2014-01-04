@@ -13,10 +13,10 @@ History
 
 0.6.1 2013-12-23
 ================
-* `Bug fix <https://github.com/alisaifee/holmium.core/issues/18>`_ for facet 
+* Bug fix `issue 18 <https://github.com/alisaifee/holmium.core/issues/18>`_ for facet 
   clobbering when page inheritance was involved
-* `Bug fix
-  <https://github.com/alisaifee/holmium.core/commit/issues/17>`_
+* Bug fix
+  `issue 17 <https://github.com/alisaifee/holmium.core/commit/issues/17>`_
   for case of no browser specified
 * new assertion for TestCase class : ``assertElementAttributeEqual``
 
