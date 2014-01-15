@@ -210,8 +210,6 @@ class FirefoxConfig(DriverConfig):
         if config.ignore_ssl:
             profile.accept_untrusted_certs = True
         args["firefox_profile"] = profile
-        args["capabilities"] = args["desired_capabilities"]
-        args.pop("desired_capabilities")
         return args
 
 
