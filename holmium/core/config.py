@@ -248,9 +248,12 @@ class RemoteConfig(DriverConfig):
     specific configuration)
     """
     def __call__(self, config, args):
-        if config.browser == "firefox" and "firefox_profile" in args:
-            args["browser_profile"] = args["firefox_profile"]
-            args.pop("firefox_profile")
+        if config.browser == "firefox":
+            if "firefox_profile" in args:
+                args["browser_profile"] = args["firefox_profile"]
+                args.pop("firefox_profile")
+            args["desired_capabilities"] = args["capabilities"]
+            args.pop("capabilities")
         args["command_executor"] = config.remote
         return super(RemoteConfig, self).__call__(config, args)
 
