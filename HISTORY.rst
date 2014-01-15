@@ -11,6 +11,10 @@
 History
 *******
 
+0.6.2 2014-01-15
+================
+* Bug fix `issue 19 <https://github.com/alisaifee/holmium.core/issues/19>`_ 
+
 0.6.1 2013-12-23
 ================
 * Bug fix `issue 18 <https://github.com/alisaifee/holmium.core/issues/18>`_ for facet 
@@ -132,6 +136,7 @@ History
 * Bug fix 
   
   - fixed phantomjs build in travis
+
 
 
 
