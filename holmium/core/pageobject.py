@@ -48,6 +48,9 @@ class ElementList(list):
         return list.__getitem__(self, index).__get__(self.instance(),
                                                      self.instance().__class__)
 
+    def __iter__(self):
+        for idx in range(len(self)):
+            yield self[idx]
 
 class ElementDict(dict):
     """
@@ -62,6 +65,11 @@ class ElementDict(dict):
     def __getitem__(self, key):
         return dict.__getitem__(self, key).__get__(self.instance(),
                                                    self.instance().__class__)
+    def values(self):
+        return [self[key] for key in self]
+
+    def items(self):
+        return [(key, self[key]) for key in self.keys()]
 
 class Registry(CopyOnCreateFacetCollectionMeta):
     """
