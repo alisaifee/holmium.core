@@ -82,7 +82,7 @@ class PageTest(unittest.TestCase):
         self.assertEqual( [el.text for el in page.elements], ["e2 - 1\ne6", "e2 - 2"] )
         self.assertEqual( [(k, k) for k in page.elementmap], [("e3 - 1","e3 - 1"), ("e3 - 2", "e3 - 2")])
         self.assertEqual( [k.text for k in page.element_list_raw], ["e4", "e6"])
-        self.assertEqual( [k.text for k in page.element_map_raw.values()], ["e4", "e6"])
+        self.assertEqual( sorted([k.text for k in page.element_map_raw.values()]), sorted(["e4", "e6"]))
         v1, v2 = page.element_map_raw.items()
         self.assertEquals((v1[0], v1[1].text), ("e4","e4"))
         self.assertEquals((v2[0], v2[1].text), ("e6","e6"))
