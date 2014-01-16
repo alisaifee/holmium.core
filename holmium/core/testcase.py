@@ -6,6 +6,8 @@ import inspect
 import imp
 import json
 import os
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.support.wait import WebDriverWait
 from .config import HolmiumConfig, Config, BROWSER_MAPPING
 from .env import ENV
 from .env import LazyWebDriver, LazyWebDriverList
@@ -129,3 +131,14 @@ class TestCase(unittest.TestCase):
         _expected = {"height":height, "width":width}
         self.assertEqual(_expected, element.size, msg)
 
+
+    def assertConditionWithWait(self, driver, condition, element, timeout=0, msg=None):
+        """ Fail if the condition specified does not hold for the element within
+        the specified timeout
+
+        :param driver: the selenium driver
+        :param condition: an instance of :mod:`selenium.webdriver.support.expected_conditions`
+        :param element: the :class:`selenium.webdriver.remote.webelement.WebElement`
+        """
+        wait = WebDriverWait(driver, timeout)
+        wait.until(condition(element))
