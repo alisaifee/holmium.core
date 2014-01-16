@@ -224,7 +224,7 @@ class ElementGetter(object):
                  base_element=None,
                  timeout=0,
                  value=lambda el: el,
-                 only_if=lambda el: el is not None and el.is_displayed(),
+                 only_if=lambda el: el is not None,
                  facet=False):
         """
         :param holmium.core.Locators locator_type: selenium locator to use when
@@ -238,7 +238,7 @@ class ElementGetter(object):
          instance is passed as the only argument to the function.
         :param function only_if: extra validation function that is called
          repeatedly until :attr:`timeout` has elapsed. If not provided the
-         default function used checks that the element is displayed.
+         default function used checks that the element is present.
          The located :class:`selenium.webdriver.remote.webelement.WebElement`
          instance is passed as the only argument to the function.
         :param bool facet: flag to  treat this element as a facet.
@@ -341,7 +341,7 @@ class Element(ElementGetter):
      instance is passed as the only argument to the function.
     :param function only_if: extra validation function that is called repeatedly
      until :attr:`timeout` elapases. If not provided the default function used
-     checks that the element is displayed. The located
+     checks that the element is present. The located
      :class:`selenium.webdriver.remote.webelement.WebElement`
      instance is passed as the only argument to the function.
     :param bool facet: flag to  treat this element as a facet.
@@ -375,18 +375,18 @@ class Elements(ElementGetter):
      instance is passed as the only argument to the function.
     :param function only_if: extra validation function that is called repeatedly
      until :attr:`timeout` elapses. If not provided the default function used
-     checks that all the elements are displayed. The list of located
+     checks that all the elements are present. The list of located
      :class:`selenium.webdriver.remote.webelement.WebElement`
      instances is passed as the only argument to the function.
     :param bool facet: flag to  treat this element as a facet.
     """
     # pylint: disable=incomplete-protocol,line-too-long
     def __init__(self, locator_type,
-                 query_string = None,
+                 query_string=None,
                  base_element=None,
                  timeout=0,
-                 value=lambda el:el,
-                 only_if=lambda el: el is not None and [_.is_displayed() for _ in el],
+                 value=lambda el: el,
+                 only_if=lambda el: el is not None,
                  facet=False):
         super(Elements, self).__init__(locator_type, query_string,
                                        base_element=base_element,
@@ -429,7 +429,7 @@ class ElementMap(Elements):
      instance is passed as the only argument to the function.
     :param function only_if: extra validation function that is called repeatedly
      until :attr:`timeout`. If not provided the default function used checks
-     that all the elements are displayed. The list of located
+     that all the elements are present. The list of located
      :class:`selenium.webdriver.remote.webelement.WebElement` instances is
      passed as the only argument to the function.
     """
@@ -440,7 +440,7 @@ class ElementMap(Elements):
                  timeout=0,
                  key=lambda el: el.text,
                  value=lambda el: el,
-                 only_if=lambda el: el is not None and [_.is_displayed() for _ in el],
+                 only_if=lambda el: el is not None,
                  facet=False):
         super(ElementMap, self).__init__(locator_type, query_string,
                                          base_element,
