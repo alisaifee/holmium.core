@@ -11,3 +11,9 @@ install:
 script: python setup.py nosetests --with-cov -v 
 after_success:
     - coveralls
+cache:
+    directories:
+        - $HOME/virtualenv/python2.6/site-packages 
+        - $HOME/virtualenv/python2.7/site-packages 
+        - $HOME/virtualenv/python3.3/site-packages 
+        - $HOME/virtualenv/pypy/site-packages 
