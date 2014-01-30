@@ -295,9 +295,9 @@ class Cookie(Facet):
             if callable(self.options["value"]):
                 assert self.options["value"](cookie_value)
             else:
-                assert_equals( cookie_value , self.options["value"] )
+                assert_equals(cookie_value, self.options["value"])
         else:
-            assert_true(cookie_value != None,
+            assert_true(cookie_value is not None,
                         "cookie %s does not exist" % self.arguments["name"]
             )
 

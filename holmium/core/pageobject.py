@@ -33,7 +33,6 @@ class Locators(selenium.webdriver.common.by.By):
     """
     pass
 
-
 class ElementList(list):
     """
     proxy to a standard list which would be stored in

@@ -52,7 +52,7 @@ class TestCase(unittest.TestCase):
         else:
             if not cls.holmium_config.browser in BROWSER_MAPPING:
                 raise SkipTest("Unknown browser (%s) specified in HO_BROWSER"
-                    % ( cls.holmium_config.browser)
+                               % (cls.holmium_config.browser)
                 )
             driver_cls = BROWSER_MAPPING[cls.holmium_config.browser]
         cls.driver = ENV.setdefault("driver", LazyWebDriver(driver_cls,
@@ -125,14 +125,16 @@ class TestCase(unittest.TestCase):
                          msg
         )
 
-    def assertElementSize(self, element,  width, height, msg=None):
+    def assertElementSize(self, element, width, height, msg=None):
         """ Fail if the element size does not match the provided values
         """
         _expected = {"height":height, "width":width}
         self.assertEqual(_expected, element.size, msg)
 
 
-    def assertConditionWithWait(self, driver, condition, element, timeout=0, msg=None):
+    def assertConditionWithWait(self, driver, condition, element,
+                                timeout=0, msg=None):
+        # pylint:disable=line-too-long
         """ Fail if the condition specified does not hold for the element within
         the specified timeout
 
@@ -140,5 +142,9 @@ class TestCase(unittest.TestCase):
         :param condition: an instance of :mod:`selenium.webdriver.support.expected_conditions`
         :param element: the :class:`selenium.webdriver.remote.webelement.WebElement`
         """
-        wait = WebDriverWait(driver, timeout)
-        wait.until(condition(element))
+        try:
+            wait = WebDriverWait(driver, timeout)
+            wait.until(condition(element))
+        except TimeoutException:
+            _msg = self._formatMessage(msg, "Timeout waiting on condition %s" % condition)
+            self.failureException(_msg)

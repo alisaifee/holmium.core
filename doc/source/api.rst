@@ -73,6 +73,10 @@ Page Object Helpers
     :members:
 .. autoexception:: FacetError
 
+.. currentmodule:: holmium.core.conditions
+
+.. autoclass:: BaseCondition
+    :members:
 
 
 

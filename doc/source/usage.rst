@@ -306,6 +306,52 @@ the text attribute of the element. The same type of lookup functions are used in
     t.element_map["1"]
     # u'one' 
 
+.. _usage-conditions
+
+Conditions
+==========
+For any non-trivial web page, asynchronous changes to the dom are expected. This
+requires test authors to often place explicit waits for conditions such as visibility
+and content changes. To reduce the effort of describing these conditionals, page elements
+:class:`Element`, :class:`Elements` and :class:`ElementMap` accept a keyword argument ``only_if``:
+a callable that expects a :class:`selenium.webdriver.remote.webelement.WebElement` and is
+expected to return ``True/False``. When coupled with the keyword argument ``timeout``,
+access to a page object's element is internally subjected to an explicit wait.
+
+Some common conditions are provided and can be used to further simplify the declaration of pageobject:
+
+.. currentmodule:: holmium.core.conditions
+.. autoclass:: VISIBLE
+.. autoclass:: INVISIBLE
+.. autoclass:: MATCHES_TEXT
+.. currentmodule:: holmium.core
+
+
+You can build your own condition objects by subclassing :class:`conditions.BaseCondition`
+and implementing the :meth:`conditions.BaseCondition.evaluate` method.
+
+Sample
+------
+
+.. code-block:: python
+
+    from holmium.core import conditions, Page, Element, Locators
+
+    class MyPage(Page):
+        required_element = Element(Locators.CLASS_NAME, "main_element",
+                                    only_if=conditions.VISIBLE(),
+                                    timeout = 5)
+        delayed_element = Element(Locators.CLASS_NAME, "text_element",
+                                    only_if=conditions.MATCHES_TEXT('^ready.*'),
+                                    timeout = 5)
+
+
+
+In the above example, ``required_element`` will return ``None`` unless it is displayed. The 5 second
+timeout will take effect everytime the element is accessed. Similarly, ``delayed_element`` will return
+``None`` until the text of the element matches a string that starts with ``ready``.
+
+
 .. _usage-facets:
 
 Page Facets
