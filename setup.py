@@ -4,8 +4,8 @@ setup.py for holmium.core
 
 """
 __author__ = "Ali-Akber Saifee"
-__email__ = "ali@mig33global.com"
-__copyright__ = "Copyright 2013, ProjectGoth"
+__email__ = "ali@indydevs.org"
+__copyright__ = "Copyright 2014, Ali-Akber Saifee"
 
 from setuptools import setup, find_packages
 import os
