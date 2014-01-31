@@ -86,7 +86,10 @@ class HolmiumNose(Plugin):
                 int(os.environ.get("HO_BROWSER_PER_TEST", 0)))
             ignore_ssl = options.ho_ignore_ssl or os.environ.get(
                 "HO_IGNORE_SSL_ERRORS", False)
-            caps = options.ho_cap and json.loads(options.ho_cap) or {}
+            if options.ho_cap and os.path.isfile(options.ho_cap):
+                caps = json.loads(open(options.ho_cap).read())
+            else:
+                caps = options.ho_cap and json.loads(options.ho_cap) or {}
             # pylint: disable=attribute-defined-outside-init
             self.holmium_config = holmium_config = HolmiumConfig(browser,
                                                                  remote_url,

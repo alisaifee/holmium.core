@@ -85,7 +85,7 @@ option                              description
 ``--holmium-browser``               one of chrome,firefox,safari,opera,ie,phantomjs,android,iphone or ipad
 ``--holmium-remote``                the full qualified url of the selenium server. If not provided the browsers will be attempted to be launched using the built in webdrivers.
 ``--holmium-useragent``             useragent to use as an override. only works with firefox & chrome 
-``--holmium-capabilities``          a json dictionary of extra desired capabilities to pass to the webdriver. 
+``--holmium-capabilities``          a json dictionary string or a fully qualified path to a json file of extra desired capabilities to pass to the webdriver.
 ``--holmium-ignore-ssl-errors``     ignore ssl errors when accessing pages served under untrusted certificates (default False).
 ``--holmium-browser-per-test``      creates/destroys the browser for each test case (default False).
 ===============================     ===========================================================================================================================================

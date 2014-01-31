@@ -220,3 +220,16 @@ class TestNoDriver(PluginTester, unittest.TestCase):
         assert "SKIP=1" in self.output, self.output
     def tearDown(self):
         holmium.core.noseplugin.BROWSER_MAPPING = self.old_mapping
+
+class TestCapabilitiesFromFile(PluginTester, unittest.TestCase):
+    activate = "--with-holmium"
+    args = [ '--holmium-browser=phantomjs'
+        , "--holmium-capabilities=./tests/support/captest/caps.json"
+    ]
+    suitepath = os.path.join(support, 'captest')
+    plugins = [holmium.core.HolmiumNose()]
+    def setUp(self):
+        ENV.clear()
+        super(TestCapabilitiesFromFile,self).setUp()
+    def runTest(self):
+        assert "Ran 1 test" in self.output, self.output
