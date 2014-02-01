@@ -1,7 +1,6 @@
 #!/bin/bash 
-echo current version:$(python -c "import holmium.version;print holmium.version.__version__")
+echo current version:$(python setup.py --version)
 read -p "new version:" new_version
-sed -i -e "s/__version__.*/__version__=\"${new_version}\" # pragma: no cover/g" holmium/version.py 
 last_portion=$(grep -E "^History$" HISTORY.rst -5 | grep -E "^\d+.\d+.\d+")
 changelog_file=/var/tmp/holmium.core.newchangelog
 new_changelog_heading="${new_version} `date +"%Y-%m-%d"`"
@@ -15,9 +14,8 @@ if rst2html.py HISTORY.rst > /dev/null
 then
     echo "tagging $new_version"
     git add HISTORY.rst 
-    git add holmium/version.py
-    git commit -m "updating version to ${new_version}"
-    git tag -s $(python setup.py --version) -m "tagging version ${new_version}"
+    git commit -m "updating changelog for  ${new_version}"
+    git tag -s ${new_version} -m "tagging version ${new_version}"
     python setup.py build sdist bdist_egg upload
 else
     echo changelog has errors. skipping tag. 

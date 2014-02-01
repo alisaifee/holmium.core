@@ -1,0 +1,3 @@
+"""
+automatically generated version file.
+"""
