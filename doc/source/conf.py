@@ -10,7 +10,7 @@ templates_path = ['_templates']
 source_suffix = '.rst'
 master_doc = 'index'
 project = u'holmium.core'
-copyright = u'2013, Projectgoth Inc.'
+copyright = u'2014, Ali-Akber Saifee'
 version = release = holmium.version.__version__
 
 exclude_patterns = []
