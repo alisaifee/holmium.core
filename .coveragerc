@@ -1,6 +1,8 @@
 [run]
 include = 
     **/holmium/*
+omit =
+    /*/holmium/*/_version*
 
 [report]
 exclude_lines =
