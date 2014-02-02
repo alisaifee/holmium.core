@@ -16,6 +16,7 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException, NoSuchFrameException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.remote.webelement import WebElement
+from six import add_metaclass
 from .enhancers import get_enhancers
 
 if hasattr(collections, "OrderedDict"):
@@ -81,6 +82,7 @@ class Registry(CopyOnCreateFacetCollectionMeta):
         return page
 
 
+@add_metaclass(Registry)
 class Page(Faceted):
     """
     Base class for all page objects to extend from.
@@ -100,7 +102,6 @@ class Page(Faceted):
         assert len(Google().query("page objects").submit().get_results()) > 0
 
     """
-    __metaclass__ = Registry
     local = threading.local()
 
     def __init__(self, driver, url=None, iframe=None):

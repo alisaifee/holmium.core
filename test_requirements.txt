@@ -4,6 +4,5 @@ nose-cov
 hiro
 mock
 flask
-six==1.4.0
 git+https://github.com/alisaifee/flask-testing.git@live-server#egg=flask-testing
 git+https://github.com/alisaifee/fresher.git#egg=fresher 

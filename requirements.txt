@@ -1,4 +1,5 @@
 selenium
 ordereddict
 nose
-jinja2 
+six
+jinja2

@@ -52,7 +52,7 @@ def runtc2drivers(env, validations):
 
 class TestCaseTests(unittest.TestCase):
     def setUp(self):
-        if ENV.has_key("driver"):
+        if "driver" in ENV:
             ENV.pop("driver")
 
     def test_set_browser(self):

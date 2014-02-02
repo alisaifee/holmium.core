@@ -7,6 +7,6 @@ python:
 install:
     - pip install -r ci_requirements.txt --use-mirrors
 
-script: python setup.py nosetests --with-cov -v 
+script: nosetests tests --with-cov -v 
 after_success:
     - coveralls

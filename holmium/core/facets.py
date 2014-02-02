@@ -10,8 +10,10 @@ import re
 
 # pylint: disable=no-name-in-module,abstract-class-not-used
 from nose.tools import assert_equals, assert_true
+from six import add_metaclass
 from .logger import log
 
+@add_metaclass(ABCMeta)
 class Facet(object):
     """
     base class to implement an attribute of a page
@@ -19,7 +21,6 @@ class Facet(object):
     __ARGS__ = []
     __OPTIONS__ = {}
     __ALLOW_MULTIPLE__ = True
-    __metaclass__ = ABCMeta
 
     def __init__(self, required=True, debug=False, **kwargs):
         self.arguments = {}
@@ -144,7 +145,7 @@ class FacetCollection(list):
         facets on the same object.
         """
         if (
-            self.type_map.has_key(type(item))
+            type(item) in self.type_map
             and not type(item).__ALLOW_MULTIPLE__
         ):
             self.remove(self.type_map[type(item)].pop())
@@ -188,12 +189,13 @@ class CopyOnCreateFacetCollectionMeta(ABCMeta):
                     for facet in value:
                         visited[key].append(facet)
                     setattr(cls, key, FacetCollection(visited[key]))
+
+@add_metaclass(CopyOnCreateFacetCollectionMeta)
 class Faceted(object):
     """
     mixin for objects that want to have facets registered
     on them.
     """
-    __metaclass__ = CopyOnCreateFacetCollectionMeta
 
     def __init__(self):
         self.instance_facets = FacetCollection()

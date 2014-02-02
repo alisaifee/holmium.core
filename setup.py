@@ -12,9 +12,6 @@ import os
 import sys
 this_dir = os.path.abspath(os.path.dirname(__file__))
 REQUIREMENTS = filter(None, open(os.path.join(this_dir, 'requirements.txt')).read().splitlines())
-extra = {}
-if sys.version_info >= (3,):
-    extra['use_2to3'] = True
 
 import versioneer
 versioneer.versionfile_source = "holmium/core/_version.py"
@@ -38,7 +35,6 @@ setup(
     packages = find_packages(),
     entry_points = {
         'nose.plugins.0.10': ['holmium = holmium.core:HolmiumNose',]
-        },
-    **extra
+        }
 )
 

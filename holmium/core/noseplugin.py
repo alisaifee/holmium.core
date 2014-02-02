@@ -111,9 +111,9 @@ class HolmiumNose(Plugin):
         """
         setup the initialization for the driver, and load the config
         """
-        if not (ENV.has_key("driver") and ENV["driver"] == self.driver):
+        if not ("driver" in ENV and ENV["driver"] == self.driver):
             ENV["driver"] = self.driver
-        if not ENV.has_key("drivers"):
+        if not "drivers" in ENV:
             ENV["drivers"] = LazyWebDriverList()
         if not hasattr(test.test, "feature"):
             base_file = test.address()[0]

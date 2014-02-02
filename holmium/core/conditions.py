@@ -3,16 +3,16 @@ utility callables to be passed to holmium.core.Element(s) only_if parameter
 """
 from abc import ABCMeta, abstractmethod
 import re
+from six import add_metaclass
 
 
+@add_metaclass(ABCMeta)
 class BaseCondition(object):
     """
     base class to implement conditions passed
     to the ``only_if`` parameter of :class:`holmium.core.pageobject.ElementGetter`
     subclasses.
     """
-    __metaclass__ = ABCMeta
-
     def __call__(self, element):
         return self.evaluate(element)
 
