@@ -6,10 +6,23 @@
 .. _Cucumber Features: http://holmiumcore.readthedocs.org/en/latest/cucumber.html 
 .. _fresher: https://github.com/lddubeau/fresher 
 .. _ElementEnhancer: http://holmiumcore.readthedocs.org/en/latest/usage.html#customizing-page-elements
+.. _conditions: http://holmiumcore.readthedocs.org/en/latest/usage.html#conditions
 
 *******
 History
 *******
+
+0.7 2014-02-10
+==============
+* Built-in `conditions`_ for explicit waits
+* New assertion ``assertConditionWithWait``
+* Change behavior of ``only_if`` to not check ``is_displayed`` by default.
+* Tweaks
+
+ * Allow passing a filename for nose argument ``--holmium-capabilities``
+ * Change versioning to use versioneer
+ * Explicit py3k support with six
+ * Make primitive lists and maps wrapped in pageobjects behave.
 
 0.6.2 2014-01-15
 ================
@@ -136,6 +149,7 @@ History
 * Bug fix 
   
   - fixed phantomjs build in travis
+
 
 
 
