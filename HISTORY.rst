@@ -12,6 +12,10 @@
 History
 *******
 
+0.7.1 2014-02-18
+================
+* Fix packaging problem with versioneer 
+
 0.7 2014-02-10
 ==============
 * Built-in `conditions`_ for explicit waits
@@ -149,6 +153,7 @@ History
 * Bug fix 
   
   - fixed phantomjs build in travis
+
 
 
 
