@@ -2,6 +2,7 @@ include README.rst
 include LICENSE.txt
 include HISTORY.rst 
 include CLASSIFIERS
+include versioneer.py
 include requirements.txt
 recursive-include examples *.py
 recursive-include doc/source *
