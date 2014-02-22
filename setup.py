@@ -32,7 +32,7 @@ setup(
     classifiers=[k for k in open('CLASSIFIERS').read().split('\n') if k],
     description='selenium page objects and other utilities for test creation',
     long_description=open('README.rst').read() + open('HISTORY.rst').read(),
-    packages = find_packages(),
+    packages = find_packages(exclude=["tests*"]),
     entry_points = {
         'nose.plugins.0.10': ['holmium = holmium.core:HolmiumNose',]
         }
