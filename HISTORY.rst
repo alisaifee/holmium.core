@@ -12,6 +12,10 @@
 History
 *******
 
+0.7.2 2014-02-22
+================
+* exclude packaging tests 
+
 0.7.1 2014-02-18
 ================
 * Fix packaging problem with versioneer 
@@ -153,6 +157,7 @@ History
 * Bug fix 
   
   - fixed phantomjs build in travis
+
 
 
 
