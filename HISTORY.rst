@@ -12,6 +12,10 @@
 History
 *******
 
+0.7.3 2014-03-14
+================
+* Add missing timeout from Section 
+
 0.7.2 2014-02-22
 ================
 * exclude packaging tests 
@@ -157,6 +161,7 @@ History
 * Bug fix 
   
   - fixed phantomjs build in travis
+
 
 
 
