@@ -64,9 +64,9 @@ class ElementTest(unittest.TestCase):
         self.assertEqual(page.id_el.text, "simple_id")
         script = 'document.getElementById("simple_id").firstChild.nodeValue="changed";'
         runner = hiro.run_async(5, lambda: time.sleep(1) or self.driver.execute_script(script))
-        with hiro.ScaledTimeline(10):
+        with hiro.Timeline().scale(10):
             self.assertEqual(page.id_el_changed.text, "changed")
         self.assertTrue(runner.get_response() == None)
         self.driver.refresh()
-        with hiro.ScaledTimeline(10):
+        with hiro.Timeline().scale(10):
             self.assertEqual(page.id_el_changed, None)

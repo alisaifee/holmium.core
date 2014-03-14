@@ -475,13 +475,14 @@ class Section(Faceted):
 
     """
 
-    def __init__(self, locator_type, query_string, iframe=None):
+    def __init__(self, locator_type, query_string, iframe=None, timeout=0):
 
         super(Section, self).__init__()
         self.touched = False
         self.locator_type = locator_type
         self.query_string = query_string
         self.iframe = iframe
+        self.timeout = timeout
         self.__root_val = None
         self.element_members = {}
         for element in inspect.getmembers(self.__class__):
@@ -524,6 +525,11 @@ class Section(Faceted):
                 log.error(
                     "unable to switch to iframe %s" % self.iframe)
         try:
+            if not self.__root_val:
+                WebDriverWait(Page.get_driver(), self.timeout).until(
+                    lambda _: Page.get_driver().find_element(self.locator_type,
+                                                          self.query_string)
+                )
             return self.__root_val or Page.get_driver().find_element(
                 self.locator_type, self.query_string
             )
@@ -545,8 +551,7 @@ class Sections(Section, collections.Sequence):
     """
 
     def __init__(self, locator_type, query_string, iframe=None, timeout=0):
-        super(Sections, self).__init__(locator_type, query_string, iframe)
-        self.timeout = timeout
+        super(Sections, self).__init__(locator_type, query_string, iframe, timeout)
 
     def __getelements__(self):
         if self.timeout:
