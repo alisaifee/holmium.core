@@ -118,6 +118,32 @@ class SectionTest(unittest.TestCase):
         self.assertRaises(IndexError, lambda: po.sections[2])
         self.assertRaises(IndexError, lambda: po.missing_sections[0])
 
+    def test_sections_by_index(self):
+        driver = get_driver()
+        page = """
+        <body>
+            <div class='section'>
+                <div class='token'>t0</div>
+            </div>
+            <div class='section'>
+                <div class='token'>t1</div>
+            </div>
+            <div class='section'>
+                <div class='token'>t2</div>
+            </div>
+            <div class='section'>
+                <div class='token'>t3</div>
+            </div>
+        </body>
+        """
+        uri = make_temp_page(page.strip())
+        po = BasicPageWithSections(driver, uri)
+        self.assertEqual(len(po.sections), 4)
+        self.assertEqual("t0", po.sections[0].tokens[0].text)
+        self.assertEqual("t1", po.sections[1].tokens[0].text)
+        self.assertEqual("t2", po.sections[2].tokens[0].text)
+        self.assertEqual("t3", po.sections[3].tokens[0].text)
+
     def test_sections_list_behavior(self):
         with mock.patch('selenium.webdriver.Firefox') as driver:
             element1, element2 = mock.Mock(), mock.Mock()
