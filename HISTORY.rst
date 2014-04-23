@@ -12,6 +12,10 @@
 History
 *******
 
+0.7.4 2014-04-24
+================
+* Bug fix: Sections weren't working for index > 1 `#22 <https://github.com/alisaifee/holmium.core/issues/22>`_
+
 0.7.3 2014-03-14
 ================
 * Add missing timeout from Section 
@@ -161,6 +165,7 @@ History
 * Bug fix 
   
   - fixed phantomjs build in travis
+
 
 
 
