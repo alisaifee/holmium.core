@@ -128,12 +128,19 @@ class SectionTest(unittest.TestCase):
             element3.tag_name = element4.tag_name = "div"
             element3.text = "element 3"
             element4.text = "element 4"
-            driver.find_elements.return_value = [element1, element2]
+            element5, element6 = mock.Mock(), mock.Mock()
+            element5.tag_name = element6.tag_name = "div"
+            element5.text = "element 5"
+            element6.text = "element 6"
+            driver.find_elements.return_value = [element1, element2, element3]
             element1.find_elements.return_value = [element3, element4]
             element2.find_elements.return_value = [element4, element3]
+            element3.find_elements.return_value = [element5, element6]
             po = BasicPageWithSections(driver)
             self.assertEqual("element 3", po.sections[0].tokens[0].text)
             self.assertEqual("element 4", po.sections[1].tokens[0].text)
+            self.assertEqual("element 5", po.sections[2].tokens[0].text)
             self.assertEqual("element 4", po.sections[0].tokens[1].text)
             self.assertEqual("element 3", po.sections[1].tokens[1].text)
+            self.assertEqual("element 6", po.sections[2].tokens[1].text)
 
