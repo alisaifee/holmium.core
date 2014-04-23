@@ -577,13 +577,10 @@ class Sections(Section, collections.Sequence):
         return len(self.__getelements__())
 
     def __getitem__(self, idx):
-        _idx = 0
-        for _ in self:
-            if idx == _idx:
-                break
-            _idx += 1
-            if idx > _idx:
-                raise IndexError("Sections index (%d) out of range" % idx)
-        if len(self) == 0:
+        if idx < 0 or idx >= len(self):
             raise IndexError("Sections index (%d) out of range" % idx)
+        for i, _ in enumerate(self):
+            if i == idx:
+                break
         return self
+
