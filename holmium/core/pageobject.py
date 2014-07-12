@@ -17,6 +17,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.remote.webelement import WebElement
 from six import add_metaclass
 from .enhancers import get_enhancers
+from holmium.core.conditions import BaseCondition
 
 if hasattr(collections, "OrderedDict"):
     OrderedDict = collections.OrderedDict  # pragma: no cover
@@ -306,7 +307,7 @@ class ElementGetter(object):
                     timeout & only_if explicit wait.
                     """
                     return _meth(self.locator_type, self.query_string) and \
-                           self.only_if(
+                           (BaseCondition.get_current() or self.only_if)(
                                _meth(self.locator_type, self.query_string)
                            )
 

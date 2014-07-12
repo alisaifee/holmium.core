@@ -324,6 +324,8 @@ Some common conditions are provided and can be used to further simplify the decl
 .. autoclass:: VISIBLE
 .. autoclass:: INVISIBLE
 .. autoclass:: MATCHES_TEXT
+.. autoclass:: ANY
+.. autoclass:: ALL
 .. currentmodule:: holmium.core
 
 
@@ -351,6 +353,21 @@ In the above example, ``required_element`` will return ``None`` unless it is dis
 timeout will take effect everytime the element is accessed. Similarly, ``delayed_element`` will return
 ``None`` until the text of the element matches a string that starts with ``ready``.
 
+
+Context Managers
+----------------
+Conditions can also be used as context managers in cases where condition parameters are not known
+at page object declaration time. For example::
+
+    from holmium.core import Page, ElementMap
+    from holmium.core.conditions import ANY, MATCHES_TEXT
+
+    class MyPage(Page):
+        dynamic_element_collection = ElementMap(Locators.CLASS_NAME, "dynamic", timeout = 5)
+
+        def get_element(self, name):
+            with ANY(MATCHES_TEXT(name)):
+                return self.dynamic_element_collection[name]
 
 .. _usage-facets:
 
