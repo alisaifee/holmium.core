@@ -1,4 +1,4 @@
--r requirements.txt
+-r main.txt
 coverage
 nose-cov
 hiro
