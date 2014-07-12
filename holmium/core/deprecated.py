@@ -14,6 +14,7 @@ class Deprecated(object):
     meta class to create an object that throws a Syntax error on
     construction
     """
+
     def __new__(cls, *_):
         raise SyntaxError(
             "%s has been removed as of version 0.4. Use %s instead" % (

@@ -86,6 +86,7 @@ class LazyWebDriverList(list):
     initialize new drivers based on the
     first one created
     """
+
     def __init__(self, *a, **k):
         # reserve idx == 0
         list.__init__(self, *a, **k)
@@ -104,7 +105,7 @@ class LazyWebDriverList(list):
                 driver._instance = None
                 self.insert(item, driver)
                 return driver
-            return None # pragma: no cover
+            return None  # pragma: no cover
 
     def __iter__(self):
         yield ENV["driver"]

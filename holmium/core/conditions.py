@@ -13,6 +13,7 @@ class BaseCondition(object):
     to the ``only_if`` parameter of :class:`holmium.core.pageobject.ElementGetter`
     subclasses.
     """
+
     def __call__(self, element):
         return self.evaluate(element)
 
@@ -29,6 +30,7 @@ class VISIBLE(BaseCondition):
     """
     checks if the element is visible
     """
+
     def evaluate(self, element):
         return element and element.is_displayed()
 
@@ -37,16 +39,20 @@ class INVISIBLE(BaseCondition):
     """
     checks if the element is invisible
     """
+
     def evaluate(self, element):
         return not element or not element.is_displayed()
+
 
 class MATCHES_TEXT(BaseCondition):
     """
     checks if the  element's text matches the provided
     regular expression.
     """
+
     def __init__(self, expr):
         self.expr = expr
+
     def evaluate(self, element):
         return element and re.compile(self.expr).match(element.text)
 

@@ -92,10 +92,12 @@ if ``HO_ENV`` or ``--holmium-env`` are ``development``:
         """
         override to evaluate the values through the template
         """
+
         def __render(item, context):
             """
             renders the string given the context using the jinja template
             """
+
             def _check_string_type(_item):
                 """
                 meh python2/3 stuff.
@@ -188,6 +190,7 @@ class HolmiumConfig(dict):
         super(HolmiumConfig, self).__setattr__(key, value)
         super(HolmiumConfig, self).__setitem__(key, value)
 
+
 # pylint: disable=too-few-public-methods
 class DriverConfig(object):
     """
@@ -202,6 +205,7 @@ class FirefoxConfig(DriverConfig):
     """
     configuration for firefox
     """
+
     def __call__(self, config, args):
         profile = FirefoxProfile()
         if config.user_agent:
@@ -219,6 +223,7 @@ class ChromeConfig(DriverConfig):
     """
     configuration for chrome
     """
+
     def __call__(self, config, args):
         args["desired_capabilities"].setdefault("chrome.switches", [])
         if config.user_agent:
@@ -235,6 +240,7 @@ class PhantomConfig(DriverConfig):
     """
     configuration for phantomjs
     """
+
     def __call__(self, config, args):
         if config.ignore_ssl:
             args.setdefault("service_args", []).append(
@@ -247,6 +253,7 @@ class RemoteConfig(DriverConfig):
     configuration for remote driver (and anything that doesnt have a
     specific configuration)
     """
+
     def __call__(self, config, args):
         if config.browser == "firefox":
             if "firefox_profile" in args:

@@ -18,6 +18,7 @@ def paramfromconfig(function):
     """
     decorator for internal use. maps arguments from ftc.config
     """
+
     @wraps(function)
     def __inner(*args):
         """
@@ -30,10 +31,12 @@ def paramfromconfig(function):
             """
             ftc.config["_holmium_cucumber_temp_var"] = value
             return ftc.config["_holmium_cucumber_temp_var"]
+
         _args = []
         for arg in args:
             _args.append(get_and_set(arg))
         return function(*_args)
+
     return __inner
 
 
@@ -80,6 +83,7 @@ def word_to_index(word):
     else:
         return word
 
+
 def init_steps():
     """
     required to inject holmium steps into the callers' step module.
@@ -87,6 +91,7 @@ def init_steps():
     frm = inspect.stack()[1]
     mod = inspect.getmodule(frm[0])
     from fresher.stepregistry import StepImpl, TransformImpl, NamedTransformImpl
+
     fresher_types = (StepImpl, TransformImpl, NamedTransformImpl)
     for key, value in globals().items():
         if any(((value, _type) for _type in fresher_types)):
@@ -160,6 +165,7 @@ def access_page(page, url):
     """
     scc.page = page(ftc.driver, url)
 
+
 @When(r"^I?\s*access the url (.*?)$")
 @paramfromconfig
 def access_url(url):
@@ -167,6 +173,7 @@ def access_url(url):
     switch the driver to the provided url
     """
     ftc.driver.get(url)
+
 
 @When(r"^I?\s*perform (\w+) with (?:arguments)?\s*(.*?)$")
 @paramfromconfig
@@ -182,6 +189,7 @@ def page_action_with_args(action, args):
     # pylint: disable=star-args
     getattr(scc.page, action)(*arg_list)
 
+
 @When(r"^I?\s*perform (\w+)\s*$")
 @paramfromconfig
 def page_action(action):
@@ -193,6 +201,7 @@ def page_action(action):
             scc.page.__class__.__name__, action)
         )
     getattr(scc.page, action)()
+
 
 @Then(r"(?:the)?\s*{element} should be visible\s*$")
 @paramfromconfig
@@ -229,6 +238,7 @@ def element_type(text, element, *_):
     """
     element.send_keys(text)
 
+
 @When(r"^I?\s*type (.*?) in {item_in_elements}\s*$")
 @paramfromconfig
 def item_in_elements_type(text, element, *_):
@@ -236,6 +246,7 @@ def item_in_elements_type(text, element, *_):
     type inside the sub element
     """
     element.send_keys(text)
+
 
 @When(r"^I?\s*(?:press|pressed)\s*(?:enter|Enter) in (?:.*?){element}\s*$")
 @paramfromconfig
@@ -281,6 +292,7 @@ def assert_title(title):
     """
     assert_equals(ftc.driver.title, title)
 
+
 @Then(r"(?:the)?\s*{element} should have (?:the)?\s*text (.*?)\s*$")
 @paramfromconfig
 def text_in_element(*args):
@@ -290,6 +302,7 @@ def text_in_element(*args):
     # pylint: disable=unbalanced-tuple-unpacking
     element, _, text = args
     assert_equals(element.text, text)
+
 
 @Then(r"(?:the)?\s*{item_in_elements} should have (?:the)?\s*text (.*?)\s*$")
 @paramfromconfig

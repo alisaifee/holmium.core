@@ -2,7 +2,6 @@
 implementation of page objects, element(s) and sections
 """
 
-
 import inspect
 import weakref
 import types
@@ -20,9 +19,9 @@ from six import add_metaclass
 from .enhancers import get_enhancers
 
 if hasattr(collections, "OrderedDict"):
-    OrderedDict = collections.OrderedDict # pragma: no cover
+    OrderedDict = collections.OrderedDict  # pragma: no cover
 else:
-    from ordereddict import OrderedDict # pragma: no cover
+    from ordereddict import OrderedDict  # pragma: no cover
 
 from .facets import Faceted, ElementFacet, CopyOnCreateFacetCollectionMeta
 from .logger import log
@@ -33,6 +32,7 @@ class Locators(selenium.webdriver.common.by.By):
     proxy class to access locator types
     """
     pass
+
 
 class ElementList(list):
     """
@@ -52,6 +52,7 @@ class ElementList(list):
         for idx in range(len(self)):
             yield self[idx]
 
+
 class ElementDict(dict):
     """
     proxy to a standard dict which would be stored in
@@ -65,17 +66,20 @@ class ElementDict(dict):
     def __getitem__(self, key):
         return dict.__getitem__(self, key).__get__(self.instance(),
                                                    self.instance().__class__)
+
     def values(self):
         return [self[key] for key in self]
 
     def items(self):
         return [(key, self[key]) for key in self.keys()]
 
+
 class Registry(CopyOnCreateFacetCollectionMeta):
     """
     simple meta class to keep track of all page objects registered
     """
     pages = {}
+
     def __new__(mcs, *args, **kwargs):
         page = super(Registry, mcs).__new__(mcs, *args, **kwargs)
         Registry.pages[args[0]] = page
@@ -118,6 +122,7 @@ class Page(Faceted):
             self.home = None
 
         self.iframe = iframe
+
         def update_element(element, name):
             """
             check if the element is a facet
@@ -133,6 +138,7 @@ class Page(Faceted):
                     facet.register(self)
                 return True
             return False
+
         for element in inspect.getmembers(self.__class__):
             if issubclass(element[1].__class__, list):
                 hit = True
@@ -210,7 +216,6 @@ class Page(Faceted):
             return attr
 
 
-
 class ElementGetter(object):
     """
     internal class to encapsulate the logic used by
@@ -253,7 +258,7 @@ class ElementGetter(object):
         self.root_fn = lambda: Page.get_driver()
         self.only_if = only_if
         log.debug("locator:%s, query_string:%s, timeout:%d" %
-                               (locator_type, query_string, timeout))
+                  (locator_type, query_string, timeout))
         self.is_facet = facet
         self.is_debug_facet = False
 
@@ -301,9 +306,9 @@ class ElementGetter(object):
                     timeout & only_if explicit wait.
                     """
                     return _meth(self.locator_type, self.query_string) and \
-                        self.only_if(
-                            _meth(self.locator_type, self.query_string)
-                        )
+                           self.only_if(
+                               _meth(self.locator_type, self.query_string)
+                           )
 
                 WebDriverWait(self.root, self.timeout).until(callback)
             except TimeoutException:
@@ -313,6 +318,7 @@ class ElementGetter(object):
                 )
                 raise
         return _meth(self.locator_type, self.query_string)
+
     @classmethod
     def enhance(cls, element):
         """
@@ -324,6 +330,7 @@ class ElementGetter(object):
             if enhancer.matches(element):
                 return enhancer(element)
         return element
+
 
 class Element(ElementGetter):
     """
@@ -402,9 +409,10 @@ class Elements(ElementGetter):
             return self
         try:
             return [self.value_mapper(self.enhance(el)) for el in
-                self._get_element(self.root.find_elements)] if self.root else []
+                    self._get_element(self.root.find_elements)] if self.root else []
         except (NoSuchElementException, TimeoutException):
             return []
+
 
 class ElementMap(Elements):
     """
@@ -453,8 +461,8 @@ class ElementMap(Elements):
             return self
         try:
             return OrderedDict(
-            (self.key_mapper(el), self.value_mapper(self.enhance(el))) for el in
-            self._get_element(self.root.find_elements)) if self.root else {}
+                (self.key_mapper(el), self.value_mapper(self.enhance(el))) for el in
+                self._get_element(self.root.find_elements)) if self.root else {}
         except (NoSuchElementException, TimeoutException):
             return {}
 
@@ -528,7 +536,7 @@ class Section(Faceted):
             if not self.__root_val:
                 WebDriverWait(Page.get_driver(), self.timeout).until(
                     lambda _: Page.get_driver().find_element(self.locator_type,
-                                                          self.query_string)
+                                                             self.query_string)
                 )
             return self.__root_val or Page.get_driver().find_element(
                 self.locator_type, self.query_string

@@ -38,7 +38,7 @@ class TestCase(unittest.TestCase):
         ignore_ssl = os.environ.get("HO_IGNORE_SSL_ERRORS", False)
         fresh_instance = bool(int(os.environ.get("HO_BROWSER_PER_TEST", 0)))
         cls.holmium_config = HolmiumConfig(browser, remote, {}, user_agent,
-                                       environment, ignore_ssl, fresh_instance)
+                                           environment, ignore_ssl, fresh_instance)
         config = None
         if os.path.isfile(config_path + ".json"):
             config = json.loads(open(config_path + ".json").read())
@@ -128,7 +128,7 @@ class TestCase(unittest.TestCase):
     def assertElementSize(self, element, width, height, msg=None):
         """ Fail if the element size does not match the provided values
         """
-        _expected = {"height":height, "width":width}
+        _expected = {"height": height, "width": width}
         self.assertEqual(_expected, element.size, msg)
 
 

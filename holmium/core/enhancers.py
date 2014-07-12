@@ -2,7 +2,6 @@
 implementation of element enhancer base
 """
 
-
 from selenium.webdriver.support.ui import Select
 
 
@@ -14,6 +13,7 @@ class ElementEnhancer(object):
     """
     # pylint: disable=too-few-public-methods
     __TAG__ = ""
+
     def __init__(self, element):
         self.element = element
         super(ElementEnhancer, self).__init__()
@@ -36,16 +36,18 @@ class ElementEnhancer(object):
         except:
             raise AttributeError(
                 "neither %s, nor %s object has an attribute %s" % (
-                self.__class__.__name__, element.__class__.__name__, key))
+                    self.__class__.__name__, element.__class__.__name__, key))
 
 
 class _SelectMixin(Select, object):
     """
     cooperative super version of Select
     """
+
     def __init__(self):
         super(_SelectMixin, self).__init__(self.element)
         Select.__init__(self, self.element)
+
 
 class SelectEnhancer(ElementEnhancer, _SelectMixin):
     """
@@ -55,6 +57,7 @@ class SelectEnhancer(ElementEnhancer, _SelectMixin):
 
 
 REGISTERED_ENHANCERS = [SelectEnhancer]
+
 
 def register_enhancer(enhancer):
     """
@@ -72,6 +75,7 @@ def register_enhancer(enhancer):
 
     REGISTERED_ENHANCERS.insert(0, enhancer)
 
+
 def reset_enhancers():
     """
     resets the state so that any :class:`ElementEnhancer` that was registered
@@ -79,6 +83,7 @@ def reset_enhancers():
     """
     global REGISTERED_ENHANCERS
     REGISTERED_ENHANCERS = [SelectEnhancer]
+
 
 def get_enhancers():
     """

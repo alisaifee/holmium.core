@@ -13,6 +13,7 @@ from nose.tools import assert_equals, assert_true
 from six import add_metaclass
 from .logger import log
 
+
 @add_metaclass(ABCMeta)
 class Facet(object):
     """
@@ -31,7 +32,7 @@ class Facet(object):
         for arg in self.__ARGS__:
             if arg not in kwargs.keys():
                 raise AttributeError("%s is a required argument for %s" % (
-                arg, self.__class__.__name__))
+                    arg, self.__class__.__name__))
             else:
                 self.arguments[arg] = kwargs[arg]
                 kwargs.pop(arg)
@@ -43,7 +44,7 @@ class Facet(object):
                 self.options[arg] = self.__OPTIONS__[arg]
         if kwargs:
             raise AttributeError("unknown argument(s) to %s (%s)" % (
-            self.__class__.__name__, ",".join(kwargs.keys())))
+                self.__class__.__name__, ",".join(kwargs.keys())))
 
     def register(self, obj):
         """
@@ -145,13 +146,12 @@ class FacetCollection(list):
         facets on the same object.
         """
         if (
-            type(item) in self.type_map
-            and not type(item).__ALLOW_MULTIPLE__
+                        type(item) in self.type_map
+                and not type(item).__ALLOW_MULTIPLE__
         ):
             self.remove(self.type_map[type(item)].pop())
         if item not in self:
             super(FacetCollection, self).append(item)
-
 
 
     def evaluate_all(self, driver):
@@ -171,6 +171,7 @@ class FacetCollection(list):
                 elif facet.required:
                     raise FacetError(facet, _)
 
+
 class CopyOnCreateFacetCollectionMeta(ABCMeta):
     """
     makes a new copy of any :class:`FacetCollection`
@@ -189,6 +190,7 @@ class CopyOnCreateFacetCollectionMeta(ABCMeta):
                     for facet in value:
                         visited[key].append(facet)
                     setattr(cls, key, FacetCollection(visited[key]))
+
 
 @add_metaclass(CopyOnCreateFacetCollectionMeta)
 class Faceted(object):
@@ -269,6 +271,7 @@ class Title(Facet):
     """
     __ARGS__ = ["title"]
     __ALLOW_MULTIPLE__ = False
+
     def evaluate(self, driver):
         assert_true(re.compile(self.arguments["title"]).match(driver.title),
                     "title did not match %s" % self.arguments["title"]
@@ -316,7 +319,7 @@ class Strict(Facet):
     """
 
     def evaluate(self, driver):
-        pass # pragma: no cover
+        pass  # pragma: no cover
 
     def __call__(self, obj):
         from .pageobject import ElementGetter
@@ -341,7 +344,7 @@ class ElementFacet(Facet):
 
     def evaluate(self, driver):
         assert_true(self.element.__get__(self.parent_class, self.parent_class),
-                     "No such element"
+                    "No such element"
         )
 
     def get_name(self):

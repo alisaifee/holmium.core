@@ -15,8 +15,9 @@ from .logger import log
 # pylint: disable=invalid-name
 try:
     from fresher import ftc
-except ImportError: # pragma: no cover
-    ftc = None # pragma: no cover
+except ImportError:  # pragma: no cover
+    ftc = None  # pragma: no cover
+
 
 def load_source(name, path):
     """
@@ -26,12 +27,13 @@ def load_source(name, path):
         # pylint: disable=no-name-in-module
         from importlib import machinery  # pragma: no cover
 
-        loader = machinery.SourceFileLoader(name, path) # pragma: no cover
+        loader = machinery.SourceFileLoader(name, path)  # pragma: no cover
         return loader.load_module(name)  # pragma: no cover
     else:
         import imp  # pragma: no cover
 
         return imp.load_source(name, path)  # pragma: no cover
+
 
 class HolmiumNose(Plugin):
     """
@@ -132,7 +134,7 @@ class HolmiumNose(Plugin):
                                      config_path + ".py").config
             if config:
                 self.config = Config(config, {
-                "holmium": self.holmium_config})
+                    "holmium": self.holmium_config})
         except Exception as exc:
             self.logger.debug("unable to load %s" % config_path)
             raise SkipTest(
