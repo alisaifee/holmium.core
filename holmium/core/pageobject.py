@@ -297,8 +297,8 @@ class ElementGetter(object):
             (self.locator_type, self.query_string, self.timeout))
 
         if self.iframe:
-            Page.local.driver.switch_to_default_content()
-            Page.local.driver.switch_to_frame(self.iframe)
+            Page.local.driver.switch_to.default_content()
+            Page.local.driver.switch_to.frame(self.iframe)
 
         if self.timeout:
             try:
@@ -530,8 +530,8 @@ class Section(Faceted):
         """
         if self.iframe:
             try:
-                Page.get_driver().switch_to_default_content()
-                Page.get_driver().switch_to_frame(self.iframe)
+                Page.get_driver().switch_to.default_content()
+                Page.get_driver().switch_to.frame(self.iframe)
             except NoSuchFrameException:
                 log.error(
                     "unable to switch to iframe %s" % self.iframe)

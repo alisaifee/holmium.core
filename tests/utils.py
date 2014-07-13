@@ -18,7 +18,7 @@ def get_driver():
         phantom = webdriver.PhantomJS()
         atexit.register(phantom.quit)
     phantom.delete_all_cookies()
-    phantom.switch_to_default_content()
+    phantom.switch_to.default_content()
     return phantom
 
 

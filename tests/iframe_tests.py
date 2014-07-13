@@ -1,9 +1,8 @@
-import mock
 import unittest
-from  holmium.core import Page, Element, Elements, Section, Locators
-import holmium.core.pageobject
-from contextlib import closing
 
+import mock
+
+from  holmium.core import Page, Element, Elements, Section, Locators
 from tests.utils import get_driver, make_temp_page
 
 
@@ -52,7 +51,7 @@ class IFrameTest(unittest.TestCase):
                 driver.find_element.return_value = element
                 po = BasicPage( driver , iframe='frame')
                 self.assertEqual( "test_text",  po.element.text)
-                driver.switch_to_frame.assert_called_with("frame")
-                self.assertEqual(driver.switch_to_frame.call_count, 1)
-                self.assertEqual(driver.switch_to_default_content.call_count, 1)
+                driver.switch_to.frame.assert_called_with("frame")
+                self.assertEqual(driver.switch_to.frame.call_count, 1)
+                self.assertEqual(driver.switch_to.default_content.call_count, 1)
 
