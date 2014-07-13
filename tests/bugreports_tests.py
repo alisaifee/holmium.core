@@ -2,7 +2,6 @@
 import unittest
 import threading
 from holmium.core.facets import cookie,title, defer
-from nose.plugins.attrib import attr
 import os
 from selenium.webdriver.support.ui import Select
 import mock
@@ -115,7 +114,6 @@ class BugReports(unittest.TestCase):
         self.assertTrue(issubclass(SimplePage(driver).id_el.__class__, CustomSelect))
         self.assertEquals(SimplePage(driver).id_el.get_text_upper(), "FOO")
 
-    @attr("sigh")
     def test_class_inheritance_with_facets(self):
         """ https://github.com/alisaifee/issues/18
         """
