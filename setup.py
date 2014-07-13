@@ -11,7 +11,7 @@ from setuptools import setup, find_packages
 import os
 import sys
 this_dir = os.path.abspath(os.path.dirname(__file__))
-REQUIREMENTS = filter(None, open(os.path.join(this_dir, 'requirements.txt')).read().splitlines())
+REQUIREMENTS = filter(None, open(os.path.join(this_dir, 'requirements/main.txt')).read().splitlines())
 
 import versioneer
 versioneer.versionfile_source = "holmium/core/_version.py"
