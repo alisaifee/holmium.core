@@ -11,7 +11,7 @@ import collections
 from functools import wraps
 
 import selenium.webdriver.common.by
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
 from selenium.common.exceptions import TimeoutException, NoSuchFrameException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.remote.webelement import WebElement
@@ -311,7 +311,7 @@ class ElementGetter(object):
                                _meth(self.locator_type, self.query_string)
                            )
 
-                WebDriverWait(self.root, self.timeout).until(callback)
+                WebDriverWait(self.root, self.timeout, ignored_exceptions=[StaleElementReferenceException,]).until(callback)
             except TimeoutException:
                 log.debug(
                     "unable to find element %s after waiting for %d seconds" % (
