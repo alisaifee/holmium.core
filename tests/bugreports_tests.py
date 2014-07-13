@@ -7,8 +7,9 @@ import os
 from selenium.webdriver.support.ui import Select
 import mock
 
-from holmium.core import Element, ElementEnhancer, Page, Locators
+from holmium.core import Element, ElementEnhancer, Page, Locators, Elements
 from holmium.core import reset_enhancers, register_enhancer
+from tests.utils import get_driver, make_temp_page
 
 support = os.path.join(os.path.dirname(__file__), "support")
 
@@ -157,6 +158,32 @@ class BugReports(unittest.TestCase):
             {"title":"three"})
 
         self.assertEquals(len(ExtFour.get_class_facets()), 2)
+
+    def test_stale_element_in_wait(self):
+        """ https://github.com/alisaifee/issues/23
+        """
+        driver = get_driver()
+        def rem():
+            driver.execute_script("""
+            if ( document.getElementsByClassName('stale').length > 1 ){
+                var f = document.getElementById('container').firstChild;
+                document.getElementById('container').removeChild(f);
+            }
+            """
+            )
+
+        class P(Page):
+            e = Elements(Locators.CLASS_NAME, "stale",
+                         timeout=1,
+                         only_if=lambda els: rem() or any(e.is_displayed() for e in els)
+            )
+        uri = make_temp_page("""
+        <html><body>
+        <div id='container'><div class="stale">1</div><div class="stale">2</div></div>
+        </body></html>
+        """)
+        p = P(driver, uri)
+        self.assertEqual(len(p.e), 1)
 
     def tearDown(self):
         reset_enhancers()
