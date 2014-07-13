@@ -12,6 +12,14 @@
 History
 *******
 
+0.7.5 2014-07-14
+================
+* Bug fix for ``StaleElementReferenceException`` in WebDriverWait 
+* Support for using ``holmium.core.coniditions`` objects as 
+  `context managers
+  <http://holmiumcore.readthedocs.org/en/latest/usage.html#context-managers>`_ 
+* Additional conditions ``ANY`` and ``ALL`` for element collections. 
+
 0.7.4 2014-04-24
 ================
 * Bug fix: Sections weren't working for index > 1 `#22 <https://github.com/alisaifee/holmium.core/issues/22>`_
@@ -165,6 +173,7 @@ History
 * Bug fix 
   
   - fixed phantomjs build in travis
+
 
 
 
