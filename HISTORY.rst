@@ -12,6 +12,10 @@
 History
 *******
 
+0.7.6 2014-07-14
+================
+* Hot fix: broken installation due to missing requirements
+
 0.7.5 2014-07-14
 ================
 * Bug fix for ``StaleElementReferenceException`` in WebDriverWait 
@@ -173,6 +177,7 @@ History
 * Bug fix 
   
   - fixed phantomjs build in travis
+
 
 
 
