@@ -8,6 +8,9 @@ python:
 install:
     - pip install -r requirements/ci.txt --use-mirrors
 
-script: nosetests tests --with-cov -v 
+script:
+    - nosetests tests --with-cov -v
+    - python setup.py build sdist
+    - pip install $(find dist/ -name \*.tar.gz | head -n 1)
 after_success:
     - coveralls
