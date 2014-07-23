@@ -173,7 +173,7 @@ class HolmiumConfig(dict):
     as keys in the dictionary and vice versa.
     """
     # pylint: disable=unused-argument,too-many-arguments,star-args
-    def __init__(self, browser, remote, capabilities, user_agent, environment,
+    def __init__(self, browser, remote, capabilities, config_dir, user_agent, environment,
                  ignore_ssl, fresh_instance):
         data = {}
         for arg in inspect.getargspec(HolmiumConfig.__init__).args[1:]:

@@ -22,6 +22,11 @@ class TestCase(unittest.TestCase):
     """
 
     @classmethod
+    def getConfigPath(cls):
+        base_file = inspect.getfile(cls)
+        return os.path.split(base_file)[0]
+
+    @classmethod
     def setUpClass(cls):
         """
         prepare the driver initialization based on the environment variables
@@ -29,21 +34,21 @@ class TestCase(unittest.TestCase):
         test itself actually refers to it via `self.driver`.
         """
         cls.driver = None
-        base_file = inspect.getfile(cls)
-        config_path = os.path.join(os.path.split(base_file)[0], "config")
+        config_path = cls.getConfigPath()
         browser = os.environ.get("HO_BROWSER", "firefox")
         user_agent = os.environ.get("HO_USERAGENT", "")
         remote = os.environ.get("HO_REMOTE", None)
         environment = os.environ.get("HO_ENV", "development")
+        config_dir = os.environ.get("HO_CONFIG_DIR", cls.getConfigPath())
         ignore_ssl = os.environ.get("HO_IGNORE_SSL_ERRORS", False)
         fresh_instance = bool(int(os.environ.get("HO_BROWSER_PER_TEST", 0)))
-        cls.holmium_config = HolmiumConfig(browser, remote, {}, user_agent,
+        cls.holmium_config = HolmiumConfig(browser, remote, {}, config_dir, user_agent,
                                            environment, ignore_ssl, fresh_instance)
         config = None
-        if os.path.isfile(config_path + ".json"):
-            config = json.loads(open(config_path + ".json").read())
-        elif os.path.isfile(config_path + ".py"):
-            config = imp.load_source("config", config_path + ".py").config
+        if os.path.isfile(os.path.join(config_path,"config.json")):
+            config = json.loads(open(os.path.join(config_path,"config.json")).read())
+        elif os.path.isfile(config_path + "config.py"):
+            config = imp.load_source("config", os.path.join(config_path, "config.py")).config
         if config:
             cls.config = Config(config, {"holmium": cls.holmium_config})
         # pylint: disable=no-member

@@ -58,6 +58,9 @@ class HolmiumNose(Plugin):
         parser.add_option("", "--holmium-environment", dest="ho_env",
                           help="environment to pass to holmium test case"
                                "configuration")
+        parser.add_option("", "--holmium-config-dir", dest="ho_config_dir",
+                          help="configuration directory that contains config.py or config.json"
+                               "configuration")
         parser.add_option("", "--holmium-browser", dest="ho_browser",
                           type="choice",
                           choices=list(
@@ -84,8 +87,8 @@ class HolmiumNose(Plugin):
             environment = options.ho_env or os.environ.get("HO_ENVIRONMENT", "")
             remote_url = options.ho_remote or os.environ.get("HO_REMOTE", "")
             user_agent = options.ho_ua or os.environ.get("HO_USERAGENT", "")
-            fresh_instance = options.ho_fresh_instance or bool(
-                int(os.environ.get("HO_BROWSER_PER_TEST", 0)))
+            config_dir = options.ho_config_dir or os.environ.get("HO_CONFIG_DIR", "")
+            fresh_instance = options.ho_fresh_instance or bool(int(os.environ.get("HO_BROWSER_PER_TEST", 0)))
             ignore_ssl = options.ho_ignore_ssl or os.environ.get(
                 "HO_IGNORE_SSL_ERRORS", False)
             if options.ho_cap and os.path.isfile(options.ho_cap):
@@ -96,6 +99,7 @@ class HolmiumNose(Plugin):
             self.holmium_config = holmium_config = HolmiumConfig(browser,
                                                                  remote_url,
                                                                  caps,
+                                                                 config_dir,
                                                                  user_agent,
                                                                  environment,
                                                                  ignore_ssl,
@@ -121,17 +125,18 @@ class HolmiumNose(Plugin):
             base_file = test.address()[0]
         else:
             base_file = test.test.feature.src_file
-        config_path = os.path.join(os.path.split(base_file)[0], "config")
+        config_path = self.holmium_config.config_dir or os.path.join(os.path.split(base_file)[0], "config")
         try:
             config = None
-            if os.path.isfile(config_path + ".json"):
-                with closing(open(config_path + ".json")) as config_file:
+
+            if os.path.isfile(os.path.join(config_path, "config.json")):
+                with closing(open(os.path.join(config_path, "config.json"))) as config_file:
                     config = json.loads(config_file.read())
-            elif os.path.isfile(config_path + ".py"):
+            elif os.path.isfile(os.path.join(config_path, "config.py")):
                 if "holmium_testcase_config" in sys.modules:
                     del sys.modules["holmium_testcase_config"]
                 config = load_source("holmium_testcase_config",
-                                     config_path + ".py").config
+                                     os.path.join(config_path, "config.py")).config
             if config:
                 self.config = Config(config, {
                     "holmium": self.holmium_config})
