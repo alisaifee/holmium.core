@@ -27,6 +27,15 @@ else:
 from .facets import Faceted, ElementFacet, CopyOnCreateFacetCollectionMeta
 from .logger import log
 
+
+def switch_to_iframe(iframe_or_frames, driver ):
+    driver.switch_to.default_content()
+    if type(iframe_or_frames) is list:
+        for f in iframe_or_frames:
+            driver.switch_to.frame(f)
+    else:
+        driver.switch_to.frame(iframe_or_frames)
+
 # pylint: disable=unnecessary-lambda,too-few-public-methods,too-many-arguments
 class Locators(selenium.webdriver.common.by.By):
     """
@@ -297,8 +306,7 @@ class ElementGetter(object):
             (self.locator_type, self.query_string, self.timeout))
 
         if self.iframe:
-            Page.local.driver.switch_to.default_content()
-            Page.local.driver.switch_to.frame(self.iframe)
+            switch_to_iframe(self.iframe, Page.local.driver)
 
         if self.timeout:
             try:
@@ -530,8 +538,7 @@ class Section(Faceted):
         """
         if self.iframe:
             try:
-                Page.get_driver().switch_to.default_content()
-                Page.get_driver().switch_to.frame(self.iframe)
+                switch_to_iframe(self.iframe, Page.get_driver())
             except NoSuchFrameException:
                 log.error(
                     "unable to switch to iframe %s" % self.iframe)
