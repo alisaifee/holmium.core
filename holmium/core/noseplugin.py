@@ -3,10 +3,14 @@ nose plugin for holmium (or the other way around? :P)
 """
 from contextlib import closing
 import os
+import pdb
 import sys
 import json
+import tempfile
+from random import random
 from nose.plugins.base import Plugin
 from nose.plugins.skip import SkipTest
+from selenium.common.exceptions import UnexpectedAlertPresentException
 from .config import HolmiumConfig, Config, BROWSER_MAPPING
 from .env import ENV, LazyWebDriverList
 from holmium.core.env import LazyWebDriver
@@ -169,12 +173,33 @@ class HolmiumNose(Plugin):
         cookies depending on config
         """
         # pylint:disable=no-member
+
+        is_local_mode = 'remote' not in self.holmium_config and self.holmium_config['remote']
+        random_str = str(random()).replace('.', '')
+        snapfile = os.pathsep.join([tempfile.gettempdir(), "screenshot_{0}.png".format(random_str)])
+
         if ENV.get("driver", None) and self.holmium_config.fresh_instance:
             for driver in ENV["drivers"]:
                 driver.safe_quit()
         elif ENV.get("driver"):
             for driver in ENV["drivers"]:
-                driver.safe_clear()
+                try:
+                    if is_local_mode: # if we're running locally, take snapshots.  If not, sauce handles it.
+                        # upon test exit, take screenshot before teardown, then delete if there's no error here
+                        driver.save_screenshot(snapfile)
+                        driver.safe_clear()
+                        os.remove(snapfile)
+                    else:
+                        driver.safe_clear()
+                except UnexpectedAlertPresentException:
+                    alert = driver.switch_to_alert()
+                    text = alert.text
+                    raise UnexpectedAlertPresentException(text)
+                except Exception as e:
+                    if is_local_mode:
+                        print "Got exception {0}.  Screenshot to be found in {1}".format(e, snapfile)
+                    else:
+                        raise e
 
     @staticmethod
     def is_freshen_test(test):
