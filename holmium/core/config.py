@@ -247,6 +247,14 @@ class PhantomConfig(DriverConfig):
                 "--ignore-ssl-errors=true")
         return super(PhantomConfig, self).__call__(config, args)
 
+class IeConfig(DriverConfig):
+    """
+    configuration for internet explorer
+    """
+
+    def __call__(self, config, args):
+        args['capabilities'] = args.pop('desired_capabilities', {})
+        return super(IeConfig, self).__call__(config, args)
 
 class RemoteConfig(DriverConfig):
     """
@@ -269,6 +277,7 @@ CONFIGURATOR_MAPPER = {
     "firefox": FirefoxConfig(),
     "chrome": ChromeConfig(),
     "phantomjs": PhantomConfig(),
+    "ie": IeConfig(),
     "remote": RemoteConfig()
 }
 
