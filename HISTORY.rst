@@ -12,6 +12,10 @@
 History
 *******
 
+0.7.7 2014-09-05
+================
+* Bug fix: IE Driver initialization `#24 <https://github.com/alisaifee/holmium.core/issues/24>`_
+
 0.7.6 2014-07-14
 ================
 * Hot fix: broken installation due to missing requirements
@@ -177,6 +181,7 @@ History
 * Bug fix 
   
   - fixed phantomjs build in travis
+
 
 
 
