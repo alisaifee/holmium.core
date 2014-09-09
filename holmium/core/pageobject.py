@@ -209,7 +209,7 @@ class Page(Faceted):
                     fluent wrapper
                     """
                     resp = attr(*args, **kwargs)
-                    if None == resp:
+                    if resp is None:
                         resp = self
                     return resp
 
