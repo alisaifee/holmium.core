@@ -103,13 +103,12 @@ class PageTest(unittest.TestCase):
     def test_fluent(self):
         class FluentPage(Page):
             thing = Element(Locators.NAME, "thing")
-            def get_text(self):
-                return self.thing.text
             def click_thing(self):
                 self.thing.click()
+            def get_thing(self):
+                return self.thing
         page = "<div name='thing'>i am thing</div>"
         driver = get_driver()
         uri = make_temp_page(page)
         page = FluentPage(driver, uri)
-        self.assertTrue(page.click_thing().get_text(), "i am thing")
-
+        self.assertTrue(page.click_thing().get_thing().text, "i am thing")
