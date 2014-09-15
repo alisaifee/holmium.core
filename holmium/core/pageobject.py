@@ -305,7 +305,7 @@ class ElementGetter(object):
             "looking up locator:%s, query_string:%s, timeout:%d" %
             (self.locator_type, self.query_string, self.timeout))
 
-        if self.iframe:
+        if self.iframe is not None:
             switch_to_iframe(self.iframe, Page.local.driver)
 
         if self.timeout:
