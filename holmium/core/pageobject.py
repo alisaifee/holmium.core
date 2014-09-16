@@ -6,6 +6,9 @@ import inspect
 import weakref
 import types
 import threading
+import tempfile
+from random import random
+import os
 import contextlib
 import collections
 from functools import wraps
@@ -374,6 +377,11 @@ class Element(ElementGetter):
             ) if self.root else None
         except (NoSuchElementException, TimeoutException):
             return None
+        except NoSuchFrameException as e:
+            random_str = str(random()).replace('.', '')
+            snapfile = os.pathsep.join([tempfile.gettempdir(), "screenshot_{0}.png".format(random_str)])
+            Page.get_driver().save_screenshot(snapfile)
+            raise Exception("NoSuchFrameException ({0}):  Snapshot saved as {1}".format(str(e), snapfile))
 
 
 class Elements(ElementGetter):
