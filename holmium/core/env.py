@@ -3,7 +3,9 @@ utilities for managing the holmium runtime
 environment
 """
 import atexit
+from ipython import embed
 import copy
+import os
 import sys
 from nose.plugins.skip import SkipTest
 from six import reraise
@@ -59,6 +61,9 @@ class LazyWebDriver(object):
         """
         quit the driver if the instance was initialized
         """
+        if os.getenv("DEBUG_ON_QUIT", False):
+            embed()
+
         try:
             instance = object.__getattribute__(self, "_instance")
             if instance:
