@@ -3,7 +3,7 @@ utilities for managing the holmium runtime
 environment
 """
 import atexit
-from ipython import embed
+import pdb
 import copy
 import os
 import sys
@@ -62,7 +62,7 @@ class LazyWebDriver(object):
         quit the driver if the instance was initialized
         """
         if os.getenv("DEBUG_ON_QUIT", False):
-            embed()
+            pdb.set_trace()
 
         try:
             instance = object.__getattribute__(self, "_instance")
