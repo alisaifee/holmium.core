@@ -221,10 +221,11 @@ class Page(Faceted):
                     fluent wrapper
                     """
                     resp = attr(*args, **kwargs)
-                    if None == resp:
+                    if issubclass(resp.__class__, WebElement):
+                        return resp
+                    elif None == resp:
                         resp = self
                     return resp
-
                 return wrap
             return attr
 
