@@ -10,6 +10,7 @@ import sys
 from nose.plugins.skip import SkipTest
 from six import reraise
 from holmium.core.config import configure
+import traceback
 
 
 class LazyWebDriver(object):
@@ -35,12 +36,13 @@ class LazyWebDriver(object):
                     args = configure(safe_getter("_holmium_config"))
                     instance = safe_getter("_driver_cls")(**args)
                 except:
-                    traceback = sys.exc_info()[2]
+                    tb = sys.exc_info()[2]
                     browser = safe_getter("_holmium_config").browser
+                    pretty_tb = traceback.format_exc()
                     reraise(
                         SkipTest,
-                        SkipTest("unable to initialize driver (name: %s)" % (browser.strip() or "None")),
-                        traceback
+                        SkipTest("unable to initialize driver (name: {0}): {1}".format((browser.strip() or "None"), pretty_tb)),
+                        tb
                     )
                 safe_getter("_post_create_callback")()
                 safe_setter("_instance", instance)
