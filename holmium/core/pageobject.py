@@ -357,7 +357,8 @@ class ElementGetter(object):
 
 def save_screenshot(driver):
     random_str = str(random()).replace('.', '')
-    snapfile = os.pathsep.join([tempfile.gettempdir(), "screenshot_{0}.png".format(random_str)])
+    #FIXME: change to configurable destination dir!
+    snapfile = os.path.join("logs", "screenshot_{0}.png".format(random_str))
     driver.save_screenshot(snapfile)
     return snapfile
 
