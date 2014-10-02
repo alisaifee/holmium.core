@@ -3,6 +3,7 @@ implementation of page objects, element(s) and sections
 """
 
 import inspect
+import traceback
 import weakref
 import types
 import threading
@@ -14,7 +15,7 @@ import collections
 from functools import wraps
 
 import selenium.webdriver.common.by
-from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
+from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException, WebDriverException
 from selenium.common.exceptions import TimeoutException, NoSuchFrameException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.remote.webelement import WebElement
@@ -220,7 +221,14 @@ class Page(Faceted):
                     """
                     fluent wrapper
                     """
-                    resp = attr(*args, **kwargs)
+                    resp = None
+                    try:
+                        resp = attr(*args, **kwargs)
+                    except WebDriverException as wde:
+                        traceback.print_exc()
+                        file = save_screenshot(attr_getter("driver"))
+                        print "Screenshot saved to {0}".format(file)
+                        raise wde
                     if issubclass(resp.__class__, WebElement):
                         return resp
                     elif None == resp:
@@ -347,6 +355,13 @@ class ElementGetter(object):
         return element
 
 
+def save_screenshot(driver):
+    random_str = str(random()).replace('.', '')
+    snapfile = os.pathsep.join([tempfile.gettempdir(), "screenshot_{0}.png".format(random_str)])
+    driver.save_screenshot(snapfile)
+    return snapfile
+
+
 class Element(ElementGetter):
     """
     Utility to get a :class:`selenium.webdriver.remote.webelement.WebElement`
@@ -379,9 +394,7 @@ class Element(ElementGetter):
         except (NoSuchElementException, TimeoutException):
             return None
         except NoSuchFrameException as e:
-            random_str = str(random()).replace('.', '')
-            snapfile = os.pathsep.join([tempfile.gettempdir(), "screenshot_{0}.png".format(random_str)])
-            Page.get_driver().save_screenshot(snapfile)
+            snapfile = save_screenshot(Page.get_driver())
             raise Exception("NoSuchFrameException ({0}):  Snapshot saved as {1}".format(str(e), snapfile))
 
 
