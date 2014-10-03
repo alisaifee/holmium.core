@@ -10,6 +10,7 @@ import sys
 from nose.plugins.skip import SkipTest
 from six import reraise
 from holmium.core.config import configure
+from selenium.common.exceptions import WebDriverException
 import traceback
 
 
@@ -73,6 +74,8 @@ class LazyWebDriver(object):
         except SkipTest:  # pragma: no cover
             # absorb since safe_quit is called by holmium itself
             pass  # pragma: no cover
+        except WebDriverException:
+            print "Warning: ignoring the fact that I can no longer communicate with the webdriver instance..."
         finally:
             object.__setattr__(self, "_instance", None)
 
