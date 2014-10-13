@@ -4,13 +4,14 @@ nose plugin for holmium (or the other way around? :P)
 from contextlib import closing
 import os
 import pdb
+import traceback
 import sys
 import json
 import tempfile
 from random import random
 from nose.plugins.base import Plugin
 from nose.plugins.skip import SkipTest
-from selenium.common.exceptions import UnexpectedAlertPresentException
+from selenium.common.exceptions import UnexpectedAlertPresentException, WebDriverException
 from .config import HolmiumConfig, Config, BROWSER_MAPPING
 from .env import ENV, LazyWebDriverList
 from holmium.core.env import LazyWebDriver
@@ -195,6 +196,9 @@ class HolmiumNose(Plugin):
                     alert = driver.switch_to_alert()
                     text = alert.text
                     raise UnexpectedAlertPresentException(text)
+                except WebDriverException as wde:
+                    print "Ignorning WebDriverException during shutdown: {0}.  ".format(wde)
+                    traceback.print_exc()
                 except Exception as e:
                     if is_local_mode:
                         print "Got exception {0}.  Screenshot to be found in {1}".format(e, snapfile)
