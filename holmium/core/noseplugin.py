@@ -196,9 +196,6 @@ class HolmiumNose(Plugin):
                     alert = driver.switch_to_alert()
                     text = alert.text
                     raise UnexpectedAlertPresentException(text)
-                except WebDriverException as wde:
-                    print "Ignorning WebDriverException during shutdown: {0}.  ".format(wde)
-                    traceback.print_exc()
                 except Exception as e:
                     if is_local_mode:
                         print "Got exception {0}.  Screenshot to be found in {1}".format(e, snapfile)
