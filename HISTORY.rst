@@ -12,6 +12,11 @@
 History
 *******
 
+0.7.8 2014-11-02
+================
+* Bug fix: AttributeError when comparing with None `#26 <https://github.com/alisaifee/holmium.core/issues/26>`_
+* Bug fix: Negative indexing in sections `#27 <https://github.com/alisaifee/holmium.core/issues/27>`_
+
 0.7.7 2014-09-05
 ================
 * Bug fix: IE Driver initialization `#24 <https://github.com/alisaifee/holmium.core/issues/24>`_
@@ -181,6 +186,7 @@ History
 * Bug fix 
   
   - fixed phantomjs build in travis
+
 
 
 
