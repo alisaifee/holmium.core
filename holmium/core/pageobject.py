@@ -588,6 +588,8 @@ class Sections(Section, collections.Sequence):
         return len(self.__getelements__())
 
     def __getitem__(self, idx):
+        if idx < 0:
+            idx = len(self) + idx
         if idx < 0 or idx >= len(self):
             raise IndexError("Sections index (%d) out of range" % idx)
         for i, _ in enumerate(self):

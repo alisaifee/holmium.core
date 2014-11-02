@@ -169,4 +169,13 @@ class SectionTest(unittest.TestCase):
             self.assertEqual("element 4", po.sections[0].tokens[1].text)
             self.assertEqual("element 3", po.sections[1].tokens[1].text)
             self.assertEqual("element 6", po.sections[2].tokens[1].text)
-
+            self.assertEqual("element 6", po.sections[-1].tokens[1].text)
+            self.assertEqual("element 3", po.sections[-2].tokens[1].text)
+            self.assertRaises(
+                IndexError,
+                lambda: po.sections[-4]
+            )
+            self.assertRaises(
+                IndexError,
+                lambda: po.sections[3]
+            )
