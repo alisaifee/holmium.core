@@ -227,6 +227,7 @@ class Page(Faceted):
                     except WebDriverException as wde:
                         traceback.print_exc()
                         file = save_screenshot(attr_getter("driver"))
+                        print("Error trying to execute {0}".format(attr))
                         print "Screenshot saved to {0}".format(file)
                         raise wde
                     if issubclass(resp.__class__, WebElement):
