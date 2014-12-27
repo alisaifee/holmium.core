@@ -23,7 +23,7 @@ from six import add_metaclass
 import time
 from .enhancers import get_enhancers
 from holmium.core.conditions import BaseCondition
-from util.log import error
+from util.log import error, warn
 
 if hasattr(collections, "OrderedDict"):
     OrderedDict = collections.OrderedDict  # pragma: no cover
@@ -33,6 +33,23 @@ else:
 from .facets import Faceted, ElementFacet, CopyOnCreateFacetCollectionMeta
 from .logger import log
 
+
+def _get_with_stale_element_retry(get_fn):
+    stale_ref_or_first_try = True
+    MAX_TRIES = 5
+    tries=0
+    return_value = None
+
+    while stale_ref_or_first_try and tries < MAX_TRIES:
+        stale_ref_or_first_try = False
+        try:
+            return_value = get_fn()
+        except StaleElementReferenceException as sere:
+            tries+=1
+            log.warn("Stale Element Reference Exception -- going to refetch element.")
+            time.sleep(.1)
+            stale_ref_or_first_try = True
+    return return_value
 
 def switch_to_iframe(iframe_or_frames, driver ):
     driver.switch_to.default_content()
@@ -220,12 +237,13 @@ class Page(Faceted):
             if isinstance(attr, types.MethodType):
                 @wraps(attr)
                 def wrap(*args, **kwargs):
+                    get_fn = lambda : attr(*args, **kwargs)
                     """
                     fluent wrapper
                     """
                     resp = None
                     try:
-                        resp = attr(*args, **kwargs)
+                        resp = _get_with_stale_element_retry(get_fn)
                     except WebDriverException as wde:
                         traceback.print_exc()
                         file = save_screenshot(attr_getter("driver"))
@@ -389,29 +407,20 @@ class Element(ElementGetter):
     """
 
     def __get__(self, instance, owner):
-        stale_ref_or_first_try = True
-        MAX_TRIES = 5
-        tries=0
-
-        while stale_ref_or_first_try and tries < MAX_TRIES:
-            stale_ref_or_first_try = False
+        try:
             if not instance:
                 return_value = self
             else:
-                try:
-                    return_value = self.value_mapper(
+                def get_fn():
+                    return self.value_mapper(
                         self.enhance(self._get_element(self.root.find_element))
-                    ) if self.root else None
-                except (NoSuchElementException, TimeoutException):
-                    return_value = None
-                except StaleElementReferenceException:
-                    tries+=1
-                    log.warn("Stale Element Reference Exception -- going to refetch element.")
-                    time.sleep(.1)
-                    stale_ref_or_first_try = True
-                except NoSuchFrameException as e:
-                    snapfile = save_screenshot(Page.get_driver())
-                    raise Exception("NoSuchFrameException ({0}):  Snapshot saved as {1}".format(str(e), snapfile))
+                        ) if self.root else None
+                return_value = _get_with_stale_element_retry(get_fn)
+        except (NoSuchElementException, TimeoutException):
+            return_value = None
+        except NoSuchFrameException as e:
+            snapfile = save_screenshot(Page.get_driver())
+            raise Exception("NoSuchFrameException ({0}):  Snapshot saved as {1}".format(str(e), snapfile))
         return return_value
 
 
