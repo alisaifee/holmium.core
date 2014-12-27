@@ -20,8 +20,10 @@ from selenium.common.exceptions import TimeoutException, NoSuchFrameException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.remote.webelement import WebElement
 from six import add_metaclass
+import time
 from .enhancers import get_enhancers
 from holmium.core.conditions import BaseCondition
+from util.log import error
 
 if hasattr(collections, "OrderedDict"):
     OrderedDict = collections.OrderedDict  # pragma: no cover
@@ -227,8 +229,8 @@ class Page(Faceted):
                     except WebDriverException as wde:
                         traceback.print_exc()
                         file = save_screenshot(attr_getter("driver"))
-                        print("Error trying to execute {0}".format(attr))
-                        print "Screenshot saved to {0}".format(file)
+                        error("Error trying to execute {0}".format(attr))
+                        error("Screenshot saved to {0}".format(file))
                         raise wde
                     if issubclass(resp.__class__, WebElement):
                         return resp
@@ -387,17 +389,30 @@ class Element(ElementGetter):
     """
 
     def __get__(self, instance, owner):
-        if not instance:
-            return self
-        try:
-            return self.value_mapper(
-                self.enhance(self._get_element(self.root.find_element))
-            ) if self.root else None
-        except (NoSuchElementException, TimeoutException):
-            return None
-        except NoSuchFrameException as e:
-            snapfile = save_screenshot(Page.get_driver())
-            raise Exception("NoSuchFrameException ({0}):  Snapshot saved as {1}".format(str(e), snapfile))
+        stale_ref_or_first_try = True
+        MAX_TRIES = 5
+        tries=0
+
+        while stale_ref_or_first_try and tries < MAX_TRIES:
+            stale_ref_or_first_try = False
+            if not instance:
+                return_value = self
+            else:
+                try:
+                    return_value = self.value_mapper(
+                        self.enhance(self._get_element(self.root.find_element))
+                    ) if self.root else None
+                except (NoSuchElementException, TimeoutException):
+                    return_value = None
+                except StaleElementReferenceException:
+                    tries+=1
+                    log.warn("Stale Element Reference Exception -- going to refetch element.")
+                    time.sleep(.1)
+                    stale_ref_or_first_try = True
+                except NoSuchFrameException as e:
+                    snapfile = save_screenshot(Page.get_driver())
+                    raise Exception("NoSuchFrameException ({0}):  Snapshot saved as {1}".format(str(e), snapfile))
+        return return_value
 
 
 class Elements(ElementGetter):
