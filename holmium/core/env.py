@@ -74,6 +74,13 @@ class LazyWebDriver(object):
         except SkipTest:  # pragma: no cover
             # absorb since safe_quit is called by holmium itself
             pass  # pragma: no cover
+        except WebDriverException as wde:  # pragma: no cover
+            if 'already finished' in wde.msg:
+                print "Ignoring error on quit of already finished session"
+                return
+            else:
+                raise wde
+
         finally:
             object.__setattr__(self, "_instance", None)
 
