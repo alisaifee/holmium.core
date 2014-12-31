@@ -181,7 +181,7 @@ class HolmiumNose(Plugin):
         snapfile = os.pathsep.join([tempfile.gettempdir(), "screenshot_{0}.png".format(random_str)])
 
         # JL: Working around an issue in which holmium_config is unset on the test class.
-        if ENV.get("driver", None)
+        if ENV.get("driver", None):
             if hasattr(self, 'holmium_config'):
                 if self.holmium_config.fresh_instance:
                     for driver in ENV["drivers"]:
