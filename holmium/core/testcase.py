@@ -74,7 +74,8 @@ class TestCase(unittest.TestCase):
         in the class have finished if ``HO_BROWSER_PER_TEST`` is set).
         """
         # pylint:disable=no-member
-        if ENV.get("driver", None) and cls.holmium_config.fresh_instance:
+        # JL more workaround for holmium_config being unset on occasion!
+        if ENV.get("driver", None) and hasattr(cls, 'holmium_config') and cls.holmium_config.fresh_instance:
             for driver in ENV["drivers"]:
                 driver.safe_quit()
         if hasattr(super(TestCase, cls), "tearDownClass"):
