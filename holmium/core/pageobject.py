@@ -361,12 +361,7 @@ class ElementGetter(object):
                         self.query_string, self.timeout)
                 )
                 raise
-        return  self._element_with_added_locator_metadata(_meth(self.locator_type, self.query_string), self.locator_type, self.query_string)
-
-    def _element_with_added_locator_metadata(self, element, locator_type, query_string):
-        element.locator_type = locator_type
-        element.query_string = query_string
-        return element
+        return _meth(self.locator_type, self.query_string)
 
     @classmethod
     def enhance(cls, element):
