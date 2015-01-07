@@ -23,7 +23,6 @@ from six import add_metaclass
 import time
 from .enhancers import get_enhancers
 from holmium.core.conditions import BaseCondition
-from util.log import error, warn
 
 if hasattr(collections, "OrderedDict"):
     OrderedDict = collections.OrderedDict  # pragma: no cover
@@ -247,8 +246,8 @@ class Page(Faceted):
                     except WebDriverException as wde:
                         traceback.print_exc()
                         file = save_screenshot(attr_getter("driver"))
-                        error("Error trying to execute {0}".format(attr))
-                        error("Screenshot saved to {0}".format(file))
+                        log.error("Error trying to execute {0}".format(attr))
+                        log.error("Screenshot saved to {0}".format(file))
                         raise wde
                     if issubclass(resp.__class__, WebElement):
                         return resp
