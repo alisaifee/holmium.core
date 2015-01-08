@@ -460,7 +460,7 @@ class Elements(ElementGetter):
                                        only_if=only_if)
 
     def __getitem__(self, idx):
-        return lambda: self.__get__(self, self.__class__)[idx]
+        return lambda x=None: self.__get__(self, self.__class__)[idx]
 
     def __get__(self, instance, owner):
         if not instance:
@@ -525,7 +525,7 @@ class ElementMap(Elements):
             return {}
 
     def __getitem__(self, key):
-        return lambda: self.__get__(self, self.__class__)[key]
+        return lambda x=None: self.__get__(self, self.__class__)[key]
 
 
 class Section(Faceted):
