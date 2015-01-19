@@ -251,7 +251,7 @@ class Page(Faceted):
                         raise wde
                     if issubclass(resp.__class__, WebElement):
                         return resp
-                    elif None == resp:
+                    elif resp is None:
                         resp = self
                     return resp
                 return wrap
