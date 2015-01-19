@@ -177,7 +177,7 @@ class HolmiumNose(Plugin):
 
         is_local_mode = 'remote' not in self.holmium_config and self.holmium_config['remote']
         random_str = str(random()).replace('.', '')
-        snapfile = os.pathsep.join([tempfile.gettempdir(), "screenshot_{0}.png".format(random_str)])
+        snapfile = os.path.join([tempfile.gettempdir(), "screenshot_{0}.png".format(random_str)])
 
         # JL: Working around an issue in which holmium_config is unset on the test class.
         if ENV.get("driver", None):
