@@ -89,7 +89,10 @@ class LazyWebDriver(object):
         clear the cookies if the driver was initialized
         """
         try:
-            self.delete_all_cookies()
+            if self._holmium_config.browser.lower() in ['android', 'iphone']:
+                return
+            else:
+                self.delete_all_cookies()
         except SkipTest:  # pragma: no cover
             # absorb since safe_quit is called by holmium itself
             pass  # pragma: no cover

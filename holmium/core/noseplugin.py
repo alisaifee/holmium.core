@@ -111,9 +111,13 @@ class HolmiumNose(Plugin):
                                                                  fresh_instance)
             # pylint:disable=no-member,attribute-defined-outside-init
             if holmium_config.remote:
-                driver_cls = BROWSER_MAPPING["remote"]
+                if holmium_config.browser == 'android':
+                    driver_cls = BROWSER_MAPPING["android"]
+                elif holmium_config.browser == 'iphone':
+                    driver_cls = BROWSER_MAPPING["iphone"]
             else:
                 driver_cls = BROWSER_MAPPING.get(holmium_config.browser, None)
+
             self.driver = LazyWebDriver(driver_cls, holmium_config)
             self.enabled = True
 

@@ -3,3 +3,4 @@ ordereddict
 nose
 six
 jinja2
+Appium-Python-Client

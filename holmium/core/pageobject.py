@@ -13,6 +13,7 @@ import os
 import contextlib
 import collections
 from functools import wraps
+import appium
 
 import selenium.webdriver.common.by
 from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException, WebDriverException
@@ -59,7 +60,7 @@ def switch_to_iframe(iframe_or_frames, driver ):
         driver.switch_to.frame(iframe_or_frames)
 
 # pylint: disable=unnecessary-lambda,too-few-public-methods,too-many-arguments
-class Locators(selenium.webdriver.common.by.By):
+class Locators(appium.webdriver.common.mobileby.MobileBy):
     """
     proxy class to access locator types
     """
@@ -148,10 +149,14 @@ class Page(Faceted):
         self.initialized = False
         if url:
             self.home = url
-        elif driver.current_url:
-            self.home = driver.current_url
         else:
-            self.home = None
+            try:
+                if driver.current_url:
+                    self.home = driver.current_url
+                else:
+                    self.home = None
+            except WebDriverException: # not supported for mobile
+                self.home = None
 
         self.iframe = iframe
 
@@ -231,7 +236,10 @@ class Page(Faceted):
             if not attr_getter("home"):
                 log.debug(
                     "home url not set, attempting to update.")
-                attr_setter("home", attr_getter("driver").current_url)
+                try:
+                    attr_setter("home", attr_getter("driver").current_url)
+                except WebDriverException:
+                    self.home = None
 
             if isinstance(attr, types.MethodType):
                 @wraps(attr)

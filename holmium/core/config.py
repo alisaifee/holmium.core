@@ -6,6 +6,7 @@ import os
 import inspect
 
 import jinja2
+import appium
 from selenium import webdriver
 from selenium.webdriver import FirefoxProfile
 
@@ -149,9 +150,9 @@ BROWSER_MAPPING = {"firefox": webdriver.Firefox,
                    "opera": webdriver.Opera,
                    "remote": webdriver.Remote,
                    "phantomjs": webdriver.PhantomJS,
-                   "iphone": webdriver.Remote,
+                   "iphone": appium.webdriver.Remote,
                    "ipad": webdriver.Remote,
-                   "android": webdriver.Remote}
+                   "android": appium.webdriver.Remote}
 
 #:
 CAPABILITIES = {"firefox": webdriver.DesiredCapabilities.FIREFOX,
