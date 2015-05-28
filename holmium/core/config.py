@@ -244,7 +244,7 @@ class PhantomConfig(DriverConfig):
     def __call__(self, config, args):
         if config.ignore_ssl:
             args.setdefault("service_args", []).append(
-                "--ignore-ssl-errors=true")
+                "--ignore-ssl-errors=true --ssl-protocol=tlsv1")
         return super(PhantomConfig, self).__call__(config, args)
 
 class IeConfig(DriverConfig):
