@@ -3,4 +3,4 @@
 * :email:`Alejandro Perez (alejandro@pernixdata.com)`, Section(s) design.
 * :email:`Johan Gozali (johan.gozali@gmail.com)`, Evaluation and help designing Facets
 * `Nathan Jones <https://github.com/ncjones>`_, Bug fixes
-* `Lata Suresh <https://github.com/lsuresh`_, Bug fixes
+* `Lata Suresh <https://github.com/lsuresh>`_, Bug fixes
