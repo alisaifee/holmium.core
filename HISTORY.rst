@@ -12,6 +12,10 @@
 History
 *******
 
+0.7.9 2015-05-30
+================
+* Bug fix: Support for phantom 1.9.x `#29 <https://github.com/alisaifee/holmium.core/issues/29>`_
+
 0.7.8 2014-11-02
 ================
 * Bug fix: AttributeError when comparing with None `#26 <https://github.com/alisaifee/holmium.core/issues/26>`_
@@ -186,6 +190,7 @@ History
 * Bug fix 
   
   - fixed phantomjs build in travis
+
 
 
 
