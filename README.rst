@@ -1,17 +1,18 @@
 .. _PageObjects: http://code.google.com/p/selenium/wiki/PageObjects
 .. _Selenium: http://www.seleniumhq.org/
-.. |travis-ci| image:: https://secure.travis-ci.org/alisaifee/holmium.core.png?branch=master
+.. |travis-ci| image:: https://img.shields.io/travis/alisaifee/holmium.core/master.svg?style=flat-square
     :target: https://travis-ci.org/#!/alisaifee/holmium.core?branch=master
-.. |coveralls| image:: https://coveralls.io/repos/alisaifee/holmium.core/badge.png?branch=master
+.. |coveralls| image:: https://img.shields.io/coveralls/alisaifee/holmium.core/master.svg?style=flat-square
     :target: https://coveralls.io/r/alisaifee/holmium.core?branch=master
-
-.. |pypi| image:: https://pypip.in/v/holmium.core/badge.png
-    :target: https://crate.io/packages/holmium.core/
+.. |pypi| image:: https://img.shields.io/pypi/v/holmium.core.svg
+    :target: https://pypi.python.org/pypi/holmium.core
+.. |downloads| image:: https://img.shields.io/pypi/dm/holmium.core.svg
+    :target: https://pypi.python.org/pypi/holmium.core
 
 ************
 holmium.core
 ************
-|travis-ci| |coveralls| |pypi|
+|travis-ci| |coveralls| |pypi| |downloads|
 
 
 ************
