@@ -4,6 +4,8 @@
     :target: https://travis-ci.org/#!/alisaifee/holmium.core?branch=master
 .. |coveralls| image:: https://img.shields.io/coveralls/alisaifee/holmium.core/master.svg?style=flat-square
     :target: https://coveralls.io/r/alisaifee/holmium.core?branch=master
+.. |license| image:: https://img.shields.io/pypi/l/holmium.core.svg?style=flat-square
+    :target: https://pypi.python.org/pypi/holmium.core
 .. |pypi| image:: https://img.shields.io/pypi/v/holmium.core.svg
     :target: https://pypi.python.org/pypi/holmium.core
 .. |downloads| image:: https://img.shields.io/pypi/dm/holmium.core.svg
@@ -12,7 +14,7 @@
 ************
 holmium.core
 ************
-|travis-ci| |coveralls| |pypi| |downloads|
+|travis-ci| |coveralls| |pypi| |downloads| |license|
 
 
 ************
