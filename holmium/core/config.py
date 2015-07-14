@@ -4,6 +4,7 @@ configuration objects for holmium
 import sys
 import os
 import inspect
+import platform
 
 import jinja2
 import appium
@@ -227,6 +228,8 @@ class ChromeConfig(DriverConfig):
 
     def __call__(self, config, args):
         args["desired_capabilities"].setdefault("chrome.switches", [])
+        if 'docker' in platform.release():
+            args["desired_capabilities"]["chrome.switches"].append("--disable-gpu")
         if config.user_agent:
             args["desired_capabilities"]["chrome.switches"].append(
                 "--user-agent=%s" % config.user_agent)
