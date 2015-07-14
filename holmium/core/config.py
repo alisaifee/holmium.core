@@ -230,6 +230,12 @@ class ChromeConfig(DriverConfig):
         args["desired_capabilities"].setdefault("chrome.switches", [])
         if 'docker' in platform.release():
             args["desired_capabilities"]["chrome.switches"].append("--disable-gpu")
+            args["desired_capabilities"]["chrome.switches"].append("--disable-impl-side-painting")
+            args["desired_capabilities"]["chrome.switches"].append("--disable-gpu-sandbox")
+            args["desired_capabilities"]["chrome.switches"].append("--disable-accelerated-2d-canvas")
+            args["desired_capabilities"]["chrome.switches"].append("--disable-accelerated-jpeg-decoding")
+            args["desired_capabilities"]["chrome.switches"].append("--no-sandbox")
+            args["desired_capabilities"]["chrome.switches"].append("--test-type=ui")
         if config.user_agent:
             args["desired_capabilities"]["chrome.switches"].append(
                 "--user-agent=%s" % config.user_agent)
