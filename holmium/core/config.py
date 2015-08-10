@@ -210,6 +210,7 @@ class FirefoxConfig(DriverConfig):
 
     def __call__(self, config, args):
         profile = FirefoxProfile()
+        profile.set_preference("browser.privatebrowsing.autostart", True)
         if config.user_agent:
             profile.set_preference("general.useragent.override",
                                    config.user_agent)
