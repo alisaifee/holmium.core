@@ -11,9 +11,6 @@
 .. |downloads| image:: https://img.shields.io/pypi/dm/holmium.core.svg
     :target: https://pypi.python.org/pypi/holmium.core
 
-**ADOPT ME: The author of this project is unable to continue maintaining it 
-and is looking for volunteers to adopt it. Please email me at ali@indydevs.org
-if you feel you could give this project a new home**
 
 ************
 holmium.core
