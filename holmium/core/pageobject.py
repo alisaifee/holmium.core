@@ -36,7 +36,7 @@ from .logger import log
 
 def _get_with_stale_element_retry(get_fn):
     stale_ref_or_first_try = True
-    MAX_TRIES = 5
+    MAX_TRIES = 10
     tries=0
     return_value = None
 
@@ -47,7 +47,7 @@ def _get_with_stale_element_retry(get_fn):
         except StaleElementReferenceException as sere:
             tries+=1
             log.warn("Stale Element Reference Exception -- going to refetch element.")
-            time.sleep(.1)
+            time.sleep(.2)
             stale_ref_or_first_try = True
     return return_value
 
