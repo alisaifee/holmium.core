@@ -12,6 +12,14 @@
 History
 *******
 
+0.8.1 2015-10-30
+================
+* Bug fix: Fix setup requirements for python 3.x `#30 <https://github.com/alisaifee/holmium.core/issues/30>`_
+
+0.8 2015-06-07
+================
+* No functional Change
+
 0.7.9 2015-05-30
 ================
 * Bug fix: Support for phantom 1.9.x `#29 <https://github.com/alisaifee/holmium.core/issues/29>`_
@@ -190,6 +198,7 @@ History
 * Bug fix 
   
   - fixed phantomjs build in travis
+
 
 
 
