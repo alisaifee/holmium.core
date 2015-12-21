@@ -231,7 +231,8 @@ class ElementGetter(object):
                  timeout=0,
                  value=lambda el: el,
                  only_if=lambda el: el is not None,
-                 facet=False):
+                 facet=False,
+                 filter_by=lambda el: el is not None):
         """
         :param holmium.core.Locators locator_type: selenium locator to use when
          locating the element
@@ -248,6 +249,10 @@ class ElementGetter(object):
          The located :class:`selenium.webdriver.remote.webelement.WebElement`
          instance is passed as the only argument to the function.
         :param bool facet: flag to  treat this element as a facet.
+        :param function filter_by: condition function that determines if the
+         located :class:`selenium.webdriver.remote.webelement.WebElement`, the
+         only argument passed to the function, should be returned. If not
+         provided, the default function used checks that the element is present.
         """
         self.query_string = query_string
         self.locator_type = locator_type
@@ -262,6 +267,7 @@ class ElementGetter(object):
                   (locator_type, query_string, timeout))
         self.is_facet = facet
         self.is_debug_facet = False
+        self.filter_by = filter_by
 
     @property
     def root(self):
@@ -320,7 +326,13 @@ class ElementGetter(object):
                         self.query_string, self.timeout)
                 )
                 raise
-        return _meth(self.locator_type, self.query_string)
+        retval = _meth(self.locator_type, self.query_string)
+        if isinstance(retval, list):
+            return [el for el in retval if self.filter_by(el)]
+        elif self.filter_by(retval):
+            return retval
+        else:
+            return None
 
     @classmethod
     def enhance(cls, element):
@@ -329,6 +341,8 @@ class ElementGetter(object):
         we will use that in Pages. (e.g. a select element is converted into
         :class:`selenium.webdriver.support.ui.Select`)
         """
+        if element is None:
+            return None
         for enhancer in get_enhancers():
             if enhancer.matches(element):
                 return enhancer(element)
@@ -355,6 +369,10 @@ class Element(ElementGetter):
      :class:`selenium.webdriver.remote.webelement.WebElement`
      instance is passed as the only argument to the function.
     :param bool facet: flag to  treat this element as a facet.
+    :param function filter_by: condition function that determines if the
+     located :class:`selenium.webdriver.remote.webelement.WebElement`, the
+     only argument passed to the function, should be returned. If not
+     provided, the default function used checks that the element is present.
     """
 
     def __get__(self, instance, owner):
@@ -385,10 +403,15 @@ class Elements(ElementGetter):
      instance is passed as the only argument to the function.
     :param function only_if: extra validation function that is called repeatedly
      until :attr:`timeout` elapses. If not provided the default function used
-     checks that all the elements are present. The list of located
+     checks that the element collection is not empty. The list of located
      :class:`selenium.webdriver.remote.webelement.WebElement`
      instances is passed as the only argument to the function.
     :param bool facet: flag to  treat this element as a facet.
+    :param function filter_by: condition function determines which elements are
+     included in the collection. If not provided the default function used
+     includes all elements identified by :attr:`query_string`.
+     A :class:`selenium.webdriver.remote.webelement.WebElement` instance is
+     passed as the only argument to the function.
     """
     # pylint: disable=incomplete-protocol,line-too-long
     def __init__(self, locator_type,
@@ -396,13 +419,14 @@ class Elements(ElementGetter):
                  base_element=None,
                  timeout=0,
                  value=lambda el: el,
-                 only_if=lambda el: el is not None,
-                 facet=False):
+                 only_if=lambda els: len(els) > 0,
+                 facet=False,
+                 filter_by=lambda el: el is not None):
         super(Elements, self).__init__(locator_type, query_string,
                                        base_element=base_element,
                                        timeout=timeout,
                                        facet=facet, value=value,
-                                       only_if=only_if)
+                                       only_if=only_if, filter_by=filter_by)
 
     def __getitem__(self, idx):
         return lambda: self.__get__(self, self.__class__)[idx]
@@ -439,9 +463,14 @@ class ElementMap(Elements):
      key. The located :class:`selenium.webdriver.remote.webelement.WebElement`
      instance is passed as the only argument to the function.
     :param function only_if: extra validation function that is called repeatedly
-     until :attr:`timeout`. If not provided the default function used checks
-     that all the elements are present. The list of located
-     :class:`selenium.webdriver.remote.webelement.WebElement` instances is
+     until :attr:`timeout` elapses. If not provided the default function used
+     checks that the element collection is not empty. The list of located
+     :class:`selenium.webdriver.remote.webelement.WebElement`
+     instances is passed as the only argument to the function.
+    :param function filter_by: condition function determines which elements are
+     included in the collection. If not provided the default function used
+     includes all elements identified by :attr:`query_string`.
+     A :class:`selenium.webdriver.remote.webelement.WebElement` instance is
      passed as the only argument to the function.
     """
     # pylint: disable=incomplete-protocol,line-too-long
@@ -451,11 +480,13 @@ class ElementMap(Elements):
                  timeout=0,
                  key=lambda el: el.text,
                  value=lambda el: el,
-                 only_if=lambda el: el is not None,
-                 facet=False):
+                 only_if=lambda els: len(els) > 0,
+                 facet=False,
+                 filter_by=lambda el: el is not None):
         super(ElementMap, self).__init__(locator_type, query_string,
                                          base_element,
-                                         timeout, facet, only_if=only_if)
+                                         timeout, facet=facet,
+                                         only_if=only_if, filter_by=filter_by)
         self.key_mapper = key
         self.value_mapper = value
 

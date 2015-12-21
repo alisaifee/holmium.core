@@ -75,3 +75,19 @@ class ElementMapTest(unittest.TestCase):
             self.assertEqual(page.el_list, {})
             self.assertEqual(len(page.el_list_wait), 1)
             self.assertEqual(len(page.el_list_only_if), 1)
+
+    def test_elements_false_filter_by(self):
+        class SimplePage(Page):
+            el_list_only_if = ElementMap(
+                Locators.CLASS_NAME, "elements",
+                filter_by=lambda el: el.text != "element_text")
+
+        uri = make_temp_page("""
+            <body>
+                <div class="elements">
+                        element_text
+                    </div>
+            </body>
+        """)
+        page = SimplePage(self.driver, uri)
+        self.assertEqual(page.el_list_only_if, {})

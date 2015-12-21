@@ -310,27 +310,24 @@ the text attribute of the element. The same type of lookup functions are used in
 
 Conditions
 ==========
-For any non-trivial web page, asynchronous changes to the dom are expected. This
-requires test authors to often place explicit waits for conditions such as visibility
-and content changes. To reduce the effort of describing these conditionals, page elements
-:class:`Element`, :class:`Elements` and :class:`ElementMap` accept a keyword argument ``only_if``:
-a callable that expects a :class:`selenium.webdriver.remote.webelement.WebElement` and is
-expected to return ``True/False``. When coupled with the keyword argument ``timeout``,
-access to a page object's element is internally subjected to an explicit wait.
-
-Some common conditions are provided and can be used to further simplify the declaration of pageobject:
+Changes to the dom, such as element visibility and content, are expected for any non-trivial web page.
+Page elements :class:`Element`, :class:`Elements`, and :class:`ElementMap` accept a keyword argument
+``filter_by``: a callable that expects a :class:`selenium.webdriver.remote.webelement.WebElement` and
+is expected to return ``True/False``. In :class:`Elements` and :class:`ElementMap`, only elements
+that meet the ``filter_by`` condition will be included in the collection. If the ``filter_by``
+condition is not met in :class:`Element`, ``None`` will be returned. Some common conditions are
+provided:
 
 .. currentmodule:: holmium.core.conditions
 .. autoclass:: VISIBLE
 .. autoclass:: INVISIBLE
 .. autoclass:: MATCHES_TEXT
-.. autoclass:: ANY
-.. autoclass:: ALL
 .. currentmodule:: holmium.core
 
-
-You can build your own condition objects by subclassing :class:`conditions.BaseCondition`
-and implementing the :meth:`conditions.BaseCondition.evaluate` method.
+These conditions can also be used to place explicit waits on elements expected to change
+asynchronously by pairing the ``only_if`` keyword argument with ``timeout``. In :class:`Element`,
+``only_if`` is also a callable that expects a :class:`selenium.webdriver.remote.webelement.WebElement`
+and is expected to return ``True/False``.
 
 Sample
 ------
@@ -347,12 +344,22 @@ Sample
                                     only_if=conditions.MATCHES_TEXT('^ready.*'),
                                     timeout = 5)
 
-
-
 In the above example, ``required_element`` will return ``None`` unless it is displayed. The 5 second
-timeout will take effect everytime the element is accessed. Similarly, ``delayed_element`` will return
+timeout will take effect every time the element is accessed. Similarly, ``delayed_element`` will return
 ``None`` until the text of the element matches a string that starts with ``ready``.
 
+``only_if`` and ``timeout`` explicit waits can also be used with :class:`Elements` and
+:class:`ElementMap`. In these element collections, ``only_if`` expects a list of
+:class:`selenium.webdriver.remote.webelement.WebElement` items and is also expected to return
+``True/False``.  These common conditions for use with element collections are provided:
+
+.. currentmodule:: holmium.core.conditions
+.. autoclass:: ANY
+.. autoclass:: ALL
+.. currentmodule:: holmium.core
+
+You can build your own condition objects by subclassing :class:`conditions.BaseCondition`
+and implementing the :meth:`conditions.BaseCondition.evaluate` method.
 
 Context Managers
 ----------------
