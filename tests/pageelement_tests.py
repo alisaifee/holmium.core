@@ -51,9 +51,7 @@ class ElementTest(unittest.TestCase):
         assert page.elements[0].text == "simple_id"
         assert page.elements[1].text == "simple_class"
 
-
     def test_basic_element_with_only_if(self):
-
         class SimplePage(Page):
             id_el = Element(Locators.ID, "simple_id")
             id_el_changed = Element(Locators.ID, "simple_id", timeout=10,
@@ -70,3 +68,13 @@ class ElementTest(unittest.TestCase):
         self.driver.refresh()
         with hiro.Timeline().scale(10):
             self.assertEqual(page.id_el_changed, None)
+
+    def test_basic_element_with_filter_by(self):
+        class SimplePage(Page):
+            id_el = Element(Locators.ID, "simple_id", filter_by=lambda el: el.text == "simple_id")
+            id_el_none = Element(Locators.ID, "simple_id", filter_by=lambda el: el.text == "changed")
+
+        uri = make_temp_page(ElementTest.page_content)
+        page = SimplePage(self.driver, uri)
+        assert page.id_el.text == "simple_id"
+        assert page.id_el_none is None
