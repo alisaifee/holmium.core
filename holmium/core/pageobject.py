@@ -312,18 +312,22 @@ class ElementGetter(object):
                     """
                     timeout & only_if explicit wait.
                     """
-                    return _meth(self.locator_type, self.query_string) and \
-                           (BaseCondition.get_current() or self.only_if)(
-                               _meth(self.locator_type, self.query_string)
-                           )
+                    return (
+                        _meth(self.locator_type, self.query_string) and
+                        (BaseCondition.get_current() or self.only_if)(
+                            _meth(self.locator_type, self.query_string)
+                        )
+                    )
 
-                WebDriverWait(self.root, self.timeout,
-                              ignored_exceptions=[StaleElementReferenceException,]
+                WebDriverWait(
+                    self.root, self.timeout,
+                    ignored_exceptions=[StaleElementReferenceException, ]
                 ).until(callback)
             except TimeoutException:
                 log.debug(
                     "unable to find element %s after waiting for %d seconds" % (
-                        self.query_string, self.timeout)
+                        self.query_string, self.timeout
+                    )
                 )
                 raise
         retval = _meth(self.locator_type, self.query_string)
