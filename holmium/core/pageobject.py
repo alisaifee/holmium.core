@@ -364,7 +364,7 @@ class Element(ElementGetter):
             return self.value_mapper(
                 self.enhance(self._get_element(self.root.find_element))
             ) if self.root else None
-        except (NoSuchElementException, TimeoutException):
+        except (NoSuchElementException, TimeoutException, StaleElementReferenceException):
             return None
 
 
@@ -413,7 +413,7 @@ class Elements(ElementGetter):
         try:
             return [self.value_mapper(self.enhance(el)) for el in
                     self._get_element(self.root.find_elements)] if self.root else []
-        except (NoSuchElementException, TimeoutException):
+        except (NoSuchElementException, TimeoutException, StaleElementReferenceException):
             return []
 
 
@@ -466,7 +466,7 @@ class ElementMap(Elements):
             return OrderedDict(
                 (self.key_mapper(el), self.value_mapper(self.enhance(el))) for el in
                 self._get_element(self.root.find_elements)) if self.root else {}
-        except (NoSuchElementException, TimeoutException):
+        except (NoSuchElementException, TimeoutException, StaleElementReferenceException):
             return {}
 
     def __getitem__(self, key):
@@ -544,7 +544,7 @@ class Section(Faceted):
             return self.__root_val or Page.get_driver().find_element(
                 self.locator_type, self.query_string
             )
-        except (NoSuchElementException, TimeoutException):
+        except (NoSuchElementException, TimeoutException, StaleElementReferenceException):
             return None
 
     @root.setter
@@ -596,4 +596,3 @@ class Sections(Section, collections.Sequence):
             if i == idx:
                 break
         return self
-
