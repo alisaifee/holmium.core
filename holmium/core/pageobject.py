@@ -239,7 +239,7 @@ class Page(Faceted):
                 try:
                     attr_setter("home", attr_getter("driver").current_url)
                 except WebDriverException:
-                    self.home = None
+                    self.home = NonexistentElement()
 
             if isinstance(attr, types.MethodType):
                 @wraps(attr)
@@ -248,7 +248,7 @@ class Page(Faceted):
                     """
                     fluent wrapper
                     """
-                    resp = None
+                    resp = NonexistentElement()
                     try:
                         resp = _get_with_stale_element_retry(get_fn)
                     except WebDriverException as wde:
@@ -259,7 +259,7 @@ class Page(Faceted):
                         raise wde
                     if issubclass(resp.__class__, WebElement):
                         return resp
-                    elif resp is None:
+                    elif resp is NonexistentElement():
                         resp = self
                     return resp
                 return wrap
@@ -391,6 +391,51 @@ def save_screenshot(driver):
     return snapfile
 
 
+class NonexistentElement(object):
+    """
+    A null-object representing an element that was not found.
+    This allows us to know what the selector was that was ineffective
+    rather than just returning None.
+    """
+    def __init__(self, exception_class_name=None, locator_type=None, query_string=None):
+        """To properly instantiate a NonexistentElement, pass in the exception_class_name,
+        locator_type, and query_string.  Although no parameters can be passed for an easy comparison
+        against Nonexistentelement()
+        """
+
+        self.name = "NonexistentElement"
+        ## Self.id is necessary to allow comparisons againt webElement objects, otherwise
+        ## our custom Exception gets raised when a webElement tests for equivalence
+        self.id = None
+        self.webdriver_exception = exception_class_name
+        self.locator_type = locator_type
+        self.query_string = query_string
+
+
+    def __eq__(self, other):
+        if type(self) is type(other):
+            return True
+        else:
+            return False
+
+    def __ne__(self, other):
+        if type(self) is not type(other):
+            return True
+        else:
+            return False
+
+
+    def __str__(self):
+        return "{}(webdriver_exception={}, locator_type='{}' query_string='{}')".format(type(self).__name__,
+                                                                                        self.webdriver_exception,
+                                                                                        self.locator_type, self.query_string)
+
+    def __repr__(self):
+        return "holmium.core.pageobject."+str(self)
+
+    def __getattr__(self, key):
+        raise Exception("{}".format(self))
+
 class Element(ElementGetter):
     """
     Utility to get a :class:`selenium.webdriver.remote.webelement.WebElement`
@@ -421,10 +466,10 @@ class Element(ElementGetter):
                 def get_fn():
                     return self.value_mapper(
                         self.enhance(self._get_element(self.root.find_element))
-                        ) if self.root else None
+                        ) if self.root else NonexistentElement(self.locator_type, self.query_string)
                 return_value = _get_with_stale_element_retry(get_fn)
-        except (NoSuchElementException, TimeoutException):
-            return_value = None
+        except (NoSuchElementException, TimeoutException) as e:
+            return_value = NonexistentElement(type(e).__name__, self.locator_type, self.query_string)
         except NoSuchFrameException as e:
             snapfile = save_screenshot(Page.get_driver())
             raise Exception("NoSuchFrameException ({0}):  Snapshot saved as {1}".format(str(e), snapfile))
@@ -607,7 +652,9 @@ class Section(Faceted):
                 self.locator_type, self.query_string
             )
         except (NoSuchElementException, TimeoutException):
-            return None
+            return NonexistentElement(
+                self.locator_type, self.query_string
+            )
 
     @root.setter
     def root(self, val):

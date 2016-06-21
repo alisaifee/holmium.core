@@ -3,6 +3,8 @@ import time
 from  holmium.core import Page, Element, Locators
 from holmium.core.pageobject import NonexistentElement
 from tests.utils import get_driver, make_temp_page
+from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException, WebDriverException
+from selenium.common.exceptions import TimeoutException, NoSuchFrameException
 import hiro
 
 class ElementTest(unittest.TestCase):
@@ -32,6 +34,20 @@ class ElementTest(unittest.TestCase):
         assert page.selector_el.text == "simple_class"
         assert page.xpath_el.text == "Simple XPATH"
 
+    def test_exception_handling(self):
+        class SimplePage(Page):
+            id_el = Element(Locators.ID, "simple_id")
+            class_el = Element(Locators.CLASS_NAME, "simple_class")
+            selector_el = Element(Locators.CSS_SELECTOR, "div.simple_class")
+            xpath_el = Element(Locators.XPATH, "//div[h3/text()='Simple XPATH']")
+            invalid_el = Element(Locators.ID, "blargh")
+
+        uri = make_temp_page(ElementTest.page_content)
+        page = SimplePage(self.driver, uri)
+        try:
+            x=page.invalid_el.text
+        except Exception as e:
+            assert "NoSuchElementException" in e.message
 
     def test_basic_element_with_dict(self):
         class SimplePage(Page):

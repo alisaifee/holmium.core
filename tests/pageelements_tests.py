@@ -1,6 +1,7 @@
 import unittest
 import hiro
 from holmium.core import Elements, Element, Locators, Page
+from holmium.core.pageobject import NonexistentElement
 from tests.utils import get_driver, make_temp_page
 
 

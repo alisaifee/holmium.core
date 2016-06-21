@@ -7,6 +7,7 @@ import mock
 
 from holmium.core import Page, Element, Locators, Elements, Section, ElementMap
 from holmium.core.facets import FacetError, defer, title, cookie, strict
+from holmium.core.pageobject import NonexistentElement
 
 from . import webapp
 from tests.utils import get_driver
@@ -141,7 +142,7 @@ class FacetsTests(LiveTest):
         main = _P(self.driver, self.base_url)
         with mock.patch("holmium.core.facets.log") as log:
             self.assertTrue( main.bad_nav.links is not None)
-            self.assertTrue( main.bad_nav.junk is None)
+            self.assertTrue( main.bad_nav.junk is NonexistentElement())
             self.assertTrue( main.nav.links is not None)
             self.assertTrue(log.warn.call_count == 1)
             self.assertTrue("failed to exhibit facet junk" in str(log.warn.call_args))

@@ -1,5 +1,6 @@
 import unittest
 from holmium.core import Page, Element, Locators, Elements, ElementMap
+from holmium.core.pageobject import NonexistentElement
 import mock
 from tests.utils import get_driver, make_temp_page
 
@@ -96,7 +97,7 @@ class PageTest(unittest.TestCase):
         self.assertEqual( page.element_ref_webelement.text, "e6" )
         self.assertEqual( page.element_map_ref.text, "e6")
         self.assertRaises( TypeError, lambda: page.element_ref_invalid)
-        self.assertEqual( page.element_invalid , None)
+        self.assertEqual( page.element_invalid , NonexistentElement())
         self.assertEqual( page.elements_invalid, [])
         self.assertEqual(page.elementmap_invalid, {})
 
