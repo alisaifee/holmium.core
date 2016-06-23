@@ -95,24 +95,28 @@ class ConfigTests(unittest.TestCase):
 
     def test_holmium_config_object(self):
 
-        cfg = HolmiumConfig(1,2,3,4,5,6,7)
+        cfg = HolmiumConfig(1,2,3,4,5,6,7,8)
+        #import ipdb
+        #ipdb.sstrace()
         self.assertEqual(cfg,  {
             "browser":1,
             "remote":2,
             "capabilities":3,
-            "user_agent":4,
-            "environment":5,
-            "ignore_ssl":6,
-            "fresh_instance":7,
+            "config_dir":4,
+            "user_agent":5,
+            "environment":6,
+            "ignore_ssl":7,
+            "fresh_instance":8,
         })
 
         self.assertEqual(cfg.browser, 1)
         self.assertEqual(cfg.remote, 2)
         self.assertEqual(cfg.capabilities, 3)
-        self.assertEqual(cfg.user_agent, 4)
-        self.assertEqual(cfg.environment, 5)
-        self.assertEqual(cfg.ignore_ssl, 6)
-        self.assertEqual(cfg.fresh_instance, 7)
+        self.assertEqual(cfg.config_dir, 4)
+        self.assertEqual(cfg.user_agent, 5)
+        self.assertEqual(cfg.environment, 6)
+        self.assertEqual(cfg.ignore_ssl, 7)
+        self.assertEqual(cfg.fresh_instance, 8)
 
         cfg.browser = 2
         self.assertEqual(cfg.browser, 2)
@@ -131,6 +135,7 @@ class ConfigTests(unittest.TestCase):
             "awesome",
             "",
             {},
+            ".",
             "",
             "development",
             False,
