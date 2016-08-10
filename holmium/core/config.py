@@ -253,7 +253,7 @@ class IeConfig(DriverConfig):
     """
 
     def __call__(self, config, args):
-        args['capabilities'] = args.pop('desired_capabilities', {})
+        args['desired_capabilities'] = args.pop('desired_capabilities', {})
         return super(IeConfig, self).__call__(config, args)
 
 class RemoteConfig(DriverConfig):
