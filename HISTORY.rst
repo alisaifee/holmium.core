@@ -12,6 +12,15 @@
 History
 *******
 
+0.8.3 2016-08-12
+================
+* Bug fix: Fix for IE with remote `#38 <https://github.com/alisaifee/holmium.core/issues/38>`_
+* Bug fix: StaleElementReferenceException handling `#33 <https://github.com/alisaifee/holmium.core/issues/33>`_
+
+0.8.2 2015-12-22
+================
+* New filter_by argument that accepts conditions
+
 0.8.1 2015-10-30
 ================
 * Bug fix: Fix setup requirements for python 3.x #30
@@ -198,6 +207,7 @@ History
 * Bug fix 
   
   - fixed phantomjs build in travis
+
 
 
 
