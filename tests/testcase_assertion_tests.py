@@ -107,7 +107,7 @@ class TestCaseTests(unittest.TestCase):
             lambda s: s.assertConditionWithWait(s.driver, lambda _: True),
             lambda s: s.assertConditionWithWait(s.driver,
                                                 fail_first(),
-                                                timeout=1),
+                                                timeout=2),
             lambda s: s.assertConditionWithWait(s.driver,
                                                 lambda _: _ is s.driver)
         ]
