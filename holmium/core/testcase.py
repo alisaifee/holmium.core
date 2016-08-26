@@ -1,7 +1,10 @@
 """
 the testcase base class
 """
-import unittest
+try:
+	import unittest2 as unittest
+except ImportError:
+	import unittest
 import inspect
 import imp
 import json
