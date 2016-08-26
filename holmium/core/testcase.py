@@ -145,4 +145,4 @@ class TestCase(unittest.TestCase):
             wait.until(condition)
         except TimeoutException:
             _msg = self._formatMessage(msg, "Timeout waiting on condition %s" % condition)
-            self.failureException(_msg)
+            raise self.failureException(_msg)
