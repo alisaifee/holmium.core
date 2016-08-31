@@ -14,6 +14,9 @@ if __name__ == "__main__":
     this_dir = os.path.abspath(os.path.dirname(__file__))
     REQUIREMENTS = open(os.path.join(this_dir, 'requirements/main.txt'), 'rt').read()
 
+    if sys.version_info[:2] < (2, 7):
+	    REQUIREMENTS += 'unittest2\n'
+
     import versioneer
     versioneer.versionfile_source = "holmium/core/_version.py"
     versioneer.versionfile_build = "holmium/core/version.py"

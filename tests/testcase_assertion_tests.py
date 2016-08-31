@@ -80,3 +80,40 @@ class TestCaseTests(unittest.TestCase):
             ]
             runtc({"HO_BROWSER": "firefox"}, validations,
                   validator=lambda c,s: s.assertRaises(AssertionError, c, s ))
+
+    @mock.patch.dict('holmium.core.testcase.BROWSER_MAPPING',
+                     build_mock_mapping('firefox'))
+    def test_assert_condition_with_wait(self):
+        class fail_first(object):
+            first = True
+
+            def __call__(self, driver):
+                # fail first
+                if self.first:
+                    self.first = False
+                    return False
+
+                # pass later
+                return True
+
+        raised_validations = [
+            lambda s: s.assertConditionWithWait(s.driver, lambda _: False),
+            lambda s: s.assertConditionWithWait(s.driver,
+                                                fail_first(),
+                                                timeout=0)
+        ]
+
+        not_raised_validations = [
+            lambda s: s.assertConditionWithWait(s.driver, lambda _: True),
+            lambda s: s.assertConditionWithWait(s.driver,
+                                                fail_first(),
+                                                timeout=2),
+            lambda s: s.assertConditionWithWait(s.driver,
+                                                lambda _: _ is s.driver)
+        ]
+
+        runtc({"HO_BROWSER": "firefox"}, raised_validations,
+              validator=lambda c, s: s.assertRaises(AssertionError, c, s))
+
+        runtc({"HO_BROWSER": "firefox"}, not_raised_validations,
+              validator=lambda c, s: c(s))
