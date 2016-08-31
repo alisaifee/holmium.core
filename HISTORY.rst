@@ -12,6 +12,10 @@
 History
 *******
 
+0.8.4 2016-09-01
+================
+* Bug fix: assertConditionWithWait `#40 <https://github.com/alisaifee/holmium.core/issues/40>`_
+
 0.8.3 2016-08-12
 ================
 * Bug fix: Fix for IE with remote `#38 <https://github.com/alisaifee/holmium.core/issues/38>`_
@@ -207,6 +211,7 @@ History
 * Bug fix 
   
   - fixed phantomjs build in travis
+
 
 
 
