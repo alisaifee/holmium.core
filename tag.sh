@@ -14,8 +14,8 @@ if rst2html.py HISTORY.rst > /dev/null
 then
     echo "tagging $new_version"
     git add HISTORY.rst 
-    git commit -m "updating changelog for  ${new_version}"
-    git tag -s ${new_version} -m "tagging version ${new_version}"
+    git commit -m "Update changelog for  ${new_version}"
+    git tag -s ${new_version} -m "Release version ${new_version}"
     python setup.py build sdist bdist_egg upload
 else
     echo changelog has errors. skipping tag. 
