@@ -5,3 +5,4 @@
 * `Nathan Jones <https://github.com/ncjones>`_, Bug fixes
 * `Lata Suresh <https://github.com/lsuresh>`_, Bug fixes
 * `Jeffry Pincus <https://github.com/pinkie1378>`_, `filter_by` conditions 
+* `Chow Loong Jin <https://github.com/hyperair>`_, Bug Fixes
