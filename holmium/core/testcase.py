@@ -143,11 +143,14 @@ class TestCase(unittest.TestCase):
 
         :param driver: the selenium driver
         :param condition: an instance of :mod:`selenium.webdriver.support.expected_conditions`
+        :param msg: the failure message when timeout, could be a string or a callable without arguments that returns a string
         """
         try:
             wait = WebDriverWait(driver, timeout,
                                  ignored_exceptions=ignored_exceptions)
             wait.until(condition)
         except TimeoutException:
-            _msg = self._formatMessage(msg, "Timeout waiting on condition %s" % condition)
+            _msg = self._formatMessage(
+                msg() if callable(msg) else msg,
+                "Timeout waiting on condition %s" % condition)
             raise self.failureException(_msg)

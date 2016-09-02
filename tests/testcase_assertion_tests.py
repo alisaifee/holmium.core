@@ -4,7 +4,10 @@
 import unittest
 import os
 
+import hiro
 import mock
+
+from datetime import datetime, timedelta
 
 from holmium.core import TestCase, Page, Element, Elements, ElementMap, Locators
 from holmium.core.env import ENV
@@ -83,6 +86,7 @@ class TestCaseTests(unittest.TestCase):
 
     @mock.patch.dict('holmium.core.testcase.BROWSER_MAPPING',
                      build_mock_mapping('firefox'))
+    @hiro.Timeline(scale=100)
     def test_assert_condition_with_wait(self):
         class fail_first(object):
             first = True
@@ -120,6 +124,7 @@ class TestCaseTests(unittest.TestCase):
 
     @mock.patch.dict('holmium.core.testcase.BROWSER_MAPPING',
                      build_mock_mapping('firefox'))
+    @hiro.Timeline(scale=100)
     def test_assert_condition_with_wait_ignored_exceptions(self):
         class MyException(BaseException):
             pass
@@ -152,3 +157,34 @@ class TestCaseTests(unittest.TestCase):
               [lambda s: s.assertConditionWithWait(
                              s.driver, throw_first(), timeout=1.5,
                              ignored_exceptions=MyException)])
+
+    @mock.patch.dict('holmium.core.testcase.BROWSER_MAPPING',
+                     build_mock_mapping('firefox'))
+    @hiro.Timeline(scale=100)
+    def test_assert_condition_with_wait_msg(self):
+        runtc({"HO_BROWSER": "firefox"},
+              [lambda s: s.assertConditionWithWait(
+                             s.driver, lambda _: True,
+                             timeout=0.6, msg='should not see me')])
+
+        runtc({"HO_BROWSER": "firefox"},
+              [lambda s: s.assertConditionWithWait(
+                             s.driver, lambda _: False,
+                             msg='a message')],
+              validator=lambda c, s: s.assertRaisesRegexp(AssertionError,
+                                                          'a message',
+                                                          c, s))
+
+        with hiro.Timeline().freeze() as timeline:
+            # condition is executed once with a 0.6 timeout
+            expected = (datetime.now() + timedelta(seconds=60)).isoformat()
+            runtc({"HO_BROWSER": "firefox"},
+                  [lambda s: s.assertConditionWithWait(
+                                s.driver,
+                                lambda _: timeline.forward(60) is None,
+                                timeout=0.6,
+                                msg=lambda: datetime.now().isoformat())],
+                  validator=lambda c, s: s.assertRaisesRegexp(
+                                            AssertionError,
+                                            expected,
+                                            c, s))
