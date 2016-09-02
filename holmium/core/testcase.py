@@ -144,6 +144,9 @@ class TestCase(unittest.TestCase):
         :param driver: the selenium driver
         :param condition: an instance of :mod:`selenium.webdriver.support.expected_conditions`
         :param msg: the failure message when timeout, could be a string or a callable without arguments that returns a string
+        :param timeout: to be passed to `selenium.webdriver.support.wait.WebDriverWait`
+        :param ignored_exceptions: to be passed to `selenium.webdriver.support.wait.WebDriverWait`
+
         """
         try:
             wait = WebDriverWait(driver, timeout,
