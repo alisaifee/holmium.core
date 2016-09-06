@@ -12,6 +12,10 @@
 History
 *******
 
+0.8.5 2016-09-06
+================
+* Extra options for assertConditionWithWait `#42 <https://github.com/alisaifee/holmium.core/issues/42>`_
+
 0.8.4 2016-09-01
 ================
 * Bug fix: assertConditionWithWait `#40 <https://github.com/alisaifee/holmium.core/issues/40>`_
@@ -211,6 +215,7 @@ History
 * Bug fix 
   
   - fixed phantomjs build in travis
+
 
 
 
