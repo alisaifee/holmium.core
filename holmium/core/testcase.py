@@ -135,17 +135,25 @@ class TestCase(unittest.TestCase):
         self.assertEqual(_expected, element.size, msg)
 
 
-    def assertConditionWithWait(self, driver, condition, timeout=0, msg=None):
+    def assertConditionWithWait(self, driver, condition, timeout=0, msg=None,
+                                ignored_exceptions=None):
         # pylint:disable=line-too-long
         """ Fail if the condition specified does not hold for the element within
         the specified timeout
 
         :param driver: the selenium driver
         :param condition: an instance of :mod:`selenium.webdriver.support.expected_conditions`
+        :param msg: the failure message when timeout, could be a string or a callable without arguments that returns a string
+        :param timeout: to be passed to `selenium.webdriver.support.wait.WebDriverWait`
+        :param ignored_exceptions: to be passed to `selenium.webdriver.support.wait.WebDriverWait`
+
         """
         try:
-            wait = WebDriverWait(driver, timeout)
+            wait = WebDriverWait(driver, timeout,
+                                 ignored_exceptions=ignored_exceptions)
             wait.until(condition)
         except TimeoutException:
-            _msg = self._formatMessage(msg, "Timeout waiting on condition %s" % condition)
+            _msg = self._formatMessage(
+                msg() if callable(msg) else msg,
+                "Timeout waiting on condition %s" % condition)
             raise self.failureException(_msg)

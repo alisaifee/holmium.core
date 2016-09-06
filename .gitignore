@@ -1,5 +1,6 @@
 *.pyc
 *.log
+*.swp
 cover/*
 .coverage*
 .test_env
