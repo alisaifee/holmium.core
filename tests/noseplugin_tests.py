@@ -72,37 +72,6 @@ class TestOptionsWithChrome(PluginTester, unittest.TestCase):
         holmium.core.noseplugin.BROWSER_MAPPING = self.old_mapping
 
 
-class TestOptionsWithPhantom(PluginTester, unittest.TestCase):
-    activate = "--with-holmium"
-    args = [
-        '--holmium-environment=staging',
-        '--holmium-browser=phantomjs',
-        '--holmium-useragent="test useragent"',
-        '--holmium-remote=http://nowhere.org',
-        "--holmium-capabilities=%s" % json.dumps({"foo": 1}),
-        "--holmium-ignore-ssl-errors",
-        "--holmium-browser-per-test"
-    ]
-    suitepath = os.path.join(support, 'options')
-    plugins = [holmium.core.HolmiumNose()]
-
-    def setUp(self):
-        self.old_mapping = holmium.core.noseplugin.BROWSER_MAPPING
-        holmium.core.noseplugin.BROWSER_MAPPING = build_mock_mapping("remote")
-        holmium.core.noseplugin.BROWSER_MAPPING.update(
-            build_mock_mapping("phantomjs")
-        )
-        ENV.clear()
-        super(TestOptionsWithPhantom, self).setUp()
-
-    def runTest(self):
-        assert "ERROR" not in self.output, self.output
-        assert "FAIL" not in self.output, self.output
-
-    def tearDown(self):
-        holmium.core.noseplugin.BROWSER_MAPPING = self.old_mapping
-
-
 class TestConfigPy(PluginTester, unittest.TestCase):
     activate = "--with-holmium"
     args = ['--holmium-environment=tenv', '--holmium-browser=chrome']

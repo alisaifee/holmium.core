@@ -13,17 +13,19 @@ def build_mock_mapping(name):
     return browser_mapping
 
 
-phantom = None
+test_driver = None
 
 
 def get_driver():
-    global phantom
-    if not phantom:
-        phantom = webdriver.PhantomJS()
-        atexit.register(phantom.quit)
-    phantom.delete_all_cookies()
-    phantom.switch_to.default_content()
-    return phantom
+    global test_driver
+    if not test_driver:
+        options = webdriver.ChromeOptions()
+        options.add_argument('headless')
+        chrome = webdriver.Chrome(chrome_options=options)
+        atexit.register(chrome.quit)
+    chrome.delete_all_cookies()
+    chrome.switch_to.default_content()
+    return chrome
 
 
 def make_temp_page(src):
