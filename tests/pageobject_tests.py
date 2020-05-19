@@ -17,7 +17,7 @@ class PageTest(unittest.TestCase):
                 element.text = "test_text"
                 driver.find_element.return_value = element
                 po = PageTest.BasicPage(driver, iframe='some_frame')
-                self.assertEqual("test_text",  po.element.text)
+                self.assertEqual("test_text", po.element.text)
 
     def test_basic_po_real(self):
         driver = get_driver()

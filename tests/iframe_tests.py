@@ -83,7 +83,7 @@ class IFrameTest(unittest.TestCase):
                 element.text = "test_text"
                 driver.find_element.return_value = element
                 po = BasicPage(driver, iframe='frame')
-                self.assertEqual("test_text",  po.element.text)
+                self.assertEqual("test_text", po.element.text)
                 driver.switch_to.frame.assert_called_with("frame")
                 self.assertEqual(driver.switch_to.frame.call_count, 1)
                 self.assertEqual(

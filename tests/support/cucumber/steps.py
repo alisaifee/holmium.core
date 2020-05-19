@@ -23,7 +23,7 @@ class TestPage(Page):
     section  = TestSection(Locators.NAME, "section")
 
     def do_stuff(self, a, b):
-        return a+b
+        return a + b
 
     def do_stuff_no_args(self):
         return True
