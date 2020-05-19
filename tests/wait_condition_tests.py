@@ -3,7 +3,9 @@ import hiro
 import time
 from tests.utils import make_temp_page, get_driver
 from holmium.core import Page, Element, Elements, Locators, ElementMap
-from holmium.core.conditions import *
+from holmium.core.conditions import (
+    ALL, MATCHES_TEXT, VISIBLE, INVISIBLE, ANY
+)
 
 class WaitConditionTests(unittest.TestCase):
     def setUp(self):
