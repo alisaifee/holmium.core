@@ -271,5 +271,5 @@ def check_arguments(args):
     try:
         create(**args)
         raise Exception("exception not raised")
-    except AttributeError as e:
+    except AttributeError:
         pass

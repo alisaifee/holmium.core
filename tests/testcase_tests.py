@@ -1,14 +1,12 @@
-import unittest
 import os
+import unittest
 
 import mock
-from nose.plugins.attrib import attr
 from nose.plugins.skip import SkipTest
 
-from holmium.core import TestCase, Element, Elements, ElementMap, Locators
-from holmium.core.env import ENV
 import holmium.core.testcase
-
+from holmium.core import TestCase
+from holmium.core.env import ENV
 from .utils import mock_open, build_mock_mapping
 
 

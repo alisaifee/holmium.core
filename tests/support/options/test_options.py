@@ -1,5 +1,4 @@
 import unittest
-import holmium.core
 
 
 class TestOptions(unittest.TestCase):

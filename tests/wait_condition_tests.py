@@ -1,11 +1,13 @@
-import unittest
-import hiro
 import time
-from tests.utils import make_temp_page, get_driver
-from holmium.core import Page, Element, Elements, Locators, ElementMap
+import unittest
+
+import hiro
+
+from holmium.core import Page, Element, Locators, ElementMap
 from holmium.core.conditions import (
     ALL, MATCHES_TEXT, VISIBLE, INVISIBLE, ANY
 )
+from tests.utils import make_temp_page, get_driver
 
 
 class WaitConditionTests(unittest.TestCase):
@@ -93,7 +95,7 @@ class WaitConditionTests(unittest.TestCase):
         el.innerHTML = '%s'
         document.getElementById("base").appendChild(el);
         """
-        runner = self.run_script(script % 'one', 1)
+        self.run_script(script % 'one', 1)
         with ALL(MATCHES_TEXT('one')):
             self.assertTrue(page.cl_els['one'] != None)
             self.assertEqual(len(page.cl_els), 1)

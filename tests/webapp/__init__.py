@@ -84,7 +84,7 @@ def requires_login(fn):
                 return user and request.cookies["uid"] == hashlib.md5(
                     session.get("current_user").encode("utf-8")
                 ).hexdigest() + ":" + user[1]
-            except Exception as e:
+            except Exception:
                 return False
         if not ("uid" in request.cookies and check_cookie()):
             if "current_user" in session:

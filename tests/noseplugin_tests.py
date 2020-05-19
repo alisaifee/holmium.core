@@ -1,15 +1,13 @@
-import unittest
-import os
 import json
-import mock
+import os
+import unittest
 
 from nose.plugins import PluginTester
 from nose.plugins.skip import Skip
 
 import holmium.core
-from holmium.core.env import ENV
 import holmium.core.noseplugin
-
+from holmium.core.env import ENV
 from .utils import build_mock_mapping
 
 support = os.path.join(os.path.dirname(__file__), "support")
