@@ -35,7 +35,7 @@ class BugReports(unittest.TestCase):
     def test_multiple_pageinstances_multithreaded(self):
         """ https://github.com/alisaifee/holmium.core/issues/4
         """
-        class p(Page):
+        class p1(Page):
             el = Element(Locators.NAME, "name")
 
         class p2(Page):
@@ -51,14 +51,14 @@ class BugReports(unittest.TestCase):
             for i in range(0, 100):
                 d = mock.Mock()
                 e = mock.Mock()
-                e.text = str(p) + str(i)
+                e.text = str(po) + str(i)
                 e.tag = "div"
                 d.find_element.return_value = e
                 _p = po(d, "http://%s" % i)
-                _p.t = str(p) + str(i)
+                _p.t = str(po) + str(i)
                 pages.append(_p)
             return pages
-        pages = build_pages(p)
+        pages = build_pages(p1)
         pages.extend(build_pages(p2))
 
         threads = [
