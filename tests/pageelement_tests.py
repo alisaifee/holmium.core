@@ -73,7 +73,7 @@ class ElementTest(unittest.TestCase):
         )
         with hiro.Timeline().scale(10):
             self.assertEqual(page.id_el_changed.text, "changed")
-        self.assertTrue(runner.get_response() == None)
+        self.assertTrue(runner.get_response() is None)
         self.driver.refresh()
         with hiro.Timeline().scale(10):
             self.assertEqual(page.id_el_changed, None)

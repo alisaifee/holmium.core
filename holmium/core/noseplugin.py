@@ -119,7 +119,7 @@ class HolmiumNose(Plugin):
         """
         if not ("driver" in ENV and ENV["driver"] == self.driver):
             ENV["driver"] = self.driver
-        if not "drivers" in ENV:
+        if "drivers" not in ENV:
             ENV["drivers"] = LazyWebDriverList()
         if not hasattr(test.test, "feature"):
             base_file = test.address()[0]

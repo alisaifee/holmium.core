@@ -56,7 +56,7 @@ class TestCase(unittest.TestCase):
         if remote:
             driver_cls = BROWSER_MAPPING["remote"]
         else:
-            if not cls.holmium_config.browser in BROWSER_MAPPING:
+            if cls.holmium_config.browser not in BROWSER_MAPPING:
                 raise SkipTest(
                     "Unknown browser (%s) specified in HO_BROWSER"
                     % (cls.holmium_config.browser)

@@ -26,16 +26,16 @@ class IFrameTest(unittest.TestCase):
         self.driver = get_driver()
 
     def test_basic_po_with_frame(self):
-        frame1 = """
+        frame1 = """"
         <html>
             <body>
                 <div class='section'>
                     <div class='frame_el'>frame 1 el</div>
                 </div>
             </body>
-        </html>
+        </html>"
         """
-        frame2 = """
+        frame2 = """"
         <html>
             <body>
                 <div class='section'>
@@ -49,8 +49,8 @@ class IFrameTest(unittest.TestCase):
         uri_frame_2 = make_temp_page(frame2)
 
         p1 = '''
-            <html><body><iframe id="frame_1" src="%s"/></body></html>
-            ''' % uri_frame_1
+        <html><body><iframe id="frame_1" src="%s"/></body></html>
+        ''' % uri_frame_1
         p2 = '''
         <html>
             <body>
@@ -66,7 +66,7 @@ class IFrameTest(unittest.TestCase):
             p = BasicPageIframe(driver, uri, iframe="frame_1")
             self.assertEqual(p.element.text, "frame 1 el")
             self.assertEqual(p.frame_1.element.text, "frame 1 el")
-            self.assertTrue(p.frame_2.element == None)
+            self.assertTrue(p.frame_2.element is None)
             uri = make_temp_page(p2)
             driver.get(uri)
             self.assertTrue(p.frame_2.element is not None)
@@ -77,7 +77,7 @@ class IFrameTest(unittest.TestCase):
     def test_mocked_basic_po_with_frame(self):
         with mock.patch('selenium.webdriver.Firefox') as driver:
             with mock.patch(
-                'selenium.webdriver.remote.webelement.WebElement'
+                    'selenium.webdriver.remote.webelement.WebElement'
             ) as element:
                 element.tag_name = "div"
                 element.text = "test_text"

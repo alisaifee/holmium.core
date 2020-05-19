@@ -80,7 +80,7 @@ class WaitConditionTests(unittest.TestCase):
         """
         self.run_script(script % 'two', 1)
         with ANY(MATCHES_TEXT('two')):
-            self.assertTrue(page.cl_els['two'] != None)
+            self.assertTrue(page.cl_els['two'] is not None)
 
     @hiro.Timeline(scale=10)
     def test_context_all_condition(self):
@@ -97,5 +97,5 @@ class WaitConditionTests(unittest.TestCase):
         """
         self.run_script(script % 'one', 1)
         with ALL(MATCHES_TEXT('one')):
-            self.assertTrue(page.cl_els['one'] != None)
+            self.assertTrue(page.cl_els['one'] is not None)
             self.assertEqual(len(page.cl_els), 1)

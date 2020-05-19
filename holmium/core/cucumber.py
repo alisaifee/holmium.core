@@ -152,7 +152,7 @@ def transform_sub_element(key, name):
         sub_element = getattr(element, key)
     else:
         sub_element = element[int(key)]
-    if sub != None:
+    if sub is not None:
         if isinstance(sub_element, (list, dict)):
             return sub_element[sub]
         return getattr(sub_element, sub)

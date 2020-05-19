@@ -63,7 +63,7 @@ class TestCaseTests(unittest.TestCase):
             build_mock_mapping("phantomjs")
         ):
             runtc(
-                {"HO_BROWSER": "phantomjs"}, [lambda s:s.driver != None]
+                {"HO_BROWSER": "phantomjs"}, [lambda s:s.driver is not None]
             )
 
     def test_set_browser_phantom(self):
@@ -74,7 +74,7 @@ class TestCaseTests(unittest.TestCase):
             runtc(
                 {"HO_BROWSER": "phantomjs"},
                 [
-                    lambda s:s.driver != None,
+                    lambda s:s.driver is not None,
                     lambda s:s.driver.name == "phantomjs"
                 ]
             )
@@ -86,7 +86,10 @@ class TestCaseTests(unittest.TestCase):
         ):
             runtc(
                 {"HO_BROWSER": "phantomjs", "HO_REMOTE": "http://lala.com"},
-                [lambda s:s.driver != None, lambda s:s.driver.name == "remote"]
+                [
+                    lambda s:s.driver is not None,
+                    lambda s:s.driver.name == "remote"
+                ]
             )
 
     def test_auto_config_json(self):
