@@ -37,7 +37,7 @@ class LazyWebDriver(object):
                 try:
                     args = configure(safe_getter("_holmium_config"))
                     instance = safe_getter("_driver_cls")(**args)
-                except:
+                except Exception:
                     traceback = sys.exc_info()[2]
                     browser = safe_getter("_holmium_config").browser
                     reraise(

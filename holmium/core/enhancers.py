@@ -33,7 +33,7 @@ class ElementEnhancer(object):
                 return super(ElementEnhancer, self).__getattribute__(key)
             except AttributeError:
                 return element.__getattribute__(key)
-        except:
+        except Exception:
             raise AttributeError(
                 "neither %s, nor %s object has an attribute %s" % (
                     self.__class__.__name__, element.__class__.__name__, key))
