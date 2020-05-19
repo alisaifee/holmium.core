@@ -66,7 +66,8 @@ def register_enhancer(enhancer):
     """
     if not issubclass(enhancer, ElementEnhancer):
         raise TypeError(
-            "Only subclasses of holmium.core.ElementEnhancer can be registered")
+            "Only subclasses of holmium.core.ElementEnhancer can be registered"
+        )
     if not hasattr(enhancer, "__TAG__") or not enhancer.__TAG__:
         raise AttributeError(
             "ElementEnhancer implementations must declare a __TAG__"

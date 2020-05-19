@@ -1,6 +1,8 @@
 import unittest
 import mock
-from  holmium.core import Page, Element, Locators, ElementEnhancer, register_enhancer
+from  holmium.core import (
+    Page, Element, Locators, ElementEnhancer, register_enhancer
+)
 from selenium.webdriver.support.ui import Select
 
 
@@ -34,9 +36,10 @@ class ElementEnhancerTest(unittest.TestCase):
         class SimplePage(Page):
             id_el = Element(Locators.ID, "simple_id")
 
-        self.driver.find_element.return_value.tag_name = "div"
-        self.driver.find_element.return_value.text = "foo"
-        self.driver.find_element.return_value.get_attribute.return_value = "div-class"
+        find_element = self.driver.find_element
+        find_element.return_value.tag_name = "div"
+        find_element.return_value.text = "foo"
+        find_element.return_value.get_attribute.return_value = "div-class"
 
         p = SimplePage(self.driver)
 

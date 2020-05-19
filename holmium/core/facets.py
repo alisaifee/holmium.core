@@ -108,7 +108,8 @@ class FacetError(Exception):
     or can't complete
 
     :param holmium.core.facets.Facet facet: the facet that failed to evaluate
-    :param exceptions.Exception exc: the inner exception that caused the failure
+    :param exceptions.Exception exc: the inner exception that caused the
+     failure
     """
 
     def __init__(self, facet, exc=None):

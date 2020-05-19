@@ -11,13 +11,25 @@ class ElementsTest(unittest.TestCase):
     def test_basic_element(self):
         class SimplePage(Page):
             el_list_default = Elements(Locators.CLASS_NAME, "simple_class")
-            el_list_valuemapper = Elements(Locators.CLASS_NAME, "simple_class"
-                                                            , value = lambda el: el.find_element_by_tag_name("a").text)
-            el_list_valuemapper_complex = Elements(Locators.CLASS_NAME, "simple_class"
-                                                                    , value = lambda el : {
-                                                                        "link":el.find_element_by_tag_name("a").get_attribute("href")
-                                                                        ,"text" : el.find_element_by_tag_name("a").text } )
-            first_el = Element( Locators.TAG_NAME, "a" , base_element = el_list_default[0] )
+            el_list_valuemapper = Elements(
+                Locators.CLASS_NAME,
+                "simple_class",
+                value = lambda el: el.find_element_by_tag_name("a").text
+            )
+            el_list_valuemapper_complex = Elements(
+                Locators.CLASS_NAME, "simple_class",
+                value=lambda el: {
+                    "link": el.find_element_by_tag_name("a").get_attribute(
+                        "href"
+                    ),
+                    "text": el.find_element_by_tag_name("a").text
+                }
+            )
+            first_el = Element(
+               Locators.TAG_NAME,
+                "a",
+                base_element = el_list_default[0]
+            )
 
         uri = make_temp_page("""
             <body>
@@ -51,13 +63,12 @@ class ElementsTest(unittest.TestCase):
 
     def test_missing_elements(self):
         class SimplePage(Page):
-            el_list = Elements(Locators.CLASS_NAME,
-                                            "element")
-            el_list_wait = Elements(
-                Locators.CLASS_NAME, "elements", timeout=1)
+            el_list = Elements(Locators.CLASS_NAME,"element")
+            el_list_wait = Elements(Locators.CLASS_NAME, "elements", timeout=1)
             el_list_only_if = Elements(
                 Locators.CLASS_NAME, "elements", timeout=1,
-                only_if=lambda els: len(els) == 1)
+                only_if=lambda els: len(els) == 1
+            )
 
         uri = make_temp_page("""
             <body>
@@ -84,15 +95,29 @@ class ElementsTest(unittest.TestCase):
 
     def test_basic_element_with_filter_by(self):
         class SimplePage(Page):
-            el_list_default = Elements(Locators.CLASS_NAME, "simple_class", filter_by=conditions.VISIBLE())
-            el_list_valuemapper = Elements(Locators.CLASS_NAME, "simple_class",
-                                           value=lambda el: el.find_element_by_tag_name("a").text,
-                                           filter_by=conditions.VISIBLE())
-            el_list_valuemapper_complex = Elements(Locators.CLASS_NAME, "simple_class",
-                                                   value=lambda el: {"link": el.find_element_by_tag_name("a").get_attribute("href"),
-                                                                     "text": el.find_element_by_tag_name("a").text},
-                                                   filter_by=conditions.VISIBLE())
-            first_el = Element(Locators.TAG_NAME, "a", base_element=el_list_default[0])
+            el_list_default = Elements(
+                Locators.CLASS_NAME,
+                "simple_class",
+                filter_by=conditions.VISIBLE()
+            )
+            el_list_valuemapper = Elements(
+                Locators.CLASS_NAME, "simple_class",
+                value=lambda el: el.find_element_by_tag_name("a").text,
+                filter_by=conditions.VISIBLE()
+            )
+            el_list_valuemapper_complex = Elements(
+                Locators.CLASS_NAME, "simple_class",
+                value=lambda el: {
+                    "link": el.find_element_by_tag_name("a").get_attribute(
+                        "href"
+                    ),
+                    "text": el.find_element_by_tag_name("a").text
+                },
+                filter_by=conditions.VISIBLE()
+            )
+            first_el = Element(
+                Locators.TAG_NAME, "a", base_element=el_list_default[0]
+            )
 
         uri = make_temp_page("""
             <body>

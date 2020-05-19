@@ -12,7 +12,9 @@ import os
 import sys
 if __name__ == "__main__":
     this_dir = os.path.abspath(os.path.dirname(__file__))
-    REQUIREMENTS = open(os.path.join(this_dir, 'requirements/main.txt'), 'rt').read()
+    REQUIREMENTS = open(
+        os.path.join(this_dir, 'requirements/main.txt'), 'rt'
+    ).read()
 
     if sys.version_info[:2] < (2, 7):
 	    REQUIREMENTS += 'unittest2\n'
@@ -22,7 +24,7 @@ if __name__ == "__main__":
     versioneer.versionfile_build = "holmium/core/version.py"
     versioneer.tag_prefix = ""
     versioneer.parentdir_prefix = "holmium.core-"
-
+    long_description = open('README.rst').read() + open('HISTORY.rst').read()
     setup(
         name='holmium.core',
         author = __author__,
@@ -34,8 +36,9 @@ if __name__ == "__main__":
         cmdclass=versioneer.get_cmdclass(),
         install_requires = REQUIREMENTS,
         classifiers=[k for k in open('CLASSIFIERS').read().split('\n') if k],
-        description='selenium page objects and other utilities for test creation',
-        long_description=open('README.rst').read() + open('HISTORY.rst').read(),
+        description=\
+            'selenium page objects and other utilities for test creation',
+        long_description=long_description,
         packages = find_packages(exclude=["tests*"]),
         entry_points = {
             'nose.plugins.0.10': ['holmium = holmium.core:HolmiumNose',]

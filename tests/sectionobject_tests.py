@@ -22,7 +22,9 @@ class BasicPage(Page):
 
 class BasicPageWithSections(Page):
     sections = BasicSectionList( Locators.CLASS_NAME, "section", timeout=1)
-    missing_sections = BasicSectionList( Locators.CLASS_NAME, "missing_section", timeout=1)
+    missing_sections = BasicSectionList(
+        Locators.CLASS_NAME, "missing_section", timeout=1
+    )
 
 class SectionTest(unittest.TestCase):
 

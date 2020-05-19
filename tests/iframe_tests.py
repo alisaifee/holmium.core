@@ -20,14 +20,39 @@ class IFrameTest(unittest.TestCase):
     def setUp(self):
         self.driver = get_driver()
     def test_basic_po_with_frame(self):
-        frame1 = "<html><body><div class='section'><div class='frame_el'>frame 1 el</div></div></body></html>"
-        frame2 = "<html><body><div class='section'><div class='frame_el'>frame 2 el</div></div></body></html>"
+        frame1 = """
+        <html>
+            <body>
+                <div class='section'>
+                    <div class='frame_el'>frame 1 el</div>
+                </div>
+            </body>
+        </html>
+        """
+        frame2 = """
+        <html>
+            <body>
+                <div class='section'>
+                    <div class='frame_el'>frame 2 el</div>
+                </div>
+            </body>
+        </html>
+        """
 
         uri_frame_1 = make_temp_page(frame1)
         uri_frame_2 = make_temp_page(frame2)
 
-        p1 = '<html><body><iframe id="frame_1" src="%s"/></body></html>' % uri_frame_1
-        p2 = '<html><body><iframe id="frame_1" src="%s"></iframe><iframe id="frame_2" src="%s"></iframe></body></html>' % ( uri_frame_1, uri_frame_2)
+        p1 = '''
+            <html><body><iframe id="frame_1" src="%s"/></body></html>
+            ''' % uri_frame_1
+        p2 = '''
+        <html>
+            <body>
+                <iframe id="frame_1" src="%s"></iframe>
+                <iframe id="frame_2" src="%s"></iframe>
+            </body>
+        </html>
+        ''' % (uri_frame_1, uri_frame_2)
 
         driver = get_driver()
         uri = make_temp_page(p1)
@@ -45,7 +70,9 @@ class IFrameTest(unittest.TestCase):
 
     def test_mocked_basic_po_with_frame(self):
         with mock.patch('selenium.webdriver.Firefox') as driver:
-            with mock.patch('selenium.webdriver.remote.webelement.WebElement') as element:
+            with mock.patch(
+                'selenium.webdriver.remote.webelement.WebElement'
+            ) as element:
                 element.tag_name = "div"
                 element.text = "test_text"
                 driver.find_element.return_value = element
@@ -53,5 +80,7 @@ class IFrameTest(unittest.TestCase):
                 self.assertEqual( "test_text",  po.element.text)
                 driver.switch_to.frame.assert_called_with("frame")
                 self.assertEqual(driver.switch_to.frame.call_count, 1)
-                self.assertEqual(driver.switch_to.default_content.call_count, 1)
+                self.assertEqual(
+                    driver.switch_to.default_content.call_count, 1
+                )
 

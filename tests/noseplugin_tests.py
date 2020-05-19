@@ -29,7 +29,9 @@ class TestOptionsWithFirefox(PluginTester, unittest.TestCase):
     def setUp(self):
         self.old_mapping = holmium.core.noseplugin.BROWSER_MAPPING
         holmium.core.noseplugin.BROWSER_MAPPING = build_mock_mapping("remote")
-        holmium.core.noseplugin.BROWSER_MAPPING.update(build_mock_mapping("firefox"))
+        holmium.core.noseplugin.BROWSER_MAPPING.update(
+            build_mock_mapping("firefox")
+        )
         ENV.clear()
         super(TestOptionsWithFirefox,self).setUp()
     def runTest(self):
@@ -53,7 +55,9 @@ class TestOptionsWithChrome(PluginTester, unittest.TestCase):
     def setUp(self):
         self.old_mapping = holmium.core.noseplugin.BROWSER_MAPPING
         holmium.core.noseplugin.BROWSER_MAPPING = build_mock_mapping("remote")
-        holmium.core.noseplugin.BROWSER_MAPPING.update(build_mock_mapping("chrome"))
+        holmium.core.noseplugin.BROWSER_MAPPING.update(
+            build_mock_mapping("chrome")
+        )
         ENV.clear()
         super(TestOptionsWithChrome,self).setUp()
     def runTest(self):
@@ -77,7 +81,9 @@ class TestOptionsWithPhantom(PluginTester, unittest.TestCase):
     def setUp(self):
         self.old_mapping = holmium.core.noseplugin.BROWSER_MAPPING
         holmium.core.noseplugin.BROWSER_MAPPING = build_mock_mapping("remote")
-        holmium.core.noseplugin.BROWSER_MAPPING.update(build_mock_mapping("phantomjs"))
+        holmium.core.noseplugin.BROWSER_MAPPING.update(
+            build_mock_mapping("phantomjs")
+        )
         ENV.clear()
         super(TestOptionsWithPhantom,self).setUp()
     def runTest(self):
@@ -95,7 +101,9 @@ class TestConfigPy(PluginTester, unittest.TestCase):
     plugins = [holmium.core.HolmiumNose()]
     def setUp(self):
         self.old_mapping = holmium.core.noseplugin.BROWSER_MAPPING
-        holmium.core.noseplugin.BROWSER_MAPPING.update(build_mock_mapping("chrome"))
+        holmium.core.noseplugin.BROWSER_MAPPING.update(
+            build_mock_mapping("chrome")
+        )
         ENV.clear()
         super(TestConfigPy,self).setUp()
     def runTest(self):
@@ -113,7 +121,9 @@ class TestConfigJson(PluginTester, unittest.TestCase):
     plugins = [holmium.core.HolmiumNose()]
     def setUp(self):
         self.old_mapping = holmium.core.noseplugin.BROWSER_MAPPING
-        holmium.core.noseplugin.BROWSER_MAPPING.update(build_mock_mapping("chrome"))
+        holmium.core.noseplugin.BROWSER_MAPPING.update(
+            build_mock_mapping("chrome")
+        )
         ENV.clear()
         super(TestConfigJson,self).setUp()
     def runTest(self):
@@ -131,7 +141,9 @@ class TestConfigBad(PluginTester, unittest.TestCase):
     plugins = [holmium.core.HolmiumNose()]
     def setUp(self):
         self.old_mapping = holmium.core.noseplugin.BROWSER_MAPPING
-        holmium.core.noseplugin.BROWSER_MAPPING.update(build_mock_mapping("chrome"))
+        holmium.core.noseplugin.BROWSER_MAPPING.update(
+            build_mock_mapping("chrome")
+        )
         ENV.clear()
         super(TestConfigBad,self).setUp()
     def runTest(self):
@@ -156,8 +168,14 @@ class TestMultipleDriversWithBrowserPerTest(PluginTester, unittest.TestCase):
     def runTest(self):
         assert "Ran 2 tests" in self.output, self.output
         assert "OK" in self.output, self.output
-        self.assertAlmostEqual(holmium.core.noseplugin.BROWSER_MAPPING["chrome"].return_value.quit.call_count, 3)
-        self.assertAlmostEqual(holmium.core.noseplugin.BROWSER_MAPPING["chrome"].call_count, 3)
+        self.assertAlmostEqual(
+            holmium.core.noseplugin.BROWSER_MAPPING["chrome"].return_value.quit.call_count,  # noqa: E501
+            3
+        )
+        self.assertAlmostEqual(
+            holmium.core.noseplugin.BROWSER_MAPPING["chrome"].call_count,
+            3
+        )
 
     def tearDown(self):
         holmium.core.noseplugin.BROWSER_MAPPING = self.old_mapping
@@ -178,7 +196,10 @@ class TestMultipleDriversWithReusedBrowsers(PluginTester, unittest.TestCase):
     def runTest(self):
         assert "Ran 2 tests" in self.output, self.output
         assert "OK" in self.output, self.output
-        self.assertAlmostEqual(holmium.core.noseplugin.BROWSER_MAPPING["chrome"].call_count, 2)
+        self.assertAlmostEqual(
+            holmium.core.noseplugin.BROWSER_MAPPING["chrome"].call_count,
+            2
+        )
 
     def tearDown(self):
         holmium.core.noseplugin.BROWSER_MAPPING = self.old_mapping

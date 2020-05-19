@@ -71,7 +71,9 @@ class ConfigTests(unittest.TestCase):
                 }
             }
         cfg = Config(config)
-        self.assertEqual( cfg["registration_url"], u"http://development:3000/users/sign_up")
+        self.assertEqual(
+            cfg["registration_url"], u"http://development:3000/users/sign_up"
+        )
 
     def test_config_default_reference(self):
         config = {
@@ -88,10 +90,14 @@ class ConfigTests(unittest.TestCase):
             }
         holmium_vars = {"holmium":{"environment":"production"}}
         cfg = Config(config, holmium_vars)
-        self.assertEqual( cfg["registration_url"], u"http://awesomesite.com/users/sign_up")
-        self.assertEqual( cfg["extended_random"], u"random_1")
+        self.assertEqual(
+            cfg["registration_url"], u"http://awesomesite.com/users/sign_up"
+        )
+        self.assertEqual(cfg["extended_random"], u"random_1")
         cfg = Config(config)
-        self.assertEqual( cfg["registration_url"], u"http://development:3000/users/sign_up")
+        self.assertEqual(
+            cfg["registration_url"], u"http://development:3000/users/sign_up"
+        )
 
     def test_holmium_config_object(self):
 

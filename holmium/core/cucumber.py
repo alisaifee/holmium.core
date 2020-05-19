@@ -43,7 +43,8 @@ def paramfromconfig(function):
 def word_to_index(word):
     """
     convert an index in english (1st, first, 20th, twenty first etc..)
-    into a number. I'm sure someone out there has a much cleaner implementation.
+    into a number. I'm sure someone out there has a much cleaner
+    implementation.
     """
 
     ones = {
@@ -58,8 +59,8 @@ def word_to_index(word):
     ones_rev = dict((v, k) for k, v in ones.items())
 
     anomolies = {1: "first", 2: "second", 3: "third", 4: "fourth", 5: "fifth",
-                 6: "sixth", 7: "seventh", 8: "eighth", 9: "ninth", 10: "tenth",
-                 11: "eleventh", 12: "twelvth", 13: "thirteenth",
+                 6: "sixth", 7: "seventh", 8: "eighth", 9: "ninth",
+                 10: "tenth", 11: "eleventh", 12: "twelvth", 13: "thirteenth",
                  14: "fourteenth", 15: "fifteenth",
                  16: "sixteenth", 17: "seventeenth", 18: "eighteenth",
                  19: "nineteenth"}
@@ -90,7 +91,9 @@ def init_steps():
     """
     frm = inspect.stack()[1]
     mod = inspect.getmodule(frm[0])
-    from fresher.stepregistry import StepImpl, TransformImpl, NamedTransformImpl
+    from fresher.stepregistry import (
+        StepImpl, TransformImpl, NamedTransformImpl
+    )
 
     fresher_types = (StepImpl, TransformImpl, NamedTransformImpl)
     for key, value in globals().items():

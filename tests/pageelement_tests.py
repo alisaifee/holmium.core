@@ -21,7 +21,9 @@ class ElementTest(unittest.TestCase):
             id_el = Element(Locators.ID, "simple_id")
             class_el = Element(Locators.CLASS_NAME, "simple_class")
             selector_el = Element(Locators.CSS_SELECTOR, "div.simple_class")
-            xpath_el = Element(Locators.XPATH, "//div[h3/text()='Simple XPATH']")
+            xpath_el = Element(
+                Locators.XPATH, "//div[h3/text()='Simple XPATH']"
+            )
 
 
         uri = make_temp_page(ElementTest.page_content)
@@ -34,7 +36,11 @@ class ElementTest(unittest.TestCase):
 
     def test_basic_element_with_dict(self):
         class SimplePage(Page):
-            elements = { "id": Element ( Locators.ID, "simple_id" ), "class" : Element(Locators.CLASS_NAME, "simple_class") }
+            elements = {
+                "id": Element ( Locators.ID, "simple_id" ),
+                "class" : Element(Locators.CLASS_NAME, "simple_class")
+            }
+
 
 
         uri = make_temp_page(ElementTest.page_content)
@@ -44,7 +50,10 @@ class ElementTest(unittest.TestCase):
 
     def test_basic_element_with_list(self):
         class SimplePage(Page):
-            elements = [Element ( Locators.ID, "simple_id" ), Element(Locators.CLASS_NAME, "simple_class") ]
+            elements = [
+                Element ( Locators.ID, "simple_id"),
+                Element(Locators.CLASS_NAME, "simple_class")
+            ]
 
         uri = make_temp_page(ElementTest.page_content)
         page = SimplePage(self.driver, uri)
@@ -60,8 +69,11 @@ class ElementTest(unittest.TestCase):
         uri = make_temp_page(ElementTest.page_content)
         page = SimplePage(self.driver, uri)
         self.assertEqual(page.id_el.text, "simple_id")
-        script = 'document.getElementById("simple_id").firstChild.nodeValue="changed";'
-        runner = hiro.run_async(5, lambda: time.sleep(1) or self.driver.execute_script(script))
+        script = 'document.getElementById("simple_id").firstChild.nodeValue="changed";'  # noqa: E501
+        runner = hiro.run_async(
+            5,
+            lambda: time.sleep(1) or self.driver.execute_script(script)
+        )
         with hiro.Timeline().scale(10):
             self.assertEqual(page.id_el_changed.text, "changed")
         self.assertTrue(runner.get_response() == None)
@@ -71,8 +83,14 @@ class ElementTest(unittest.TestCase):
 
     def test_basic_element_with_filter_by(self):
         class SimplePage(Page):
-            id_el = Element(Locators.ID, "simple_id", filter_by=lambda el: el.text == "simple_id")
-            id_el_none = Element(Locators.ID, "simple_id", filter_by=lambda el: el.text == "changed")
+            id_el = Element(
+                Locators.ID, "simple_id",
+                filter_by=lambda el: el.text == "simple_id"
+            )
+            id_el_none = Element(
+                Locators.ID, "simple_id",
+                filter_by=lambda el: el.text == "changed"
+            )
 
         uri = make_temp_page(ElementTest.page_content)
         page = SimplePage(self.driver, uri)

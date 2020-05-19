@@ -138,7 +138,9 @@ if ``HO_ENV`` or ``--holmium-env`` are ``development``:
         """
         override to put the value in the right environment bucket
         """
-        sub_dict = dict.setdefault(self, self.env["holmium"]["environment"], {})
+        sub_dict = dict.setdefault(
+            self, self.env["holmium"]["environment"], {}
+        )
         sub_dict[key] = value
 
 

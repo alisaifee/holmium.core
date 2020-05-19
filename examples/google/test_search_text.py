@@ -12,14 +12,18 @@ class GoogleMain(Page):
     search_results = Elements(
         Locators.CSS_SELECTOR, "div.g>div.rc", timeout=2,
         value = lambda el : {
-            "link": el.find_element_by_css_selector("h3.r>a").get_attribute("href"),
+            "link": el.find_element_by_css_selector(
+                "h3.r>a"
+            ).get_attribute("href"),
             "title": el.find_element_by_css_selector("h3.r>a").text
         }
     )
 
     def search ( self, query ):
-        self.google_buttons["Google Search"].click() # self.google_buttons behaves just like a dictionary
-        self.search_box.clear() # self.search_box is now evaluated directly to a WebElement
+        # self.google_buttons behaves just like a dictionary
+        self.google_buttons["Google Search"].click()
+        # self.search_box is now evaluated directly to a WebElement
+        self.search_box.clear()
         self.search_box.send_keys(query)
         self.search_box.submit()
 

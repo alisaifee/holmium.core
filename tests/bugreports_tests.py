@@ -59,7 +59,10 @@ class BugReports(unittest.TestCase):
         pages = build_pages(p)
         pages.extend(build_pages(p2))
 
-        threads = [threading.Thread(target=exec_page_in_thread, args=(p,)) for p in pages]
+        threads = [
+            threading.Thread(target=exec_page_in_thread, args=(p,))
+            for p in pages
+        ]
         [k.start() for k in threads]
         [k.join() for k in threads]
 
@@ -111,7 +114,9 @@ class BugReports(unittest.TestCase):
         driver = mock.Mock()
         driver.find_element.return_value.tag_name = "select"
         driver.find_element.return_value.text = "fOo"
-        self.assertTrue(issubclass(SimplePage(driver).id_el.__class__, CustomSelect))
+        self.assertTrue(
+            issubclass(SimplePage(driver).id_el.__class__, CustomSelect)
+        )
         self.assertEquals(SimplePage(driver).id_el.get_text_upper(), "FOO")
 
     def test_class_inheritance_with_facets(self):
@@ -152,8 +157,10 @@ class BugReports(unittest.TestCase):
         self.assertEquals(len(ExtTwo.get_class_facets()), 2)
         self.assertEquals(len(ExtThree.get_class_facets()), 4)
         # ensure the last title is the one used
-        self.assertEquals(ExtThree.get_class_facets().type_map[title].pop().arguments,
-            {"title":"three"})
+        self.assertEquals(
+            ExtThree.get_class_facets().type_map[title].pop().arguments,
+            {"title":"three"}
+        )
 
         self.assertEquals(len(ExtFour.get_class_facets()), 2)
 
@@ -171,14 +178,17 @@ class BugReports(unittest.TestCase):
             )
 
         class P(Page):
-            e = Elements(Locators.CLASS_NAME, "stale",
-                         timeout=1,
-                         only_if=lambda els: rem() or any(e.is_displayed() for e in els)
+            e = Elements(
+                Locators.CLASS_NAME, "stale",
+                timeout=1,
+                only_if=lambda els: rem() or any(e.is_displayed() for e in els)
             )
         uri = make_temp_page("""
-        <html><body>
-        <div id='container'><div class="stale">1</div><div class="stale">2</div></div>
-        </body></html>
+<html>
+<body>
+<div id='container'><div class="stale">1</div><div class="stale">2</div></div>
+</body>
+</html>
         """)
         p = P(driver, uri)
         self.assertEqual(len(p.e), 1)

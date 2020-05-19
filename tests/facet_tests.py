@@ -103,22 +103,30 @@ class FacetsTests(LiveTest):
 
     def test_main_page_callout(self):
         main = MainPage(self.driver, self.base_url)
-        self.assertEqual(main.jumbo.callout.text, "Here's a few ways it can be good")
+        self.assertEqual(
+            main.jumbo.callout.text, "Here's a few ways it can be good"
+        )
 
     def test_main_page_with_callable_callout(self):
         main = MainPageWithCallable(self.driver, self.base_url)
-        self.assertEqual(main.jumbo.callout.text, "Here's a few ways it can be good")
+        self.assertEqual(
+            main.jumbo.callout.text, "Here's a few ways it can be good"
+        )
 
     def test_main_click_selenium(self):
         main = MainPage(self.driver, self.base_url)
         main.selenium.click()
-        self.assertTrue("Selenium automates browsers." in main.reference_content.text)
+        self.assertTrue(
+            "Selenium automates browsers." in main.reference_content.text
+        )
 
     def test_main_page_login_first(self):
         login = LoginPage(self.driver, self.base_url + "/login")
         login.login("john@doe.com", "sekret")
         main = MainPage(self.driver, self.base_url)
-        self.assertEqual(main.jumbo.callout.text, "Here's a few ways it can be good")
+        self.assertEqual(
+            main.jumbo.callout.text, "Here's a few ways it can be good"
+        )
 
     def test_main_page_bad_trait_element(self):
         main = MainPageBadElement(self.driver, self.base_url)
@@ -144,7 +152,9 @@ class FacetsTests(LiveTest):
             self.assertTrue( main.bad_nav.junk is None)
             self.assertTrue( main.nav.links is not None)
             self.assertTrue(log.warn.call_count == 1)
-            self.assertTrue("failed to exhibit facet junk" in str(log.warn.call_args))
+            self.assertTrue(
+                "failed to exhibit facet junk" in str(log.warn.call_args)
+            )
 
     def test_main_page_good_and_bad_section_element(self):
         main = MainPageMixedSection(self.driver, self.base_url)

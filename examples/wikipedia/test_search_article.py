@@ -36,7 +36,9 @@ class TextSearchArticle(unittest.TestCase):
         for language in self.page.languages:
             self.page.go_home().languages[language].click()
             self.assertTrue(
-                self.page.search("google").article_title.text.startswith("Google"),
+                self.page.search("google").article_title.text.startswith(
+                    "Google"
+                ),
                 language
             )
 

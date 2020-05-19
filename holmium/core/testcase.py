@@ -40,8 +40,10 @@ class TestCase(unittest.TestCase):
         environment = os.environ.get("HO_ENV", "development")
         ignore_ssl = os.environ.get("HO_IGNORE_SSL_ERRORS", False)
         fresh_instance = bool(int(os.environ.get("HO_BROWSER_PER_TEST", 0)))
-        cls.holmium_config = HolmiumConfig(browser, remote, {}, user_agent,
-                                           environment, ignore_ssl, fresh_instance)
+        cls.holmium_config = HolmiumConfig(
+            browser, remote, {}, user_agent,
+            environment, ignore_ssl, fresh_instance
+        )
         config = None
         if os.path.isfile(config_path + ".json"):
             config = json.loads(open(config_path + ".json").read())
@@ -58,8 +60,8 @@ class TestCase(unittest.TestCase):
                                % (cls.holmium_config.browser)
                 )
             driver_cls = BROWSER_MAPPING[cls.holmium_config.browser]
-        cls.driver = ENV.setdefault("driver", LazyWebDriver(driver_cls,
-                                                            cls.holmium_config)
+        cls.driver = ENV.setdefault(
+            "driver", LazyWebDriver(driver_cls, cls.holmium_config)
         )
         cls.drivers = ENV.setdefault("drivers", LazyWebDriverList())
         if hasattr(super(TestCase, cls), "setUpClass"):
@@ -117,7 +119,7 @@ class TestCase(unittest.TestCase):
         self.assertTrue(all((el.is_displayed() for el in _)), msg)
 
     def assertElementCSS(self, element, css_property, value, msg=None):
-        # pylint:disable=line-too-long
+        # noqa: E501
         """
         Fail if the element does not exhibit the correct css property value.
         The value of the elements css property is the one returned by
@@ -137,15 +139,18 @@ class TestCase(unittest.TestCase):
 
     def assertConditionWithWait(self, driver, condition, timeout=0, msg=None,
                                 ignored_exceptions=None):
-        # pylint:disable=line-too-long
-        """ Fail if the condition specified does not hold for the element within
-        the specified timeout
+        """ Fail if the condition specified does not hold for the element
+        within the specified timeout
 
         :param driver: the selenium driver
-        :param condition: an instance of :mod:`selenium.webdriver.support.expected_conditions`
-        :param msg: the failure message when timeout, could be a string or a callable without arguments that returns a string
-        :param timeout: to be passed to `selenium.webdriver.support.wait.WebDriverWait`
-        :param ignored_exceptions: to be passed to `selenium.webdriver.support.wait.WebDriverWait`
+        :param condition: an instance of
+         :mod:`selenium.webdriver.support.expected_conditions`
+        :param msg: the failure message when timeout, could be a string or a
+         callable without arguments that returns a string
+        :param timeout: to be passed to
+         `selenium.webdriver.support.wait.WebDriverWait`
+        :param ignored_exceptions: to be passed to
+         `selenium.webdriver.support.wait.WebDriverWait`
 
         """
         try:

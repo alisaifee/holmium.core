@@ -81,7 +81,9 @@ class HolmiumNose(Plugin):
     def configure(self, options, conf):
         if options.ho_enabled:
             browser = options.ho_browser or os.environ.get("HO_BROWSER", "")
-            environment = options.ho_env or os.environ.get("HO_ENVIRONMENT", "")
+            environment = options.ho_env or os.environ.get(
+                "HO_ENVIRONMENT", ""
+            )
             remote_url = options.ho_remote or os.environ.get("HO_REMOTE", "")
             user_agent = options.ho_ua or os.environ.get("HO_USERAGENT", "")
             fresh_instance = options.ho_fresh_instance or bool(
@@ -93,13 +95,15 @@ class HolmiumNose(Plugin):
             else:
                 caps = options.ho_cap and json.loads(options.ho_cap) or {}
             # pylint: disable=attribute-defined-outside-init
-            self.holmium_config = holmium_config = HolmiumConfig(browser,
-                                                                 remote_url,
-                                                                 caps,
-                                                                 user_agent,
-                                                                 environment,
-                                                                 ignore_ssl,
-                                                                 fresh_instance)
+            self.holmium_config = holmium_config = HolmiumConfig(
+                browser,
+                remote_url,
+                caps,
+                user_agent,
+                environment,
+                ignore_ssl,
+                fresh_instance
+            )
             # pylint:disable=no-member,attribute-defined-outside-init
             if holmium_config.remote:
                 driver_cls = BROWSER_MAPPING["remote"]

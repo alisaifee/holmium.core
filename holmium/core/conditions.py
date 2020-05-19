@@ -11,8 +11,8 @@ from six import add_metaclass
 class BaseCondition(object):
     """
     base class to implement conditions passed
-    to the ``only_if`` parameter of :class:`holmium.core.pageobject.ElementGetter`
-    subclasses.
+    to the ``only_if`` parameter of
+    :class:`holmium.core.pageobject.ElementGetter` subclasses.
     """
     stack = threading.local()
     stack.stack = []
