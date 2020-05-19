@@ -36,7 +36,7 @@ if __name__ == "__main__":
         cmdclass=versioneer.get_cmdclass(),
         install_requires=REQUIREMENTS,
         classifiers=[k for k in open('CLASSIFIERS').read().split('\n') if k],
-        description='selenium page objects and other utilities for test creation',
+        description='selenium page objects and other utilities for test creation',  # noqa: E501
         long_description=long_description,
         packages=find_packages(exclude=["tests*"]),
         entry_points={

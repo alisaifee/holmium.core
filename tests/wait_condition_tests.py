@@ -24,7 +24,9 @@ class WaitConditionTests(unittest.TestCase):
 
     def build_page_object(self, condition):
         class P(Page):
-            id_el = Element(Locators.ID, "simple_id", only_if=condition, timeout=5)
+            id_el = Element(
+                Locators.ID, "simple_id", only_if=condition, timeout=5
+            )
         return P
 
     @hiro.Timeline(scale=10)
