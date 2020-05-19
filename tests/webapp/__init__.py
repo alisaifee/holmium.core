@@ -1,7 +1,6 @@
 """
 
 """
-from contextlib import closing
 from functools import wraps
 import sqlite3
 from flask import (
@@ -95,9 +94,10 @@ def requires_login(fn):
 
 
 def validate_login(email, password):
-    def flash_and_back(msg): return flash(msg, "warning") or redirect(
-        url_for("test.login")
-    )
+    def flash_and_back(msg):
+        return flash(msg, "warning") or redirect(
+            url_for("test.login")
+        )
     if not email:
         return flash_and_back("Email required")
     if not password:
@@ -123,9 +123,10 @@ def validate_login(email, password):
 
 
 def validate_signup(email, password):
-    def flash_and_back(msg): return flash(msg, "warning") or redirect(
-        url_for("test.signup")
-    )
+    def flash_and_back(msg):
+        return flash(msg, "warning") or redirect(
+            url_for("test.signup")
+        )
     if "current_user" in session:
         flash_and_back("You are already signed in")
     if not email:
@@ -194,7 +195,7 @@ def logout():
 @bp.route("/reference/<link>")
 @requires_login
 def reference(link):
-    entry =  db.get_entry(link)
+    entry = db.get_entry(link)
     if not entry:
         abort(404)
     else:

@@ -224,7 +224,9 @@ class Faceted(object):
         """
         from .pageobject import Page
 
-        def safe_get(e): return object.__getattribute__(self, e)
+        def safe_get(e):
+            return object.__getattribute__(self, e)
+
         driver = Page.get_driver()
         instance_facets = safe_get("get_instance_facets")()
         class_facets = safe_get("get_class_facets")()

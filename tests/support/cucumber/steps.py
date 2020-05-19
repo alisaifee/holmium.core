@@ -20,7 +20,7 @@ class TestPage(Page):
     els = Elements(Locators.NAME, "els")
     elmap = ElementMap(Locators.NAME, "elmap")
     sections = TestSections(Locators.NAME, "sections")
-    section  = TestSection(Locators.NAME, "section")
+    section = TestSection(Locators.NAME, "section")
 
     def do_stuff(self, a, b):
         return a + b

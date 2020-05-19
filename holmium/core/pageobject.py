@@ -192,8 +192,11 @@ class Page(Faceted):
         don't return a value, instead return the page object instance.
         """
 
-        def attr_getter(key): return object.__getattribute__(self, key)
-        def attr_setter(key, value): return object.__setattr__(self, key, value)
+        def attr_getter(key):
+            return object.__getattribute__(self, key)
+
+        def attr_setter(key, value):
+            return object.__setattr__(self, key, value)
 
         with attr_getter("scope")():
             if not attr_getter("touched") and attr_getter("initialized"):
@@ -572,11 +575,14 @@ class Section(Faceted):
         return self
 
     def __getattribute__(self, item):
-        def attr_getter(key): return super(Section, self).__getattribute__(key)
-        def attr_setter(key, value): return super(Section, self).__setattr__(
-            key,
-            value
-        )
+        def attr_getter(key):
+            return super(Section, self).__getattribute__(key)
+
+        def attr_setter(key, value):
+            return super(Section, self).__setattr__(
+                key,
+                value
+            )
         members = attr_getter("element_members")
         touched = attr_getter("touched")
         if not touched and item in members:
