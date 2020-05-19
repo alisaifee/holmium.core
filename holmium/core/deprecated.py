@@ -9,6 +9,7 @@ from .testcase import TestCase
 # pylint: disable=too-few-public-methods
 # pylint: disable=no-member
 
+
 class Deprecated(object):
     """
     meta class to create an object that throws a Syntax error on
@@ -38,4 +39,3 @@ PageElement = construct_deprecated("PageElement", Element)
 PageElements = construct_deprecated("PageElements", Elements)
 PageElementMap = construct_deprecated("PageElementMap", ElementMap)
 HolmiumTestCase = construct_deprecated("HolmiumTestCase", TestCase)
-

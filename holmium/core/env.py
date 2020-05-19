@@ -16,6 +16,7 @@ class LazyWebDriver(object):
     attribute access
     """
     # pylint: disable=star-args,protected-access
+
     def __init__(self, driver_cls, holmium_config):
         self._driver_cls = driver_cls
         self._holmium_config = holmium_config

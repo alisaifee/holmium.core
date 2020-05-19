@@ -7,6 +7,7 @@ from holmium.core.conditions import (
     ALL, MATCHES_TEXT, VISIBLE, INVISIBLE, ANY
 )
 
+
 class WaitConditionTests(unittest.TestCase):
     def setUp(self):
         self.driver = get_driver()
@@ -23,9 +24,7 @@ class WaitConditionTests(unittest.TestCase):
 
     def build_page_object(self, condition):
         class P(Page):
-            id_el = Element(Locators.ID, "simple_id"
-                , only_if=condition
-                , timeout=5)
+            id_el = Element(Locators.ID, "simple_id", only_if=condition, timeout=5)
         return P
 
     @hiro.Timeline(scale=10)
@@ -38,7 +37,6 @@ class WaitConditionTests(unittest.TestCase):
             'document.getElementById("simple_id").innerHTML="changed";', 1
         )
         self.assertEqual(page.id_el.text, "changed")
-
 
     @hiro.Timeline(scale=10)
     def test_only_if_displayed(self):
@@ -66,7 +64,7 @@ class WaitConditionTests(unittest.TestCase):
     @hiro.Timeline(scale=10)
     def test_context_any_condition(self):
         class P(Page):
-            cl_els = ElementMap(Locators.CLASS_NAME , "cls", timeout = 5)
+            cl_els = ElementMap(Locators.CLASS_NAME, "cls", timeout=5)
 
         uri = make_temp_page("<div id='base'><div class='cls'>one</div></div>")
         page = P(self.driver, uri)
@@ -83,7 +81,7 @@ class WaitConditionTests(unittest.TestCase):
     @hiro.Timeline(scale=10)
     def test_context_all_condition(self):
         class P(Page):
-            cl_els = ElementMap(Locators.CLASS_NAME , "cls", timeout = 5)
+            cl_els = ElementMap(Locators.CLASS_NAME, "cls", timeout=5)
 
         uri = make_temp_page("<div id='base'></div>")
         page = P(self.driver, uri)

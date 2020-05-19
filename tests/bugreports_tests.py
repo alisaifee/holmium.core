@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import unittest
 import threading
-from holmium.core.facets import cookie,title, defer
+from holmium.core.facets import cookie, title, defer
 import os
 from selenium.webdriver.support.ui import Select
 import mock
@@ -19,23 +19,25 @@ class BugReports(unittest.TestCase):
         """
         class p(Page):
             el = Element(Locators.NAME, "name")
-        d1,d2=mock.Mock(), mock.Mock()
-        p1,p2=p(d1, "http://p1"),p(d2, "http://p2")
-        e1,e2=mock.Mock(), mock.Mock()
+        d1, d2 = mock.Mock(), mock.Mock()
+        p1, p2 = p(d1, "http://p1"), p(d2, "http://p2")
+        e1, e2 = mock.Mock(), mock.Mock()
         e2.tag_name = e1.tag_name = "div"
         e1.text = "t1"
         e2.text = "t2"
         d1.find_element.return_value = e1
         d2.find_element.return_value = e2
-        self.assertEqual(p1.el.text,"t1")
-        self.assertEqual(p2.el.text,"t2")
+        self.assertEqual(p1.el.text, "t1")
+        self.assertEqual(p2.el.text, "t2")
         self.assertEqual(d1.get.call_count, 1)
         self.assertEqual(d2.get.call_count, 1)
+
     def test_multiple_pageinstances_multithreaded(self):
         """ https://github.com/alisaifee/holmium.core/issues/4
         """
         class p(Page):
             el = Element(Locators.NAME, "name")
+
         class p2(Page):
             el = Element(Locators.NAME, "name")
 
@@ -45,14 +47,14 @@ class BugReports(unittest.TestCase):
             self.assertEqual(p.driver.get.call_count, 2)
 
         def build_pages(po):
-            pages=[]
-            for i in range(0,100):
+            pages = []
+            for i in range(0, 100):
                 d = mock.Mock()
                 e = mock.Mock()
                 e.text = str(p)+str(i)
                 e.tag = "div"
                 d.find_element.return_value = e
-                _p = po(d,"http://%s" % i)
+                _p = po(d, "http://%s" % i)
                 _p.t = str(p)+str(i)
                 pages.append(_p)
             return pages
@@ -71,23 +73,28 @@ class BugReports(unittest.TestCase):
         """
         class p(Page):
             el = Element(Locators.NAME, "name")
+
             def f1(self):
                 self.el.click()
+
             def f2(self):
                 return False
+
             def f3(self):
                 return []
+
             def f4(self):
                 return {}
+
             def f5(self):
                 return ""
-        d1=mock.Mock()
-        p1=p(d1, "http://p1")
+        d1 = mock.Mock()
+        p1 = p(d1, "http://p1")
         self.assertEqual(p1, p1.f1())
         self.assertEqual(False, p1.f2())
         self.assertEqual([], p1.f3())
         self.assertEqual({}, p1.f4())
-        self.assertEqual("",p1.f5())
+        self.assertEqual("", p1.f5())
 
     def test_select_element(self):
         """ https://github.com/alisaifee/holmium.core/issues/13
@@ -105,10 +112,12 @@ class BugReports(unittest.TestCase):
         """
         class CustomSelect(ElementEnhancer):
             __TAG__ = "select"
+
             def get_text_upper(self):
                 return self.element.text.upper()
 
         register_enhancer(CustomSelect)
+
         class SimplePage(Page):
             id_el = Element(Locators.ID, "simple_id")
         driver = mock.Mock()
@@ -148,9 +157,8 @@ class BugReports(unittest.TestCase):
         class B3(Page):
             pass
 
-        class ExtFour(B2,B3):
+        class ExtFour(B2, B3):
             pass
-
 
         self.assertEquals(len(B1.get_class_facets()), 1)
         self.assertEquals(len(ExtOne.get_class_facets()), 2)
@@ -159,7 +167,7 @@ class BugReports(unittest.TestCase):
         # ensure the last title is the one used
         self.assertEquals(
             ExtThree.get_class_facets().type_map[title].pop().arguments,
-            {"title":"three"}
+            {"title": "three"}
         )
 
         self.assertEquals(len(ExtFour.get_class_facets()), 2)
@@ -168,6 +176,7 @@ class BugReports(unittest.TestCase):
         """ https://github.com/alisaifee/issues/23
         """
         driver = get_driver()
+
         def rem():
             driver.execute_script("""
             if ( document.getElementsByClassName('stale').length > 1 ){
@@ -175,7 +184,7 @@ class BugReports(unittest.TestCase):
                 document.getElementById('container').removeChild(f);
             }
             """
-            )
+                                  )
 
         class P(Page):
             e = Elements(
@@ -195,4 +204,4 @@ class BugReports(unittest.TestCase):
 
     def tearDown(self):
         reset_enhancers()
-        super(BugReports,self).tearDown()
+        super(BugReports, self).tearDown()

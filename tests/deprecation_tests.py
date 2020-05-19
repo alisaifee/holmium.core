@@ -1,5 +1,7 @@
 import unittest
 import holmium.core
+
+
 class DeprecatedPageTest(unittest.TestCase):
     def test_basic_po(self):
         self.assertRaises(SyntaxError, holmium.core.PageObject)

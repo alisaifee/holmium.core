@@ -1,8 +1,9 @@
 import unittest
 import time
-from  holmium.core import Page, Element, Locators
+from holmium.core import Page, Element, Locators
 from tests.utils import get_driver, make_temp_page
 import hiro
+
 
 class ElementTest(unittest.TestCase):
     page_content = """
@@ -25,7 +26,6 @@ class ElementTest(unittest.TestCase):
                 Locators.XPATH, "//div[h3/text()='Simple XPATH']"
             )
 
-
         uri = make_temp_page(ElementTest.page_content)
         page = SimplePage(self.driver, uri)
         assert page.id_el.text == "simple_id"
@@ -33,15 +33,12 @@ class ElementTest(unittest.TestCase):
         assert page.selector_el.text == "simple_class"
         assert page.xpath_el.text == "Simple XPATH"
 
-
     def test_basic_element_with_dict(self):
         class SimplePage(Page):
             elements = {
-                "id": Element ( Locators.ID, "simple_id" ),
-                "class" : Element(Locators.CLASS_NAME, "simple_class")
+                "id": Element(Locators.ID, "simple_id"),
+                "class": Element(Locators.CLASS_NAME, "simple_class")
             }
-
-
 
         uri = make_temp_page(ElementTest.page_content)
         page = SimplePage(self.driver, uri)
@@ -51,7 +48,7 @@ class ElementTest(unittest.TestCase):
     def test_basic_element_with_list(self):
         class SimplePage(Page):
             elements = [
-                Element ( Locators.ID, "simple_id"),
+                Element(Locators.ID, "simple_id"),
                 Element(Locators.CLASS_NAME, "simple_class")
             ]
 

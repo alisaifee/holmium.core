@@ -13,18 +13,17 @@ class ElementMapTest(unittest.TestCase):
             el_map_default = ElementMap(Locators.CLASS_NAME, "simple_class")
             el_map_keymapper = ElementMap(
                 Locators.CLASS_NAME, "simple_class",
-                key = lambda el: el.find_element_by_tag_name("a").text
+                key=lambda el: el.find_element_by_tag_name("a").text
             )
             el_map_valuemapper = ElementMap(
                 Locators.CLASS_NAME, "simple_class",
-                value = lambda el: el.find_element_by_tag_name("a").text
+                value=lambda el: el.find_element_by_tag_name("a").text
             )
             el_map_keyvaluemapper = ElementMap(
                 Locators.CLASS_NAME, "simple_class",
-                key = lambda el: el.find_element_by_tag_name("a").text,
-                value = lambda el: el.find_element_by_tag_name("a").get_attribute("href")  # noqa: E501
+                key=lambda el: el.find_element_by_tag_name("a").text,
+                value=lambda el: el.find_element_by_tag_name("a").get_attribute("href")  # noqa: E501
             )
-
 
         uri = make_temp_page("""
             <body>
@@ -44,7 +43,7 @@ class ElementMapTest(unittest.TestCase):
         """)
         page = SimplePage(self.driver, uri)
         self.assertEqual(
-            list(page.el_map_default.keys()) ,
+            list(page.el_map_default.keys()),
             [
                 "simple class el 1 element 1",
                 "simple class el 2 element 2",
@@ -52,26 +51,26 @@ class ElementMapTest(unittest.TestCase):
             ]
         )
         self.assertEqual(
-            list(page.el_map_keymapper.keys()) ,
+            list(page.el_map_keymapper.keys()),
             ["element 1", "element 2", "element 3"]
         )
         self.assertEqual(
-            list(page.el_map_valuemapper.values()) ,
+            list(page.el_map_valuemapper.values()),
             ["element 1", "element 2", "element 3"]
         )
         self.assertEqual(
-            list(page.el_map_keyvaluemapper.keys()) ,
+            list(page.el_map_keyvaluemapper.keys()),
             ["element 1", "element 2", "element 3"]
         )
         self.assertEqual(
-            list(page.el_map_keyvaluemapper.values()) ,
+            list(page.el_map_keyvaluemapper.values()),
             ["http://el1.com/", u"http://el2.com/", u"http://el3.com/"]
         )
 
     def test_missing_elements(self):
         class SimplePage(Page):
             el_list = ElementMap(Locators.CLASS_NAME,
-                                            "element")
+                                 "element")
             el_list_wait = ElementMap(
                 Locators.CLASS_NAME, "elements", timeout=1)
             el_list_only_if = ElementMap(

@@ -17,7 +17,7 @@ if __name__ == "__main__":
     ).read()
 
     if sys.version_info[:2] < (2, 7):
-	    REQUIREMENTS += 'unittest2\n'
+        REQUIREMENTS += 'unittest2\n'
 
     import versioneer
     versioneer.versionfile_source = "holmium/core/_version.py"
@@ -27,21 +27,19 @@ if __name__ == "__main__":
     long_description = open('README.rst').read() + open('HISTORY.rst').read()
     setup(
         name='holmium.core',
-        author = __author__,
-        author_email = __email__,
-        license = "MIT",
+        author=__author__,
+        author_email=__email__,
+        license="MIT",
         url="https://holmiumcore.readthedocs.org/en/latest/",
-        zip_safe = False,
+        zip_safe=False,
         version=versioneer.get_version(),
         cmdclass=versioneer.get_cmdclass(),
-        install_requires = REQUIREMENTS,
+        install_requires=REQUIREMENTS,
         classifiers=[k for k in open('CLASSIFIERS').read().split('\n') if k],
-        description=\
-            'selenium page objects and other utilities for test creation',
+        description='selenium page objects and other utilities for test creation',
         long_description=long_description,
-        packages = find_packages(exclude=["tests*"]),
-        entry_points = {
-            'nose.plugins.0.10': ['holmium = holmium.core:HolmiumNose',]
-            }
+        packages=find_packages(exclude=["tests*"]),
+        entry_points={
+            'nose.plugins.0.10': ['holmium = holmium.core:HolmiumNose', ]
+        }
     )
-

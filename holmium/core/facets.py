@@ -60,7 +60,6 @@ class Facet(object):
             obj.get_instance_facets().append(self)
             self.parent_class = obj.__class__
 
-
     def __call__(self, obj):
         self.register(obj)
         return obj
@@ -147,13 +146,12 @@ class FacetCollection(list):
         facets on the same object.
         """
         if (
-                        type(item) in self.type_map
-                and not type(item).__ALLOW_MULTIPLE__
+            type(item) in self.type_map
+            and not type(item).__ALLOW_MULTIPLE__
         ):
             self.remove(self.type_map[type(item)].pop())
         if item not in self:
             super(FacetCollection, self).append(item)
-
 
     def evaluate_all(self, driver):
         """
@@ -220,7 +218,6 @@ class Faceted(object):
         """
         return object.__getattribute__(self, "instance_facets")
 
-
     def evaluate(self):
         """
         evaluates all registered facets (class & instance)
@@ -255,8 +252,9 @@ class Defer(Facet):
     def evaluate(self, driver):
         page_cls = self.arguments["page"]
         page = page_cls(driver)
-        return self.arguments["action"](page,
-                                        **self.options["action_arguments"]
+        return self.arguments["action"](
+            page,
+            **self.options["action_arguments"]
         )
 
 
@@ -274,8 +272,9 @@ class Title(Facet):
     __ALLOW_MULTIPLE__ = False
 
     def evaluate(self, driver):
-        assert_true(re.compile(self.arguments["title"]).match(driver.title),
-                    "title did not match %s" % self.arguments["title"]
+        assert_true(
+            re.compile(self.arguments["title"]).match(driver.title),
+            "title did not match %s" % self.arguments["title"]
         )
 
 
@@ -303,8 +302,9 @@ class Cookie(Facet):
             else:
                 assert_equals(cookie_value, self.options["value"])
         else:
-            assert_true(cookie_value is not None,
-                        "cookie %s does not exist" % self.arguments["name"]
+            assert_true(
+                cookie_value is not None,
+                "cookie %s does not exist" % self.arguments["name"]
             )
 
 
@@ -344,16 +344,17 @@ class ElementFacet(Facet):
         super(ElementFacet, self).__init__(required=True, **kwargs)
 
     def evaluate(self, driver):
-        assert_true(self.element.__get__(self.parent_class, self.parent_class),
-                    "No such element"
+        assert_true(
+            self.element.__get__(self.parent_class, self.parent_class),
+            "No such element"
         )
 
     def get_name(self):
         return self.element_name
+
 
 # pylint: disable=invalid-name
 cookie = Cookie
 strict = Strict
 defer = Defer
 title = Title
-

@@ -336,4 +336,3 @@ def back_or_forward(direction):
         ftc.driver.back()
     else:
         ftc.driver.forward()
-

@@ -30,26 +30,25 @@ class ConfigTests(unittest.TestCase):
         self.assertEqual(cfg["t2"], 3)
         self.assertEqual(cfg["t3"], 4)
         self.assertEqual(cfg["username"], "developmentuser")
-        holmium_vars = {"holmium":{"environment":"production"}}
+        holmium_vars = {"holmium": {"environment": "production"}}
         cfg = Config(json.loads(json_cfg), holmium_vars)
         self.assertEqual(cfg["t1"], 1)
         self.assertEqual(cfg["t2"], 2)
         self.assertEqual(cfg["t3"], 4)
         self.assertEqual(cfg["username"], "productionuser")
 
-
     def test_dict_config(self):
         dct_cfg = {"production":
-                {"t2":"{{default['t2']}}", "t3":4},
+                {"t2": "{{default['t2']}}", "t3": 4},
             "development":
-                {"t2":u"{{production['t2']}}"},
+                {"t2": u"{{production['t2']}}"},
             "default":
-            {"t1":1,"t2":2,"t3":[1,2,3]}}
+            {"t1": 1, "t2": 2, "t3": [1, 2, 3]}}
         cfg = Config(dct_cfg)
         self.assertEqual(cfg["t1"], 1)
         self.assertEqual(cfg["t2"], u"2")
-        self.assertEqual(cfg["t3"], [1,2,3])
-        holmium_vars = {"holmium":{"environment":"production"}}
+        self.assertEqual(cfg["t3"], [1, 2, 3])
+        holmium_vars = {"holmium": {"environment": "production"}}
         cfg = Config(dct_cfg, holmium_vars)
         self.assertEqual(cfg["t1"], 1)
         self.assertEqual(cfg["t2"], u"2")
@@ -65,7 +64,7 @@ class ConfigTests(unittest.TestCase):
 
     def test_config_defaults_only(self):
         config = {
-                "default":{
+                "default": {
                     "base_url": "http://{{holmium.environment}}:3000",
                     "registration_url": "{{default.base_url}}/users/sign_up",
                 }
@@ -77,18 +76,18 @@ class ConfigTests(unittest.TestCase):
 
     def test_config_default_reference(self):
         config = {
-                "default":{
+                "default": {
                     "base_url": "http://{{holmium.environment}}:3000",
                     "registration_url": "{{base_url}}/users/sign_up",
-                    "random_var":"{{env_random}}"
+                    "random_var": "{{env_random}}"
                 },
-                "production":{
+                "production": {
                     "base_url": "http://awesomesite.com",
-                    "env_random":"1",
+                    "env_random": "1",
                     "extended_random": "random_{{random_var}}"
                 }
             }
-        holmium_vars = {"holmium":{"environment":"production"}}
+        holmium_vars = {"holmium": {"environment": "production"}}
         cfg = Config(config, holmium_vars)
         self.assertEqual(
             cfg["registration_url"], u"http://awesomesite.com/users/sign_up"
@@ -101,15 +100,15 @@ class ConfigTests(unittest.TestCase):
 
     def test_holmium_config_object(self):
 
-        cfg = HolmiumConfig(1,2,3,4,5,6,7)
+        cfg = HolmiumConfig(1, 2, 3, 4, 5, 6, 7)
         self.assertEqual(cfg,  {
-            "browser":1,
-            "remote":2,
-            "capabilities":3,
-            "user_agent":4,
-            "environment":5,
-            "ignore_ssl":6,
-            "fresh_instance":7,
+            "browser": 1,
+            "remote": 2,
+            "capabilities": 3,
+            "user_agent": 4,
+            "environment": 5,
+            "ignore_ssl": 6,
+            "fresh_instance": 7,
         })
 
         self.assertEqual(cfg.browser, 1)
@@ -122,12 +121,12 @@ class ConfigTests(unittest.TestCase):
 
         cfg.browser = 2
         self.assertEqual(cfg.browser, 2)
-        self.assertEqual(cfg["browser"],2)
+        self.assertEqual(cfg["browser"], 2)
 
-        nested = {"holmium":{}}
+        nested = {"holmium": {}}
         nested["holmium"]["config"] = cfg
         nested["holmium"]["config"]["user_agent"] = 1
-        self.assertEqual(cfg.user_agent , 1)
+        self.assertEqual(cfg.user_agent, 1)
 
         cfg["foo"] = "bar"
         self.assertEqual(cfg.foo, "bar")

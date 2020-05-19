@@ -30,6 +30,8 @@ from .facets import Faceted, ElementFacet, CopyOnCreateFacetCollectionMeta
 from .logger import log
 
 # pylint: disable=unnecessary-lambda,too-few-public-methods,too-many-arguments
+
+
 class Locators(selenium.webdriver.common.by.By):
     """
     proxy class to access locator types
@@ -137,7 +139,7 @@ class Page(Faceted):
                     facet = ElementFacet(element,
                                          name,
                                          debug=element.is_debug_facet
-                    )
+                                         )
                     facet.register(self)
                 return True
             return False
@@ -425,6 +427,7 @@ class Elements(ElementGetter):
      passed as the only argument to the function.
     """
     # pylint: disable=incomplete-protocol,line-too-long
+
     def __init__(self, locator_type,
                  query_string=None,
                  base_element=None,
@@ -433,11 +436,13 @@ class Elements(ElementGetter):
                  only_if=lambda els: len(els) > 0,
                  facet=False,
                  filter_by=lambda el: el is not None):
-        super(Elements, self).__init__(locator_type, query_string,
-                                       base_element=base_element,
-                                       timeout=timeout,
-                                       facet=facet, value=value,
-                                       only_if=only_if, filter_by=filter_by)
+        super(Elements, self).__init__(
+            locator_type, query_string,
+            base_element=base_element,
+            timeout=timeout,
+            facet=facet, value=value,
+            only_if=only_if, filter_by=filter_by
+        )
 
     def __getitem__(self, idx):
         return lambda: self.__get__(self, self.__class__)[idx]
@@ -490,6 +495,7 @@ class ElementMap(Elements):
      passed as the only argument to the function.
     """
     # pylint: disable=incomplete-protocol,line-too-long
+
     def __init__(self, locator_type,
                  query_string=None,
                  base_element=None,
@@ -499,10 +505,12 @@ class ElementMap(Elements):
                  only_if=lambda els: len(els) > 0,
                  facet=False,
                  filter_by=lambda el: el is not None):
-        super(ElementMap, self).__init__(locator_type, query_string,
-                                         base_element,
-                                         timeout, facet=facet,
-                                         only_if=only_if, filter_by=filter_by)
+        super(ElementMap, self).__init__(
+            locator_type, query_string,
+            base_element,
+            timeout, facet=facet,
+            only_if=only_if, filter_by=filter_by
+        )
         self.key_mapper = key
         self.value_mapper = value
 
@@ -551,9 +559,10 @@ class Section(Faceted):
             if issubclass(element[1].__class__, ElementGetter):
                 self.element_members[element[0]] = element[1]
                 if element[1].is_facet:
-                    facet = ElementFacet(element[1],
-                                         element[0],
-                                         debug=element[1].is_debug_facet
+                    facet = ElementFacet(
+                        element[1],
+                        element[0],
+                        debug=element[1].is_debug_facet
                     )
                     facet.register(self)
 
@@ -575,7 +584,6 @@ class Section(Faceted):
             attr_setter("touched", True)
         return attr_getter(item)
 
-
     @property
     def root(self):
         """
@@ -587,12 +595,15 @@ class Section(Faceted):
                 Page.get_driver().switch_to.frame(self.iframe)
             except NoSuchFrameException:
                 log.error(
-                    "unable to switch to iframe %s" % self.iframe)
+                    "unable to switch to iframe %s" % self.iframe
+                )
         try:
             if not self.__root_val:
                 WebDriverWait(Page.get_driver(), self.timeout).until(
-                    lambda _: Page.get_driver().find_element(self.locator_type,
-                                                             self.query_string)
+                    lambda _: Page.get_driver().find_element(
+                        self.locator_type,
+                        self.query_string
+                    )
                 )
             return self.__root_val or Page.get_driver().find_element(
                 self.locator_type, self.query_string
@@ -636,8 +647,10 @@ class Sections(Section, collections.Sequence):
                     "unable to find element %s after waiting for %d seconds"
                     % (self.query_string, self.timeout)
                 )
-        return Page.get_driver().find_elements(self.locator_type,
-                                               self.query_string)
+        return Page.get_driver().find_elements(
+            self.locator_type,
+            self.query_string
+        )
 
     def __iter__(self):
         for element in self.__getelements__():

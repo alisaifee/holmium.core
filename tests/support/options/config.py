@@ -1,3 +1,3 @@
 config = {
-        "staging": {"foo":"bar"}
+        "staging": {"foo": "bar"}
         }

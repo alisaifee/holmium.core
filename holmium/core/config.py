@@ -175,6 +175,7 @@ class HolmiumConfig(dict):
     as keys in the dictionary and vice versa.
     """
     # pylint: disable=unused-argument,too-many-arguments,star-args
+
     def __init__(self, browser, remote, capabilities, user_agent, environment,
                  ignore_ssl, fresh_instance):
         data = {}
@@ -182,7 +183,6 @@ class HolmiumConfig(dict):
             setattr(self, arg, locals()[arg])
             data[arg] = locals()[arg]
         super(HolmiumConfig, self).__init__(**data)
-
 
     def __setattr__(self, key, value):
         super(HolmiumConfig, self).__setattr__(key, value)
@@ -249,6 +249,7 @@ class PhantomConfig(DriverConfig):
                 "--ignore-ssl-errors=true --ssl-protocol=tlsv1")
         return super(PhantomConfig, self).__call__(config, args)
 
+
 class IeConfig(DriverConfig):
     """
     configuration for internet explorer
@@ -257,6 +258,7 @@ class IeConfig(DriverConfig):
     def __call__(self, config, args):
         args['desired_capabilities'] = args.pop('desired_capabilities', {})
         return super(IeConfig, self).__call__(config, args)
+
 
 class RemoteConfig(DriverConfig):
     """
@@ -302,4 +304,3 @@ def configure(config):
         args = CONFIGURATOR_MAPPER["remote"](config, args)
 
     return args
-

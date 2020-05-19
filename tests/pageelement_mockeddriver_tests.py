@@ -1,6 +1,6 @@
 import unittest
 import mock
-from  holmium.core import Page, Element, Locators
+from holmium.core import Page, Element, Locators
 from selenium.webdriver.support.ui import Select
 
 
@@ -15,9 +15,9 @@ class ElementWithMockDriverTest(unittest.TestCase):
         self.driver.find_element.return_value.tag_name = "select"
         self.assertTrue(isinstance(SimplePage(self.driver).id_el, Select))
 
-
     def test_set_home_after_init(self):
         self.driver.current_url = None
+
         class SimplePage(Page):
             id_el = Element(Locators.ID, "simple_id")
 
@@ -31,7 +31,3 @@ class ElementWithMockDriverTest(unittest.TestCase):
         self.assertEqual(self.driver.get.call_count, 0)
         page.go_home()
         self.assertTrue(self.driver.get.call_count, 1)
-
-
-
-

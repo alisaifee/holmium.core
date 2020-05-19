@@ -38,6 +38,8 @@ class BaseCondition(object):
         return cls.stack.stack[0] if cls.stack.stack else None
 
 # pylint: disable=invalid-name
+
+
 class VISIBLE(BaseCondition):
     """
     checks if the element is visible
@@ -74,17 +76,20 @@ class ANY(BaseCondition):
     checks if any of the elements in the collection
     match the condition.
     """
+
     def __init__(self, condition):
         self.cond = condition
 
     def evaluate(self, elements):
         return any(self.cond(el) for el in elements)
 
+
 class ALL(BaseCondition):
     """
     checks if all of the elements in the collection
     match the condition.
     """
+
     def __init__(self, condition):
         self.cond = condition
 

@@ -6,12 +6,12 @@ from tests.utils import get_driver, make_temp_page
 
 class BasicSection(Section):
     tokens = Elements(Locators.CSS_SELECTOR,
-                                   "div.token")
+                      "div.token")
 
 
 class BasicSectionList(Sections):
     tokens = Elements(Locators.CSS_SELECTOR,
-                                   "div.token")
+                      "div.token")
 
 
 class BasicPage(Page):
@@ -21,10 +21,11 @@ class BasicPage(Page):
 
 
 class BasicPageWithSections(Page):
-    sections = BasicSectionList( Locators.CLASS_NAME, "section", timeout=1)
+    sections = BasicSectionList(Locators.CLASS_NAME, "section", timeout=1)
     missing_sections = BasicSectionList(
         Locators.CLASS_NAME, "missing_section", timeout=1
     )
+
 
 class SectionTest(unittest.TestCase):
 
@@ -70,10 +71,10 @@ class SectionTest(unittest.TestCase):
         self.assertEqual(len(po.section_2.tokens), 2)
         for i in range(0, 2):
             self.assertEqual(po.section.tokens[i].text,
-                              "section element %s" % (i + 1))
+                             "section element %s" % (i + 1))
         for i in range(0, 2):
             self.assertEqual(po.section_2.tokens[i].text,
-                              "section element %s" % (i + 3))
+                             "section element %s" % (i + 3))
         self.assertEqual(po.tokens[0].text, 'section element 1')
         self.assertEqual(po.tokens[1].text, 'section element 2')
         self.assertEqual(po.tokens[2].text, 'section element 3')

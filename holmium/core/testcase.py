@@ -2,9 +2,9 @@
 the testcase base class
 """
 try:
-	import unittest2 as unittest
+    import unittest2 as unittest
 except ImportError:
-	import unittest
+    import unittest
 import inspect
 import imp
 import json
@@ -17,6 +17,7 @@ from .env import LazyWebDriver, LazyWebDriverList
 from nose.plugins.skip import SkipTest
 
 # pylint: disable=too-many-public-methods
+
 
 class TestCase(unittest.TestCase):
     """
@@ -56,8 +57,9 @@ class TestCase(unittest.TestCase):
             driver_cls = BROWSER_MAPPING["remote"]
         else:
             if not cls.holmium_config.browser in BROWSER_MAPPING:
-                raise SkipTest("Unknown browser (%s) specified in HO_BROWSER"
-                               % (cls.holmium_config.browser)
+                raise SkipTest(
+                    "Unknown browser (%s) specified in HO_BROWSER"
+                    % (cls.holmium_config.browser)
                 )
             driver_cls = BROWSER_MAPPING[cls.holmium_config.browser]
         cls.driver = ENV.setdefault(
@@ -88,7 +90,6 @@ class TestCase(unittest.TestCase):
             for driver in ENV["drivers"]:
                 driver.safe_clear()
         super(TestCase, self).tearDown()
-
 
     # helper assertions
     # pylint: disable=invalid-name
@@ -125,9 +126,10 @@ class TestCase(unittest.TestCase):
         The value of the elements css property is the one returned by
         :meth:`selenium.webdriver.remote.webelement.WebElement.value_of_css_property`
         """
-        self.assertEqual(element.value_of_css_property(css_property),
-                         value,
-                         msg
+        self.assertEqual(
+            element.value_of_css_property(css_property),
+            value,
+            msg
         )
 
     def assertElementSize(self, element, width, height, msg=None):
@@ -135,7 +137,6 @@ class TestCase(unittest.TestCase):
         """
         _expected = {"height": height, "width": width}
         self.assertEqual(_expected, element.size, msg)
-
 
     def assertConditionWithWait(self, driver, condition, timeout=0, msg=None,
                                 ignored_exceptions=None):
@@ -154,11 +155,14 @@ class TestCase(unittest.TestCase):
 
         """
         try:
-            wait = WebDriverWait(driver, timeout,
-                                 ignored_exceptions=ignored_exceptions)
+            wait = WebDriverWait(
+                driver, timeout,
+                ignored_exceptions=ignored_exceptions
+            )
             wait.until(condition)
         except TimeoutException:
             _msg = self._formatMessage(
                 msg() if callable(msg) else msg,
-                "Timeout waiting on condition %s" % condition)
+                "Timeout waiting on condition %s" % condition
+            )
             raise self.failureException(_msg)

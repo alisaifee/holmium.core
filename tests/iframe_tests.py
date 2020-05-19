@@ -2,23 +2,29 @@ import unittest
 
 import mock
 
-from  holmium.core import Page, Element, Elements, Section, Locators
+from holmium.core import Page, Element, Elements, Section, Locators
 from tests.utils import get_driver, make_temp_page
 
 
 class BasicSectionIframe(Section):
-    element = Element( Locators.CLASS_NAME, "frame_el")
+    element = Element(Locators.CLASS_NAME, "frame_el")
+
+
 class BasicPageIframe(Page):
-    element = Element( Locators.CLASS_NAME, "frame_el" )
-    elements = Elements( Locators.CLASS_NAME, "frame_el" )
+    element = Element(Locators.CLASS_NAME, "frame_el")
+    elements = Elements(Locators.CLASS_NAME, "frame_el")
     frame_1 = BasicSectionIframe(Locators.CLASS_NAME, "section", "frame_1")
     frame_2 = BasicSectionIframe(Locators.CLASS_NAME, "section", "frame_2")
+
+
 class BasicPage(Page):
-    element = Element( Locators.ID, "test_id" )
+    element = Element(Locators.ID, "test_id")
+
 
 class IFrameTest(unittest.TestCase):
     def setUp(self):
         self.driver = get_driver()
+
     def test_basic_po_with_frame(self):
         frame1 = """
         <html>
@@ -76,11 +82,10 @@ class IFrameTest(unittest.TestCase):
                 element.tag_name = "div"
                 element.text = "test_text"
                 driver.find_element.return_value = element
-                po = BasicPage( driver , iframe='frame')
-                self.assertEqual( "test_text",  po.element.text)
+                po = BasicPage(driver, iframe='frame')
+                self.assertEqual("test_text",  po.element.text)
                 driver.switch_to.frame.assert_called_with("frame")
                 self.assertEqual(driver.switch_to.frame.call_count, 1)
                 self.assertEqual(
                     driver.switch_to.default_content.call_count, 1
                 )
-

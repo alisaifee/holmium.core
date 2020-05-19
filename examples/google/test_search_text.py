@@ -11,7 +11,7 @@ class GoogleMain(Page):
     )
     search_results = Elements(
         Locators.CSS_SELECTOR, "div.g>div.rc", timeout=2,
-        value = lambda el : {
+        value=lambda el: {
             "link": el.find_element_by_css_selector(
                 "h3.r>a"
             ).get_attribute("href"),
@@ -19,7 +19,7 @@ class GoogleMain(Page):
         }
     )
 
-    def search ( self, query ):
+    def search(self, query):
         # self.google_buttons behaves just like a dictionary
         self.google_buttons["Google Search"].click()
         # self.search_box is now evaluated directly to a WebElement
@@ -37,7 +37,7 @@ class TextSearchTest(unittest.TestCase):
         self.assertTrue(len(self.page.search("selenium").search_results) > 0)
 
     def test_text_search_first_result(self):
-        self.page.search("selenium") # execute the page object method search
+        self.page.search("selenium")  # execute the page object method search
         self.assertEquals(
             self.page.search_results[0]["title"],
             u"Selenium - Web Browser Automation"

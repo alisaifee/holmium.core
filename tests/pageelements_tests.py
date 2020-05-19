@@ -14,7 +14,7 @@ class ElementsTest(unittest.TestCase):
             el_list_valuemapper = Elements(
                 Locators.CLASS_NAME,
                 "simple_class",
-                value = lambda el: el.find_element_by_tag_name("a").text
+                value=lambda el: el.find_element_by_tag_name("a").text
             )
             el_list_valuemapper_complex = Elements(
                 Locators.CLASS_NAME, "simple_class",
@@ -28,7 +28,7 @@ class ElementsTest(unittest.TestCase):
             first_el = Element(
                Locators.TAG_NAME,
                 "a",
-                base_element = el_list_default[0]
+                base_element=el_list_default[0]
             )
 
         uri = make_temp_page("""
@@ -49,21 +49,20 @@ class ElementsTest(unittest.TestCase):
         """)
         page = SimplePage(self.driver, uri)
         self.assertEqual([k.text for k in page.el_list_default],
-                          ["simple class el 1 element 1",
-                           "simple class el 2 element 2",
-                           "simple class el 3 element 3"])
+                         ["simple class el 1 element 1",
+                          "simple class el 2 element 2",
+                          "simple class el 3 element 3"])
         self.assertEqual(page.el_list_valuemapper,
-                          ["element 1", "element 2", "element 3"])
+                         ["element 1", "element 2", "element 3"])
         self.assertEqual(page.el_list_valuemapper_complex,
-                          [{"link": "http://el1.com/", "text": "element 1"},
-                           {"link": "http://el2.com/", "text": "element 2"},
-                           {"link": "http://el3.com/", "text": "element 3"}])
+                         [{"link": "http://el1.com/", "text": "element 1"},
+                          {"link": "http://el2.com/", "text": "element 2"},
+                          {"link": "http://el3.com/", "text": "element 3"}])
         self.assertEqual(page.first_el.text, "element 1")
-
 
     def test_missing_elements(self):
         class SimplePage(Page):
-            el_list = Elements(Locators.CLASS_NAME,"element")
+            el_list = Elements(Locators.CLASS_NAME, "element")
             el_list_wait = Elements(Locators.CLASS_NAME, "elements", timeout=1)
             el_list_only_if = Elements(
                 Locators.CLASS_NAME, "elements", timeout=1,
@@ -137,13 +136,13 @@ class ElementsTest(unittest.TestCase):
         """)
         page = SimplePage(self.driver, uri)
         self.assertEqual([k.text for k in page.el_list_default],
-                          ["simple class el 1 element 1",
-                           "simple class el 2 element 2"])
+                         ["simple class el 1 element 1",
+                          "simple class el 2 element 2"])
         self.assertEqual(page.el_list_valuemapper,
-                          ["element 1", "element 2"])
+                         ["element 1", "element 2"])
         self.assertEqual(page.el_list_valuemapper_complex,
-                          [{"link": "http://el1.com/", "text": "element 1"},
-                           {"link": "http://el2.com/", "text": "element 2"}])
+                         [{"link": "http://el1.com/", "text": "element 1"},
+                          {"link": "http://el2.com/", "text": "element 2"}])
         self.assertEqual(page.first_el.text, "element 1")
 
     def test_elements_false_filter_by(self):

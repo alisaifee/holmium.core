@@ -1,6 +1,6 @@
 import unittest
 import mock
-from  holmium.core import (
+from holmium.core import (
     Page, Element, Locators, ElementEnhancer, register_enhancer
 )
 from selenium.webdriver.support.ui import Select
@@ -28,6 +28,7 @@ class ElementEnhancerTest(unittest.TestCase):
     def test_custom_enhancer(self):
         class DivEnhancer(ElementEnhancer):
             __TAG__ = "div"
+
             def get_class(self):
                 return self.element.get_attribute("class")
 
@@ -45,10 +46,10 @@ class ElementEnhancerTest(unittest.TestCase):
 
         self.assertEquals(p.id_el.get_class(), "div-class")
 
-
     def test_register(self):
         class BadCls:
             pass
+
         class Almost(ElementEnhancer):
             pass
 

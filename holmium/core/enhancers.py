@@ -91,5 +91,3 @@ def get_enhancers():
     returns the global registered enhancers
     """
     return REGISTERED_ENHANCERS
-
-

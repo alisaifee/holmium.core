@@ -1,3 +1,3 @@
 config = {
-        "tenv" : {"tvar": 1}
+        "tenv": {"tvar": 1}
 }

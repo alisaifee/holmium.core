@@ -16,6 +16,7 @@ def runtc(env, validations):
     try:
         _pre_env = dict(os.environ)
         os.environ.update(env)
+
         class t1(TestCase):
             def runTest(self):
                 self.driver.get("http://nowhere.org")
@@ -30,10 +31,12 @@ def runtc(env, validations):
     finally:
         os.environ = _pre_env
 
+
 def runtc2drivers(env, validations):
     try:
         _pre_env = dict(os.environ)
         os.environ.update(env)
+
         class t2(TestCase):
             def runTest(self):
                 self.driver.get("http://nowhere.org")
@@ -50,6 +53,7 @@ def runtc2drivers(env, validations):
     finally:
         os.environ = _pre_env
 
+
 class TestCaseTests(unittest.TestCase):
     def setUp(self):
         if "driver" in ENV:
@@ -61,7 +65,7 @@ class TestCaseTests(unittest.TestCase):
             build_mock_mapping("phantomjs")
         ):
             runtc(
-                {"HO_BROWSER":"phantomjs"}, [lambda s:s.driver!=None]
+                {"HO_BROWSER": "phantomjs"}, [lambda s:s.driver != None]
             )
 
     def test_set_browser_phantom(self):
@@ -70,9 +74,9 @@ class TestCaseTests(unittest.TestCase):
             build_mock_mapping("phantomjs")
         ):
             runtc(
-                {"HO_BROWSER":"phantomjs"},
+                {"HO_BROWSER": "phantomjs"},
                 [
-                    lambda s:s.driver!=None,
+                    lambda s:s.driver != None,
                     lambda s:s.driver.name == "phantomjs"
                 ]
             )
@@ -83,8 +87,8 @@ class TestCaseTests(unittest.TestCase):
             build_mock_mapping("remote")
         ):
             runtc(
-                {"HO_BROWSER":"phantomjs", "HO_REMOTE":"http://lala.com"},
-                [lambda s:s.driver!=None, lambda s:s.driver.name == "remote"]
+                {"HO_BROWSER": "phantomjs", "HO_REMOTE": "http://lala.com"},
+                [lambda s:s.driver != None, lambda s:s.driver.name == "remote"]
             )
 
     def test_auto_config_json(self):
@@ -93,12 +97,12 @@ class TestCaseTests(unittest.TestCase):
                 'holmium.core.testcase.BROWSER_MAPPING',
                 build_mock_mapping("phantomjs")
             ):
-                isfile.side_effect = lambda name:name.find("json")>0
+                isfile.side_effect = lambda name: name.find("json") > 0
                 with mock_open() as op:
                     op.return_value.read.return_value = '{"default": {"test": 1}}'  # noqa: E501
                     runtc(
-                        {"HO_BROWSER":"phantomjs"},
-                        [lambda s:s.config["test"]==1]
+                        {"HO_BROWSER": "phantomjs"},
+                        [lambda s:s.config["test"] == 1]
                     )
 
     def test_auto_config_py(self):
@@ -107,14 +111,14 @@ class TestCaseTests(unittest.TestCase):
                 'holmium.core.testcase.BROWSER_MAPPING',
                 build_mock_mapping("phantomjs")
             ):
-                isfile.side_effect = lambda name:name.find("py")>0
+                isfile.side_effect = lambda name: name.find("py") > 0
                 with mock.patch("imp.load_source") as load_source:
                     m_config = mock.Mock()
-                    m_config.config = {"default":{"test":1}}
+                    m_config.config = {"default": {"test": 1}}
                     load_source.return_value = m_config
                     runtc(
-                        {"HO_BROWSER":"phantomjs"},
-                        [lambda s:s.config["test"]==1]
+                        {"HO_BROWSER": "phantomjs"},
+                        [lambda s:s.config["test"] == 1]
                     )
 
     def test_set_useragent(self):
@@ -123,7 +127,7 @@ class TestCaseTests(unittest.TestCase):
             build_mock_mapping("firefox")
         ):
             runtc(
-                {"HO_BROWSER":"firefox", "HO_USERAGENT":"holmium.core"},
+                {"HO_BROWSER": "firefox", "HO_USERAGENT": "holmium.core"},
                 []
             )
             call_args = holmium.core.testcase.BROWSER_MAPPING["firefox"].call_args  # noqa: E501
@@ -136,7 +140,7 @@ class TestCaseTests(unittest.TestCase):
     def test_invalid_browser(self):
         self.assertRaises(
             SkipTest, runtc,
-            {"HO_BROWSER":"direfox", "HO_BROWSER_PER_TEST":"1"}, []
+            {"HO_BROWSER": "direfox", "HO_BROWSER_PER_TEST": "1"}, []
         )
 
     def test_browser_per_test(self):
@@ -144,7 +148,7 @@ class TestCaseTests(unittest.TestCase):
                 'holmium.core.testcase.BROWSER_MAPPING',
                 build_mock_mapping("firefox")
         ):
-            runtc({"HO_BROWSER":"firefox", "HO_BROWSER_PER_TEST":"1"}, [])
+            runtc({"HO_BROWSER": "firefox", "HO_BROWSER_PER_TEST": "1"}, [])
             self.assertEquals(
                 holmium.core.testcase.BROWSER_MAPPING["firefox"].return_value.quit.call_count, 1  # noqa: E501
             )
@@ -153,7 +157,7 @@ class TestCaseTests(unittest.TestCase):
                 'holmium.core.testcase.BROWSER_MAPPING',
                 build_mock_mapping("firefox")
         ):
-            runtc({"HO_BROWSER":"firefox", "HO_BROWSER_PER_TEST":"0"}, [])
+            runtc({"HO_BROWSER": "firefox", "HO_BROWSER_PER_TEST": "0"}, [])
             self.assertEquals(
                 holmium.core.testcase.BROWSER_MAPPING["firefox"].return_value.quit.call_count,  # noqa: E501
                 0
@@ -165,7 +169,7 @@ class TestCaseTests(unittest.TestCase):
             build_mock_mapping("firefox")
         ):
             runtc2drivers(
-                {"HO_BROWSER":"firefox", "HO_BROWSER_PER_TEST":"0"},
+                {"HO_BROWSER": "firefox", "HO_BROWSER_PER_TEST": "0"},
                 []
             )
             self.assertEquals(
@@ -178,7 +182,7 @@ class TestCaseTests(unittest.TestCase):
             build_mock_mapping("firefox")
         ):
             runtc2drivers(
-                {"HO_BROWSER":"firefox", "HO_BROWSER_PER_TEST":"1"}, []
+                {"HO_BROWSER": "firefox", "HO_BROWSER_PER_TEST": "1"}, []
             )
             self.assertEquals(
                 holmium.core.testcase.BROWSER_MAPPING["firefox"].call_count,
@@ -188,4 +192,3 @@ class TestCaseTests(unittest.TestCase):
                 holmium.core.testcase.BROWSER_MAPPING["firefox"].return_value.quit.call_count,  # noqa: E501
                 2
             )
-
