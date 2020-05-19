@@ -1,3 +1,4 @@
 -r test.txt
+flake8
 python-coveralls
 unittest2; python_version < '2.7'
