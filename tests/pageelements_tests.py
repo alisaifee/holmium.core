@@ -26,7 +26,7 @@ class ElementsTest(unittest.TestCase):
                 }
             )
             first_el = Element(
-               Locators.TAG_NAME,
+                Locators.TAG_NAME,
                 "a",
                 base_element=el_list_default[0]
             )

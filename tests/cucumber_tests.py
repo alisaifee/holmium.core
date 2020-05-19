@@ -53,17 +53,17 @@ class TestFresherIntegration(PluginTester, unittest.TestCase):
         assert "FAILED (errors=8)" in self.output, self.output
         assert "'moo'" in self.output, self.output
         assert (
-           "TestPage does not contain an element named not_existent"
-           in self.output
+            "TestPage does not contain an element named not_existent"
+            in self.output
         )
         assert (
-           "page object FooPage not found. did you import it?"
-           in self.output
+            "page object FooPage not found. did you import it?"
+            in self.output
         )
         assert "'TestSection' object has no attribute 'moo'" in self.output
         assert (
-           "page object TestPage does not contain an element named missing_section"  # noqa: E501
-           in self.output
+            "page object TestPage does not contain an element named missing_section"  # noqa: E501
+            in self.output
         )
         assert (
             str(self.output).count(

@@ -38,12 +38,14 @@ class ConfigTests(unittest.TestCase):
         self.assertEqual(cfg["username"], "productionuser")
 
     def test_dict_config(self):
-        dct_cfg = {"production":
+        dct_cfg = {
+            "production":
                 {"t2": "{{default['t2']}}", "t3": 4},
             "development":
                 {"t2": u"{{production['t2']}}"},
             "default":
-            {"t1": 1, "t2": 2, "t3": [1, 2, 3]}}
+                {"t1": 1, "t2": 2, "t3": [1, 2, 3]}
+        }
         cfg = Config(dct_cfg)
         self.assertEqual(cfg["t1"], 1)
         self.assertEqual(cfg["t2"], u"2")
@@ -64,11 +66,11 @@ class ConfigTests(unittest.TestCase):
 
     def test_config_defaults_only(self):
         config = {
-                "default": {
-                    "base_url": "http://{{holmium.environment}}:3000",
-                    "registration_url": "{{default.base_url}}/users/sign_up",
-                }
+            "default": {
+                "base_url": "http://{{holmium.environment}}:3000",
+                "registration_url": "{{default.base_url}}/users/sign_up",
             }
+        }
         cfg = Config(config)
         self.assertEqual(
             cfg["registration_url"], u"http://development:3000/users/sign_up"
@@ -76,17 +78,17 @@ class ConfigTests(unittest.TestCase):
 
     def test_config_default_reference(self):
         config = {
-                "default": {
-                    "base_url": "http://{{holmium.environment}}:3000",
-                    "registration_url": "{{base_url}}/users/sign_up",
-                    "random_var": "{{env_random}}"
-                },
-                "production": {
-                    "base_url": "http://awesomesite.com",
-                    "env_random": "1",
-                    "extended_random": "random_{{random_var}}"
-                }
+            "default": {
+                "base_url": "http://{{holmium.environment}}:3000",
+                "registration_url": "{{base_url}}/users/sign_up",
+                "random_var": "{{env_random}}"
+            },
+            "production": {
+                "base_url": "http://awesomesite.com",
+                "env_random": "1",
+                "extended_random": "random_{{random_var}}"
             }
+        }
         holmium_vars = {"holmium": {"environment": "production"}}
         cfg = Config(config, holmium_vars)
         self.assertEqual(

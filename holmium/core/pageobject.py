@@ -323,8 +323,8 @@ class ElementGetter(object):
                     timeout & only_if explicit wait.
                     """
                     return (
-                        _meth(self.locator_type, self.query_string) and
-                        (BaseCondition.get_current() or self.only_if)(
+                        _meth(self.locator_type, self.query_string)
+                        and (BaseCondition.get_current() or self.only_if)(
                             _meth(self.locator_type, self.query_string)
                         )
                     )
