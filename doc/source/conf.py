@@ -8,8 +8,7 @@ import holmium.core
 extensions = [
     'sphinx.ext.autodoc', 'sphinx.ext.autosummary',
     'sphinx.ext.doctest', 'sphinx.ext.intersphinx', 'sphinx.ext.todo',
-    'sphinx.ext.pngmath', 'sphinx.ext.ifconfig', 'sphinx.ext.viewcode',
-    'sphinxcontrib.email'
+    'sphinx.ext.ifconfig', 'sphinx.ext.viewcode',
 ]
 templates_path = ['_templates']
 source_suffix = '.rst'
@@ -40,6 +39,6 @@ texinfo_documents = [
 ]
 intersphinx_mapping = {
     'http://docs.python.org/': None,
-    "http://selenium-python.readthedocs.org/en/latest":None,
+    "http://selenium-python.readthedocs.org/":None,
     "http://jinja.pocoo.org/docs/" : None
 }

@@ -8,8 +8,6 @@ from .testcase import TestCase
 from .pageobject import Locators, Page, Section, Sections, Element, Elements
 from .pageobject import ElementMap
 from .noseplugin import HolmiumNose
-from .deprecated import PageObject, PageElement, PageElements
-from .deprecated import PageElementMap, HolmiumTestCase
 from .enhancers import register_enhancer, get_enhancers
 from .enhancers import reset_enhancers, ElementEnhancer
 
@@ -21,11 +19,9 @@ del get_versions
 
 __all__ = [
     "Config", "log",
-    "TestCase", "HolmiumNose",
+    "HolmiumTestCase", "TestCase", "HolmiumNose",
     "Locators",
     "Page", "Section", "Sections",
-    "PageObject", "PageElement", "PageElements",
-    "PageElementMap", "HolmiumTestCase",
     "Element", "Elements", "ElementMap",
     "register_enhancer", "get_enhancers", "reset_enhancers",
     "ElementEnhancer"

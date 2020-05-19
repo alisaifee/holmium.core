@@ -37,14 +37,21 @@ JSON
 .. code-block:: json
 
     {
-            'default': {  'path':"{{PATH}}"
-                        , 'login_url': '{{url}}/{{holmium.environment}}/login'}
-                        , 'username' : '{{holmium.environment}}user'}
-            ,'production': {'url':'http://prod.com'
-                            ,'password': 'sekret'}
-            ,'development': {'url':'http://dev.com'
-                            ,'password': 'password'}
+      "default": {
+        "path": "{{PATH}}",
+        "login_url": "{{url}}/{{holmium.environment}}/login",
+        "username": "{{holmium.environment}}user"
+      },
+      "production": {
+        "url": "http://prod.com",
+        "password": "sekret"
+      },
+      "development": {
+        "url": "http://dev.com",
+        "password": "password"
+      }
     }
+
 
 Python
 
@@ -52,13 +59,19 @@ Python
 
     config = {
         {
-            'default': { 'path':"{{PATH}}"
-                        , 'login_url': '{{url}}/{{holmium.environment}}/login'}
-                        , 'username' : '{{holmium.environment}}user'}
-            ,'production': {'url':'http://prod.com'
-                            , 'password': 'sekret'}
-            ,'development': {'url':'http://dev.com'
-                            , 'password': 'password'}
+           'default': {
+                'path':"{{PATH}}",
+                'login_url': '{{url}}/{{holmium.environment}}/login'},
+                'username' : '{{holmium.environment}}user'
+           },
+           'production': {
+               'url':'http://prod.com',
+               'password': 'sekret'
+           },
+           'development': {
+               'url':'http://dev.com',
+               'password': 'password'
+           }
         }
     }
 

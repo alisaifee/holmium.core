@@ -1,2 +1,1 @@
 -r main.txt
-sphinxcontrib-email 
