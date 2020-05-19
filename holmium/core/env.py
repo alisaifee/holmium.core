@@ -23,8 +23,8 @@ class LazyWebDriver(object):
         self._instance = None
 
     def __getattribute__(self, item):
-        safe_getter = lambda i: object.__getattribute__(self, i)
-        safe_setter = lambda i, v: object.__setattr__(self, i, v)
+        def safe_getter(i): return object.__getattribute__(self, i)
+        def safe_setter(i, v): return object.__setattr__(self, i, v)
         try:
             return object.__getattribute__(self, item)
         except AttributeError:

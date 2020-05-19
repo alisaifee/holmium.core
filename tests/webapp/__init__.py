@@ -95,7 +95,7 @@ def requires_login(fn):
 
 
 def validate_login(email, password):
-    flash_and_back = lambda msg: flash(msg, "warning") or redirect(
+    def flash_and_back(msg): return flash(msg, "warning") or redirect(
         url_for("test.login")
     )
     if not email:
@@ -123,7 +123,7 @@ def validate_login(email, password):
 
 
 def validate_signup(email, password):
-    flash_and_back = lambda msg: flash(msg, "warning") or redirect(
+    def flash_and_back(msg): return flash(msg, "warning") or redirect(
         url_for("test.signup")
     )
     if "current_user" in session:
