@@ -67,6 +67,7 @@ def create_app():
     app.config["DEBUG"] = True
     app.config["DATABASE"] = ":memory:"
     app.config["SECRET_KEY"] = "wow"
+    app.before_first_request(db.create_db)
     db.init_app(app)
     return app
 

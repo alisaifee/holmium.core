@@ -18,7 +18,6 @@ class LiveTest(LiveServerTestCase):
 
     def setUp(self):
         super(LiveTest, self).setUp()
-        webapp.db.create_db()
 
 
 @strict()
