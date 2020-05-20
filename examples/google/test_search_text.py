@@ -1,6 +1,6 @@
 import unittest
 import selenium.webdriver
-from holmium.core import Page, Element, Elements, Locators, ElementMap
+from holmium.core import Page, Element, Elements, Locators
 
 
 class GoogleMain(Page):
@@ -32,7 +32,8 @@ class TextSearchTest(unittest.TestCase):
         )
 
     def test_text_search_first_result(self):
-        self.page.search("selenium  testing")  # execute the page object method search
+        # execute the page object method search
+        self.page.search("selenium  testing")
         self.assertEquals(
             self.page.search_results[0]["title"],
             "Selenium"
