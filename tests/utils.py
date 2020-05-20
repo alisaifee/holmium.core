@@ -21,11 +21,11 @@ def get_driver():
     if not test_driver:
         options = webdriver.ChromeOptions()
         options.add_argument('headless')
-        chrome = webdriver.Chrome(chrome_options=options)
-        atexit.register(chrome.quit)
-    chrome.delete_all_cookies()
-    chrome.switch_to.default_content()
-    return chrome
+        test_driver = webdriver.Chrome(chrome_options=options)
+        atexit.register(test_driver.quit)
+    test_driver.delete_all_cookies()
+    test_driver.switch_to.default_content()
+    return test_driver
 
 
 def make_temp_page(src):
