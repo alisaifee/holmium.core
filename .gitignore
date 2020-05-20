@@ -7,3 +7,4 @@ cover/*
 .idea
 htmlcov
 *egg-info*
+build/
