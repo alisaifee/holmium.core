@@ -247,13 +247,16 @@ class TestNoDriver(PluginTester, unittest.TestCase):
 class TestCapabilitiesFromFile(PluginTester, unittest.TestCase):
     activate = "--with-holmium"
     args = [
-        '--holmium-browser=phantomjs',
+        '--holmium-browser=chrome',
         "--holmium-capabilities=./tests/support/captest/caps.json"
     ]
     suitepath = os.path.join(support, 'captest')
     plugins = [holmium.core.HolmiumNose()]
 
     def setUp(self):
+        self.old_mapping = holmium.core.noseplugin.BROWSER_MAPPING
+        mock_browsers = build_mock_mapping("chrome")
+        holmium.core.noseplugin.BROWSER_MAPPING.update(mock_browsers)
         ENV.clear()
         super(TestCapabilitiesFromFile, self).setUp()
 
