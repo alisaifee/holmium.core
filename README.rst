@@ -40,23 +40,23 @@ similarly to the following code block (using seleniumhq.org).
 
         def test_header_links(self):
             self.driver.get(self.url)
-            elements = self.driver.find_elements_by_css_selector("div#header ul>li")
+            elements = self.driver.find_elements_by_css_selector("nav>a")
             self.assertTrue(len(elements) > 0)
             for element in elements:
                 self.assertTrue(element.is_displayed())
-            expected_link_list = ["Projects", "Download", "Documentation",
-                                  "Support", "About"]
+            expected_link_list = ["Projects", "Downloads", "Documentation",
+                                  "Support", "Blog"]
             actual_link_list = [el.text for el in elements]
             self.assertEquals(sorted(expected_link_list), sorted(actual_link_list))
 
-        def test_about_selenium_heading(self):
+        def test_projects_selenium_heading(self):
             self.driver.get(self.url)
-            about_link = self.driver.find_element_by_css_selector(
-                "div#header ul>li#menu_about>a"
+            projects_link = self.driver.find_element_by_css_selector(
+                "nav>a[href='./projects']"
             )
-            about_link.click()
-            heading = self.driver.find_element_by_css_selector("#mainContent>h2")
-            self.assertEquals(heading.text, "About Selenium")
+            projects_link.click()
+            heading = self.driver.find_element_by_css_selector("section.hero>h1")
+            self.assertEquals(heading.text, "Selenium Projects")
 
         def tearDown(self):
             if self.driver:
@@ -94,13 +94,8 @@ Lets take the above test case for a spin with holmium. Take note of the followin
 
 
     class SeleniumHQPage(Page):
-        nav_links = ElementMap(Locators.CSS_SELECTOR
-            , "div#header ul>li"
-            , key=lambda element: element.find_element_by_tag_name("a").text
-            , value=lambda element: element.find_element_by_tag_name("a")
-        )
-
-        header_text = Element(Locators.CSS_SELECTOR, "#mainContent>h2")
+        nav_links = ElementMap(Locators.CSS_SELECTOR, "nav>a")
+        header_text = Element(Locators.CSS_SELECTOR, "section.hero>h1")
 
 
     class SeleniumHQTest(TestCase):
@@ -112,17 +107,21 @@ Lets take the above test case for a spin with holmium. Take note of the followin
             self.assertElementsDisplayed(self.page.nav_links)
             self.assertEquals(
                 sorted(
-                    ["Projects", "Download", "Documentation", "Support", "About"]
+                    ["Projects", "Downloads", "Documentation", "Support", "Blog"]
                 )
                 , sorted(self.page.nav_links.keys()))
 
-        def test_about_selenium_heading(self):
-            self.page.nav_links["About"].click()
-            self.assertElementTextEqual(self.page.header_text, "About Selenium")
+        def test_projects_selenium_heading(self):
+            self.page.nav_links["Projects"].click()
+            self.assertElementTextEqual(
+                self.page.header_text,
+                "Selenium Projects"
+            )
 
 
     if __name__ == "__main__":
         unittest.main()
+
 
 Which can then be executed in a few different ways as shown below.
 
