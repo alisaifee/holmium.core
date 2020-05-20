@@ -1,7 +1,7 @@
 .. _PageObjects: http://code.google.com/p/selenium/wiki/PageObjects
 .. _Selenium: http://www.seleniumhq.org/
-.. |travis-ci| image:: https://img.shields.io/travis/alisaifee/holmium.core/master.svg?style=flat-square
-    :target: https://travis-ci.org/#!/alisaifee/holmium.core?branch=master
+.. |ci| image:: https://github.com/alisaifee/holmium.core/workflows/CI/badge.svg?branch=master
+    :target: https://github.com/alisaifee/holmium.core/actions?query=branch%3Amaster+workflow%3ACI
 .. |coveralls| image:: https://img.shields.io/coveralls/alisaifee/holmium.core/master.svg?style=flat-square
     :target: https://coveralls.io/r/alisaifee/holmium.core?branch=master
 .. |license| image:: https://img.shields.io/pypi/l/holmium.core.svg?style=flat-square
@@ -15,7 +15,7 @@
 ************
 holmium.core
 ************
-|travis-ci| |coveralls| |pypi| |docs| |license|
+|ci| |coveralls| |pypi| |docs| |license|
 
 
 ************
