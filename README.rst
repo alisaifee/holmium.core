@@ -8,14 +8,14 @@
     :target: https://pypi.python.org/pypi/holmium.core
 .. |pypi| image:: https://img.shields.io/pypi/v/holmium.core.svg
     :target: https://pypi.python.org/pypi/holmium.core
-.. |downloads| image:: https://img.shields.io/pypi/dm/holmium.core.svg
-    :target: https://pypi.python.org/pypi/holmium.core
+.. |docs| image:: https://readthedocs.org/projects/holmiumcore/badge
+    :target: https://holmiumcore.readthedocs.org
 
 
 ************
 holmium.core
 ************
-|travis-ci| |coveralls| |pypi| |downloads| |license|
+|travis-ci| |coveralls| |pypi| |docs| |license|
 
 
 ************
