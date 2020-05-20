@@ -33,7 +33,6 @@ def make_temp_page(src):
     fh = open(f, "w")
     fh.write(src.replace("\n", ""))
     fh.close()
-    print(f)
     atexit.register(lambda: os.remove(f))
     return "file://%s" % f
 
