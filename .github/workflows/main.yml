@@ -33,4 +33,9 @@ jobs:
     - name: Tests
       run: |
         nosetests tests --with-cov
+    - name: Post Coverage
+      env:
+        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+      run: |
+        coveralls
 
