@@ -1,3 +1,2 @@
--r test.txt
-flake8
+-r dev.txt
 coveralls

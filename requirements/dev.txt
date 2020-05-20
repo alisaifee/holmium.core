@@ -1,0 +1,5 @@
+-r test.txt
+flake8
+keyring
+twine
+wheel
