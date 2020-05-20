@@ -1,8 +1,7 @@
 [run]
-include =
-    **/holmium/*
 omit =
     /*/holmium/*/_version*
+    /*/tests/*
     setup.py
     versioneer.py
 
