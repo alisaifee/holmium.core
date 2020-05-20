@@ -3,6 +3,7 @@ import unittest
 import selenium.webdriver
 
 from holmium.core import Page, Element, Locators, ElementMap
+from holmium.core.conditions import VISIBLE
 
 
 class WikiPedia(Page):
@@ -15,7 +16,9 @@ class WikiPedia(Page):
         Locators.CSS_SELECTOR, "input#searchInput"
     )
     article_title = Element(
-        Locators.CSS_SELECTOR, "h1#firstHeading"
+        Locators.CSS_SELECTOR, "h1#firstHeading",
+        only_if=VISIBLE(),
+        timeout=5
     )
     search_results = ElementMap(
         Locators.CSS_SELECTOR, "div.mw-search-result-heading>a"
