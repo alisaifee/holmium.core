@@ -1,8 +1,10 @@
 [run]
-include = 
+include =
     **/holmium/*
 omit =
     /*/holmium/*/_version*
+    setup.py
+    versioneer.py
 
 [report]
 exclude_lines =
