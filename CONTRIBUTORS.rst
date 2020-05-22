@@ -1,4 +1,4 @@
-* `Sajnikanth Suriyanarayanan <https://github.com/sajnikanth>_`, Testing and initial integration and evaluation.
+* `Sajnikanth Suriyanarayanan <https://github.com/sajnikanth>`_, Testing and initial integration and evaluation.
 * `Wilsen Davil`, original Holmium logo
 * `Alejandro Perez`, Section(s) design.
 * `Johan Gozali`, Evaluation and help designing Facets
