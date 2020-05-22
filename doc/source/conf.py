@@ -17,6 +17,12 @@ extensions = [
     'sphinx.ext.doctest', 'sphinx.ext.intersphinx', 'sphinx.ext.todo',
     'sphinx.ext.ifconfig', 'sphinx.ext.viewcode',
 ]
+
+html_theme_options = {
+    'logo_only': True,
+}
+
+
 templates_path = ['_templates']
 source_suffix = '.rst'
 master_doc = 'index'
