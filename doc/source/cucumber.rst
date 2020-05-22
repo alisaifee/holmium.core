@@ -5,7 +5,7 @@
 ***********************
 Cucumber style Features
 ***********************
-.. automodule:: holmium.core
+.. currentmodule:: holmium.core
 
 If cucumber style feature definitions are your cup of tea, holmium provides integration
 with `fresher`_. The following features are enabled if both nose plugins are in use
