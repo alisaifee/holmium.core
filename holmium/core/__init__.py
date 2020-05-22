@@ -19,7 +19,7 @@ del get_versions
 
 __all__ = [
     "Config", "log",
-    "HolmiumTestCase", "TestCase", "HolmiumNose",
+    "TestCase", "HolmiumNose",
     "Locators",
     "Page", "Section", "Sections",
     "Element", "Elements", "ElementMap",
