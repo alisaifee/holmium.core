@@ -157,27 +157,36 @@ if ``HO_ENV`` or ``--holmium-env`` are ``development``:
         sub_dict[key] = value
 
 
-BROWSER_MAPPING = {"firefox": webdriver.Firefox,
-                   "chrome": webdriver.Chrome,
-                   "safari": webdriver.Safari,
-                   "ie": webdriver.Ie,
-                   "opera": webdriver.Opera,
-                   "remote": webdriver.Remote,
-                   "phantomjs": webdriver.PhantomJS,
-                   "iphone": webdriver.Remote,
-                   "ipad": webdriver.Remote,
-                   "android": webdriver.Remote}
+BROWSER_MAPPING = {
+    "android": webdriver.Android,
+    "blackberry": webdriver.BlackBerry,
+    "chrome": webdriver.Chrome,
+    "edge": webdriver.Edge,
+    "firefox": webdriver.Firefox,
+    "ie": webdriver.Ie,
+    "ipad": webdriver.Remote,
+    "iphone": webdriver.Remote,
+    "opera": webdriver.Opera,
+    "phantomjs": webdriver.PhantomJS,
+    "remote": webdriver.Remote,
+    "safari": webdriver.Safari,
+    "webkitgtk": webdriver.WebKitGTK,
+}
 
 #:
-CAPABILITIES = {"firefox": webdriver.DesiredCapabilities.FIREFOX,
-                "chrome": webdriver.DesiredCapabilities.CHROME,
-                "safari": webdriver.DesiredCapabilities.SAFARI,
-                "ie": webdriver.DesiredCapabilities.INTERNETEXPLORER,
-                "opera": webdriver.DesiredCapabilities.OPERA,
-                "phantomjs": webdriver.DesiredCapabilities.PHANTOMJS,
-                "iphone": webdriver.DesiredCapabilities.IPHONE,
-                "ipad": webdriver.DesiredCapabilities.IPAD,
-                "android": webdriver.DesiredCapabilities.ANDROID}
+CAPABILITIES = {
+    "android": webdriver.DesiredCapabilities.ANDROID,
+    "chrome": webdriver.DesiredCapabilities.CHROME,
+    "edge": webdriver.DesiredCapabilities.EDGE,
+    "firefox": webdriver.DesiredCapabilities.FIREFOX,
+    "ie": webdriver.DesiredCapabilities.INTERNETEXPLORER,
+    "ipad": webdriver.DesiredCapabilities.IPAD,
+    "iphone": webdriver.DesiredCapabilities.IPHONE,
+    "opera": webdriver.DesiredCapabilities.OPERA,
+    "phantomjs": webdriver.DesiredCapabilities.PHANTOMJS,
+    "safari": webdriver.DesiredCapabilities.SAFARI,
+    "webkitgtk": webdriver.DesiredCapabilities.WEBKITGTK,
+}
 
 
 class HolmiumConfig(dict):
