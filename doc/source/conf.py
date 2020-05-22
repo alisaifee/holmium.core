@@ -29,6 +29,7 @@ pygments_style = 'sphinx'
 html_title = "holmium"
 html_static_path = ['_static']
 htmlhelp_basename = 'holmiumcoredoc'
+html_logo = 'holmium-logo.png'
 
 latex_documents = [
   ('index', 'holmiumcore.tex', u'holmium.core Documentation',
