@@ -26,6 +26,11 @@ if hasattr(collections, "OrderedDict"):
 else:
     from ordereddict import OrderedDict  # pragma: no cover
 
+try:
+    from collections.abc import Sequence  # pragma: no cover
+except ImportError:
+    from collections import Sequence  # pragma: no cover
+
 from .facets import Faceted, ElementFacet, CopyOnCreateFacetCollectionMeta
 from .logger import log
 
@@ -628,7 +633,7 @@ class Section(Faceted):
         self.__root_val = val
 
 
-class Sections(Section, collections.Sequence):
+class Sections(Section, Sequence):
     """
     Base class for an Iterable view of a collection of
     :class:`holmium.core.Section` objects.
