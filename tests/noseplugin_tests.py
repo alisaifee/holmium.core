@@ -8,6 +8,7 @@ from nose.plugins.skip import Skip
 import holmium.core
 import holmium.core.noseplugin
 from holmium.core.env import ENV
+
 from .utils import build_mock_mapping
 
 support = os.path.join(os.path.dirname(__file__), "support")
@@ -16,21 +17,21 @@ support = os.path.join(os.path.dirname(__file__), "support")
 class TestOptionsWithFirefox(PluginTester, unittest.TestCase):
     activate = "--with-holmium"
     args = [
-        '--holmium-environment=staging', '--holmium-browser=firefox',
+        "--holmium-environment=staging",
+        "--holmium-browser=firefox",
         '--holmium-useragent="test useragent"',
-        '--holmium-remote=http://nowhere.org',
+        "--holmium-remote=http://nowhere.org",
         "--holmium-capabilities=%s" % json.dumps({"foo": 1}),
-        "--holmium-ignore-ssl-errors", "--holmium-browser-per-test"
+        "--holmium-ignore-ssl-errors",
+        "--holmium-browser-per-test",
     ]
-    suitepath = os.path.join(support, 'options')
+    suitepath = os.path.join(support, "options")
     plugins = [holmium.core.HolmiumNose()]
 
     def setUp(self):
         self.old_mapping = holmium.core.noseplugin.BROWSER_MAPPING
         holmium.core.noseplugin.BROWSER_MAPPING = build_mock_mapping("remote")
-        holmium.core.noseplugin.BROWSER_MAPPING.update(
-            build_mock_mapping("firefox")
-        )
+        holmium.core.noseplugin.BROWSER_MAPPING.update(build_mock_mapping("firefox"))
         ENV.clear()
         super(TestOptionsWithFirefox, self).setUp()
 
@@ -45,22 +46,21 @@ class TestOptionsWithFirefox(PluginTester, unittest.TestCase):
 class TestOptionsWithChrome(PluginTester, unittest.TestCase):
     activate = "--with-holmium"
     args = [
-        '--holmium-environment=staging',
-        '--holmium-browser=chrome',
+        "--holmium-environment=staging",
+        "--holmium-browser=chrome",
         '--holmium-useragent="test useragent"',
-        '--holmium-remote=http://nowhere.org',
+        "--holmium-remote=http://nowhere.org",
         "--holmium-capabilities=%s" % json.dumps({"foo": 1}),
-        "--holmium-ignore-ssl-errors", "--holmium-browser-per-test"
+        "--holmium-ignore-ssl-errors",
+        "--holmium-browser-per-test",
     ]
-    suitepath = os.path.join(support, 'options')
+    suitepath = os.path.join(support, "options")
     plugins = [holmium.core.HolmiumNose()]
 
     def setUp(self):
         self.old_mapping = holmium.core.noseplugin.BROWSER_MAPPING
         holmium.core.noseplugin.BROWSER_MAPPING = build_mock_mapping("remote")
-        holmium.core.noseplugin.BROWSER_MAPPING.update(
-            build_mock_mapping("chrome")
-        )
+        holmium.core.noseplugin.BROWSER_MAPPING.update(build_mock_mapping("chrome"))
         ENV.clear()
         super(TestOptionsWithChrome, self).setUp()
 
@@ -74,15 +74,13 @@ class TestOptionsWithChrome(PluginTester, unittest.TestCase):
 
 class TestConfigPy(PluginTester, unittest.TestCase):
     activate = "--with-holmium"
-    args = ['--holmium-environment=tenv', '--holmium-browser=chrome']
-    suitepath = os.path.join(support, 'config_py')
+    args = ["--holmium-environment=tenv", "--holmium-browser=chrome"]
+    suitepath = os.path.join(support, "config_py")
     plugins = [holmium.core.HolmiumNose()]
 
     def setUp(self):
         self.old_mapping = holmium.core.noseplugin.BROWSER_MAPPING
-        holmium.core.noseplugin.BROWSER_MAPPING.update(
-            build_mock_mapping("chrome")
-        )
+        holmium.core.noseplugin.BROWSER_MAPPING.update(build_mock_mapping("chrome"))
         ENV.clear()
         super(TestConfigPy, self).setUp()
 
@@ -96,15 +94,13 @@ class TestConfigPy(PluginTester, unittest.TestCase):
 
 class TestConfigJson(PluginTester, unittest.TestCase):
     activate = "--with-holmium"
-    args = ['--holmium-environment=tenv', '--holmium-browser=chrome']
-    suitepath = os.path.join(support, 'config_json')
+    args = ["--holmium-environment=tenv", "--holmium-browser=chrome"]
+    suitepath = os.path.join(support, "config_json")
     plugins = [holmium.core.HolmiumNose()]
 
     def setUp(self):
         self.old_mapping = holmium.core.noseplugin.BROWSER_MAPPING
-        holmium.core.noseplugin.BROWSER_MAPPING.update(
-            build_mock_mapping("chrome")
-        )
+        holmium.core.noseplugin.BROWSER_MAPPING.update(build_mock_mapping("chrome"))
         ENV.clear()
         super(TestConfigJson, self).setUp()
 
@@ -118,15 +114,13 @@ class TestConfigJson(PluginTester, unittest.TestCase):
 
 class TestConfigBad(PluginTester, unittest.TestCase):
     activate = "--with-holmium"
-    args = ['--holmium-environment=tenv', '--holmium-browser=chrome']
-    suitepath = os.path.join(support, 'config_bad')
+    args = ["--holmium-environment=tenv", "--holmium-browser=chrome"]
+    suitepath = os.path.join(support, "config_bad")
     plugins = [holmium.core.HolmiumNose()]
 
     def setUp(self):
         self.old_mapping = holmium.core.noseplugin.BROWSER_MAPPING
-        holmium.core.noseplugin.BROWSER_MAPPING.update(
-            build_mock_mapping("chrome")
-        )
+        holmium.core.noseplugin.BROWSER_MAPPING.update(build_mock_mapping("chrome"))
         ENV.clear()
         super(TestConfigBad, self).setUp()
 
@@ -140,10 +134,11 @@ class TestConfigBad(PluginTester, unittest.TestCase):
 class TestMultipleDriversWithBrowserPerTest(PluginTester, unittest.TestCase):
     activate = "--with-holmium"
     args = [
-        '--holmium-environment=tenv', '--holmium-browser=chrome',
-        '--holmium-browser-per-test'
+        "--holmium-environment=tenv",
+        "--holmium-browser=chrome",
+        "--holmium-browser-per-test",
     ]
-    suitepath = os.path.join(support, 'multiple_drivers')
+    suitepath = os.path.join(support, "multiple_drivers")
     plugins = [holmium.core.HolmiumNose(), Skip()]
 
     def setUp(self):
@@ -157,12 +152,13 @@ class TestMultipleDriversWithBrowserPerTest(PluginTester, unittest.TestCase):
         assert "Ran 2 tests" in self.output, self.output
         assert "OK" in self.output, self.output
         self.assertAlmostEqual(
-            holmium.core.noseplugin.BROWSER_MAPPING["chrome"].return_value.quit.call_count,  # noqa: E501
-            3
+            holmium.core.noseplugin.BROWSER_MAPPING[
+                "chrome"
+            ].return_value.quit.call_count,  # noqa: E501
+            3,
         )
         self.assertAlmostEqual(
-            holmium.core.noseplugin.BROWSER_MAPPING["chrome"].call_count,
-            3
+            holmium.core.noseplugin.BROWSER_MAPPING["chrome"].call_count, 3
         )
 
     def tearDown(self):
@@ -171,11 +167,8 @@ class TestMultipleDriversWithBrowserPerTest(PluginTester, unittest.TestCase):
 
 class TestMultipleDriversWithReusedBrowsers(PluginTester, unittest.TestCase):
     activate = "--with-holmium"
-    args = [
-        '--holmium-environment=tenv',
-        '--holmium-browser=chrome'
-    ]
-    suitepath = os.path.join(support, 'multiple_drivers')
+    args = ["--holmium-environment=tenv", "--holmium-browser=chrome"]
+    suitepath = os.path.join(support, "multiple_drivers")
     plugins = [holmium.core.HolmiumNose(), Skip()]
 
     def setUp(self):
@@ -189,8 +182,7 @@ class TestMultipleDriversWithReusedBrowsers(PluginTester, unittest.TestCase):
         assert "Ran 2 tests" in self.output, self.output
         assert "OK" in self.output, self.output
         self.assertAlmostEqual(
-            holmium.core.noseplugin.BROWSER_MAPPING["chrome"].call_count,
-            2
+            holmium.core.noseplugin.BROWSER_MAPPING["chrome"].call_count, 2
         )
 
     def tearDown(self):
@@ -199,10 +191,8 @@ class TestMultipleDriversWithReusedBrowsers(PluginTester, unittest.TestCase):
 
 class TestDriverBroken(PluginTester, unittest.TestCase):
     activate = "--with-holmium"
-    args = [
-        '--holmium-environment=tenv', '--holmium-browser=chrome'
-    ]
-    suitepath = os.path.join(support, 'broken_driver')
+    args = ["--holmium-environment=tenv", "--holmium-browser=chrome"]
+    suitepath = os.path.join(support, "broken_driver")
     plugins = [holmium.core.HolmiumNose(), Skip()]
 
     def setUp(self):
@@ -211,6 +201,7 @@ class TestDriverBroken(PluginTester, unittest.TestCase):
 
         def fake_construct(*a, **k):
             raise Exception("failed to initialize")
+
         mock_browsers["chrome"].side_effect = fake_construct
         holmium.core.noseplugin.BROWSER_MAPPING.update(mock_browsers)
         ENV.clear()
@@ -226,7 +217,7 @@ class TestDriverBroken(PluginTester, unittest.TestCase):
 
 class TestNoDriver(PluginTester, unittest.TestCase):
     activate = "--with-holmium"
-    suitepath = os.path.join(support, 'broken_driver')
+    suitepath = os.path.join(support, "broken_driver")
     plugins = [holmium.core.HolmiumNose(), Skip()]
 
     def setUp(self):
@@ -247,10 +238,10 @@ class TestNoDriver(PluginTester, unittest.TestCase):
 class TestCapabilitiesFromFile(PluginTester, unittest.TestCase):
     activate = "--with-holmium"
     args = [
-        '--holmium-browser=chrome',
-        "--holmium-capabilities=./tests/support/captest/caps.json"
+        "--holmium-browser=chrome",
+        "--holmium-capabilities=./tests/support/captest/caps.json",
     ]
-    suitepath = os.path.join(support, 'captest')
+    suitepath = os.path.join(support, "captest")
     plugins = [holmium.core.HolmiumNose()]
 
     def setUp(self):

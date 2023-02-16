@@ -1,16 +1,17 @@
 """
 implementation of cucumber steps for use with fresher/n
 """
-from functools import wraps
 import inspect
 import re
 import time
+from functools import wraps
 
-from selenium.webdriver.common.keys import Keys
+from fresher import NamedTransform, Then, Transform, When, ftc, scc
+
 # pylint: disable=E0611
 from nose.tools import assert_equals, assert_true
+from selenium.webdriver.common.keys import Keys
 
-from fresher import Transform, When, scc, Then, NamedTransform, ftc
 from .pageobject import Registry, Section, Sections
 
 
@@ -48,22 +49,38 @@ def word_to_index(word):
     """
 
     ones = {
-        'twenty': 2,
-        'thirty': 3,
-        'fourty': 4,
-        'fifty': 5,
-        'sixty': 6,
-        'seventy': 7,
-        'eighty': 8,
-        'ninety': 9}
+        "twenty": 2,
+        "thirty": 3,
+        "fourty": 4,
+        "fifty": 5,
+        "sixty": 6,
+        "seventy": 7,
+        "eighty": 8,
+        "ninety": 9,
+    }
     ones_rev = dict((v, k) for k, v in ones.items())
 
-    anomolies = {1: "first", 2: "second", 3: "third", 4: "fourth", 5: "fifth",
-                 6: "sixth", 7: "seventh", 8: "eighth", 9: "ninth",
-                 10: "tenth", 11: "eleventh", 12: "twelvth", 13: "thirteenth",
-                 14: "fourteenth", 15: "fifteenth",
-                 16: "sixteenth", 17: "seventeenth", 18: "eighteenth",
-                 19: "nineteenth"}
+    anomolies = {
+        1: "first",
+        2: "second",
+        3: "third",
+        4: "fourth",
+        5: "fifth",
+        6: "sixth",
+        7: "seventh",
+        8: "eighth",
+        9: "ninth",
+        10: "tenth",
+        11: "eleventh",
+        12: "twelvth",
+        13: "thirteenth",
+        14: "fourteenth",
+        15: "fifteenth",
+        16: "sixteenth",
+        17: "seventeenth",
+        18: "eighteenth",
+        19: "nineteenth",
+    }
     anomolies_rev = dict((v, k) for k, v in anomolies.items())
     rest = {}
     for i in range(20, 99):
@@ -91,9 +108,7 @@ def init_steps():
     """
     frm = inspect.stack()[1]
     mod = inspect.getmodule(frm[0])
-    from fresher.stepregistry import (
-        StepImpl, TransformImpl, NamedTransformImpl
-    )
+    from fresher.stepregistry import NamedTransformImpl, StepImpl, TransformImpl
 
     fresher_types = (StepImpl, TransformImpl, NamedTransformImpl)
     for key, value in globals().items():
@@ -107,8 +122,7 @@ def transform_page(name):
     looks up the page in the Registry
     """
     if name not in Registry.pages:
-        raise AttributeError(
-            "page object %s not found. did you import it?" % name)
+        raise AttributeError("page object %s not found. did you import it?" % name)
     return Registry.pages[name]
 
 
@@ -119,25 +133,24 @@ def transform_element(name):
     """
     if not hasattr(scc.page, name):
         raise AttributeError(
-            "page object %s does not contain an element named %s" % (
-                scc.page.__class__.__name__, name
-            )
+            "page object %s does not contain an element named %s"
+            % (scc.page.__class__.__name__, name)
         )
     element = getattr(scc.page, name)
     return element
 
 
-@NamedTransform(r"{item_in_elements}", r"((.*?)\s+item\s+in\s+(\w+))",
-                r"(.*?)\s+item\s+in\s+(\w+)")
+@NamedTransform(
+    r"{item_in_elements}", r"((.*?)\s+item\s+in\s+(\w+))", r"(.*?)\s+item\s+in\s+(\w+)"
+)
 def transform_sub_element(key, name):
     """
     looks up a subelement (either index, key or section memeber)
     """
     if not hasattr(scc.page, name):
         raise AttributeError(
-            "page object %s does not contain an element named %s" % (
-                scc.page.__class__.__name__, name
-            )
+            "page object %s does not contain an element named %s"
+            % (scc.page.__class__.__name__, name)
         )
     sub_expr = re.compile(r"(\w+)(?:\s* item)? (?:of|for) the (.*)$")
     element = getattr(scc.page, name)
@@ -185,8 +198,9 @@ def page_action_with_args(action, args):
     execute a method of the page with arguments
     """
     if not hasattr(scc.page, action):
-        raise AttributeError("page object %s does not contain a method %s" % (
-            scc.page.__class__.__name__, action)
+        raise AttributeError(
+            "page object %s does not contain a method %s"
+            % (scc.page.__class__.__name__, action)
         )
     arg_list = [k for k in args.split(",") if k.strip()]
     # pylint: disable=star-args
@@ -200,8 +214,9 @@ def page_action(action):
     execute a method of the page
     """
     if not hasattr(scc.page, action):
-        raise AttributeError("page object %s does not contain a method %s" % (
-            scc.page.__class__.__name__, action)
+        raise AttributeError(
+            "page object %s does not contain a method %s"
+            % (scc.page.__class__.__name__, action)
         )
     getattr(scc.page, action)()
 

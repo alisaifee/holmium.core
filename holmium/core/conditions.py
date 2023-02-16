@@ -1,9 +1,10 @@
 """
 utility callables to be passed to holmium.core.Element(s) only_if parameter
 """
-from abc import ABCMeta, abstractmethod
 import re
 import threading
+from abc import ABCMeta, abstractmethod
+
 from six import add_metaclass
 
 
@@ -14,6 +15,7 @@ class BaseCondition(object):
     to the ``only_if`` parameter of
     :class:`holmium.core.pageobject.ElementGetter` subclasses.
     """
+
     stack = threading.local()
     stack.stack = []
 
@@ -36,6 +38,7 @@ class BaseCondition(object):
     @classmethod
     def get_current(cls):
         return cls.stack.stack[0] if cls.stack.stack else None
+
 
 # pylint: disable=invalid-name
 

@@ -1,9 +1,10 @@
 import atexit
-import tempfile
+import os
 import sys
+import tempfile
+
 import mock
 from selenium import webdriver
-import os
 
 
 def build_mock_mapping(name):
@@ -20,7 +21,7 @@ def get_driver():
     global test_driver
     if not test_driver:
         options = webdriver.ChromeOptions()
-        options.add_argument('headless')
+        options.add_argument("headless")
         test_driver = webdriver.Chrome(chrome_options=options)
         atexit.register(test_driver.quit)
     test_driver.delete_all_cookies()

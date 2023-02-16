@@ -1,3 +1,1 @@
-config = {
-    "tenv": {"tvar": 1}
-}
+config = {"tenv": {"tvar": 1}}

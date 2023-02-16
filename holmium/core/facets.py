@@ -3,14 +3,14 @@ implementation of facet bases and builtin facets
 """
 
 import inspect
-import weakref
-
-from abc import ABCMeta, abstractmethod
 import re
+import weakref
+from abc import ABCMeta, abstractmethod
 
 # pylint: disable=no-name-in-module,abstract-class-not-used
 from nose.tools import assert_equals, assert_true
 from six import add_metaclass
+
 from .logger import log
 
 
@@ -19,6 +19,7 @@ class Facet(object):
     """
     base class to implement an attribute of a page
     """
+
     __ARGS__ = []
     __OPTIONS__ = {}
     __ALLOW_MULTIPLE__ = True
@@ -31,8 +32,9 @@ class Facet(object):
         self._parent_class = None
         for arg in self.__ARGS__:
             if arg not in kwargs.keys():
-                raise AttributeError("%s is a required argument for %s" % (
-                    arg, self.__class__.__name__))
+                raise AttributeError(
+                    "%s is a required argument for %s" % (arg, self.__class__.__name__)
+                )
             else:
                 self.arguments[arg] = kwargs[arg]
                 kwargs.pop(arg)
@@ -43,8 +45,10 @@ class Facet(object):
             else:
                 self.options[arg] = self.__OPTIONS__[arg]
         if kwargs:
-            raise AttributeError("unknown argument(s) to %s (%s)" % (
-                self.__class__.__name__, ",".join(kwargs.keys())))
+            raise AttributeError(
+                "unknown argument(s) to %s (%s)"
+                % (self.__class__.__name__, ",".join(kwargs.keys()))
+            )
 
     def register(self, obj):
         """
@@ -113,7 +117,9 @@ class FacetError(Exception):
 
     def __init__(self, facet, exc=None):
         self.message = "%s failed to exhibit facet %s" % (
-            facet.get_parent_name(), facet.get_name())
+            facet.get_parent_name(),
+            facet.get_name(),
+        )
         if exc:
             self.message += " with error %s" % exc
         super(FacetError, self).__init__(self.message)
@@ -145,10 +151,7 @@ class FacetCollection(list):
         item if its type does not support multiple
         facets on the same object.
         """
-        if (
-            type(item) in self.type_map
-            and not type(item).__ALLOW_MULTIPLE__
-        ):
+        if type(item) in self.type_map and not type(item).__ALLOW_MULTIPLE__:
             self.remove(self.type_map[type(item)].pop())
         if item not in self:
             super(FacetCollection, self).append(item)
@@ -248,16 +251,14 @@ class Defer(Facet):
     :param bool required: if False a failure to evaluate will be treated as a
      noop.
     """
+
     __ARGS__ = ["page", "action"]
     __OPTIONS__ = {"action_arguments": {}}
 
     def evaluate(self, driver):
         page_cls = self.arguments["page"]
         page = page_cls(driver)
-        return self.arguments["action"](
-            page,
-            **self.options["action_arguments"]
-        )
+        return self.arguments["action"](page, **self.options["action_arguments"])
 
 
 class Title(Facet):
@@ -270,13 +271,14 @@ class Title(Facet):
     :param bool required: if False a failure to evaluate will be treated as
      a noop.
     """
+
     __ARGS__ = ["title"]
     __ALLOW_MULTIPLE__ = False
 
     def evaluate(self, driver):
         assert_true(
             re.compile(self.arguments["title"]).match(driver.title),
-            "title did not match %s" % self.arguments["title"]
+            "title did not match %s" % self.arguments["title"],
         )
 
 
@@ -293,6 +295,7 @@ class Cookie(Facet):
      a noop.
 
     """
+
     __ARGS__ = ["name"]
     __OPTIONS__ = {"value": None}
 
@@ -306,7 +309,7 @@ class Cookie(Facet):
         else:
             assert_true(
                 cookie_value is not None,
-                "cookie %s does not exist" % self.arguments["name"]
+                "cookie %s does not exist" % self.arguments["name"],
             )
 
 
@@ -348,7 +351,7 @@ class ElementFacet(Facet):
     def evaluate(self, driver):
         assert_true(
             self.element.__get__(self.parent_class, self.parent_class),
-            "No such element"
+            "No such element",
         )
 
     def get_name(self):

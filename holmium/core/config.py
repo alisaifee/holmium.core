@@ -1,9 +1,9 @@
 """
 configuration objects for holmium
 """
-import sys
-import os
 import inspect
+import os
+import sys
 
 import jinja2
 from selenium import webdriver
@@ -12,92 +12,91 @@ from selenium.webdriver import FirefoxProfile
 
 class Config(dict):
     """Dictionary like helper class for maintaining test data configurations
-    per environment.
+        per environment.
 
-:class:`holmium.core.TestCase` and :class:`holmium.core.HolmiumNose` both
-look for either a config.json or config.py file in the same directory as the
-test file, and will make a ``config`` object available to the test case
-instance.
+    :class:`holmium.core.TestCase` and :class:`holmium.core.HolmiumNose` both
+    look for either a config.json or config.py file in the same directory as the
+    test file, and will make a ``config`` object available to the test case
+    instance.
 
-The :class:`holmium.core.Config` object is aware of the environment
-(specified with ``--holmium-env`` when using nose or ``HO_ENV`` as an
-environment variable) and will return the config variable from that
-environment or from the `default` key.
+    The :class:`holmium.core.Config` object is aware of the environment
+    (specified with ``--holmium-env`` when using nose or ``HO_ENV`` as an
+    environment variable) and will return the config variable from that
+    environment or from the `default` key.
 
-Values in the config file can use :class:`jinja2.Template` templates to access
-either values from itself, environment variables or a select magic holmium
-variables: ``holmium.environment``, ``holmium.browser``, ``holmium.user_agent``
-and ``holmium.remote``.
+    Values in the config file can use :class:`jinja2.Template` templates to access
+    either values from itself, environment variables or a select magic holmium
+    variables: ``holmium.environment``, ``holmium.browser``, ``holmium.user_agent``
+    and ``holmium.remote``.
 
-Example config structure (which uses a magic variable ``holmium.environment``
-and an environment variable ``$PATH``).
+    Example config structure (which uses a magic variable ``holmium.environment``
+    and an environment variable ``$PATH``).
 
-JSON
+    JSON
 
-.. code-block:: json
+    .. code-block:: json
 
-    {
-      "default": {
-        "path": "{{PATH}}",
-        "login_url": "{{url}}/{{holmium.environment}}/login",
-        "username": "{{holmium.environment}}user"
-      },
-      "production": {
-        "url": "http://prod.com",
-        "password": "sekret"
-      },
-      "development": {
-        "url": "http://dev.com",
-        "password": "password"
-      }
-    }
-
-
-Python
-
-.. code-block:: python
-
-    config = {
         {
-           'default': {
-                'path':"{{PATH}}",
-                'login_url': '{{url}}/{{holmium.environment}}/login'},
-                'username' : '{{holmium.environment}}user'
-           },
-           'production': {
-               'url':'http://prod.com',
-               'password': 'sekret'
-           },
-           'development': {
-               'url':'http://dev.com',
-               'password': 'password'
-           }
+          "default": {
+            "path": "{{PATH}}",
+            "login_url": "{{url}}/{{holmium.environment}}/login",
+            "username": "{{holmium.environment}}user"
+          },
+          "production": {
+            "url": "http://prod.com",
+            "password": "sekret"
+          },
+          "development": {
+            "url": "http://dev.com",
+            "password": "password"
+          }
         }
-    }
 
-When accessing ``self.config`` within a test, due to the default:
 
-* ``self.config['path']`` will always return the value of the environment
-   variable `PATH`,
-* ``self.config['password']`` will always return 'sekret'
+    Python
 
-if ``HO_ENV`` or ``--holmium-env`` are ``production``:
+    .. code-block:: python
 
-* ``self.config['username']`` will return ``productionuser``
-* ``self.config['password']`` will return ``sekret``
-* ``self.config['login_url']`` will return ``http://prod.com/production/login``
+        config = {
+            {
+               'default': {
+                    'path':"{{PATH}}",
+                    'login_url': '{{url}}/{{holmium.environment}}/login'},
+                    'username' : '{{holmium.environment}}user'
+               },
+               'production': {
+                   'url':'http://prod.com',
+                   'password': 'sekret'
+               },
+               'development': {
+                   'url':'http://dev.com',
+                   'password': 'password'
+               }
+            }
+        }
 
-if ``HO_ENV`` or ``--holmium-env`` are ``development``:
+    When accessing ``self.config`` within a test, due to the default:
 
-* ``self.config['username']`` will return ``developmentuser``
-* ``self.config['password']`` will return ``password``
-* ``self.config['login_url']`` will return ``http://dev.com/development/login``
+    * ``self.config['path']`` will always return the value of the environment
+       variable `PATH`,
+    * ``self.config['password']`` will always return 'sekret'
+
+    if ``HO_ENV`` or ``--holmium-env`` are ``production``:
+
+    * ``self.config['username']`` will return ``productionuser``
+    * ``self.config['password']`` will return ``sekret``
+    * ``self.config['login_url']`` will return ``http://prod.com/production/login``
+
+    if ``HO_ENV`` or ``--holmium-env`` are ``development``:
+
+    * ``self.config['username']`` will return ``developmentuser``
+    * ``self.config['password']`` will return ``password``
+    * ``self.config['login_url']`` will return ``http://dev.com/development/login``
 
     """
 
     # pylint: disable=dangerous-default-value
-    def __init__(self, dct,
-                 environment={"holmium": {"environment": "development"}}):
+    def __init__(self, dct, environment={"holmium": {"environment": "development"}}):
         self.env = environment
         dict.__init__(self, dct)
 
@@ -151,9 +150,7 @@ if ``HO_ENV`` or ``--holmium-env`` are ``development``:
         """
         override to put the value in the right environment bucket
         """
-        sub_dict = dict.setdefault(
-            self, self.env["holmium"]["environment"], {}
-        )
+        sub_dict = dict.setdefault(self, self.env["holmium"]["environment"], {})
         sub_dict[key] = value
 
 
@@ -189,10 +186,19 @@ class HolmiumConfig(dict):
     with the additional behavior that any attributes set on it are available
     as keys in the dictionary and vice versa.
     """
+
     # pylint: disable=unused-argument,too-many-arguments,star-args
 
-    def __init__(self, browser, remote, capabilities, user_agent, environment,
-                 ignore_ssl, fresh_instance):
+    def __init__(
+        self,
+        browser,
+        remote,
+        capabilities,
+        user_agent,
+        environment,
+        ignore_ssl,
+        fresh_instance,
+    ):
         data = {}
         for arg in inspect.getargspec(HolmiumConfig.__init__).args[1:]:
             setattr(self, arg, locals()[arg])
@@ -226,8 +232,7 @@ class FirefoxConfig(DriverConfig):
     def __call__(self, config, args):
         profile = FirefoxProfile()
         if config.user_agent:
-            profile.set_preference("general.useragent.override",
-                                   config.user_agent)
+            profile.set_preference("general.useragent.override", config.user_agent)
         if config.ignore_ssl:
             profile.accept_untrusted_certs = True
         args["firefox_profile"] = profile
@@ -245,10 +250,12 @@ class ChromeConfig(DriverConfig):
         args["desired_capabilities"].setdefault("chrome.switches", [])
         if config.user_agent:
             args["desired_capabilities"]["chrome.switches"].append(
-                "--user-agent=%s" % config.user_agent)
+                "--user-agent=%s" % config.user_agent
+            )
         if config.ignore_ssl:
             args["desired_capabilities"]["chrome.switches"].append(
-                "--ignore-certificate-errors")
+                "--ignore-certificate-errors"
+            )
 
         return super(ChromeConfig, self).__call__(config, args)
 
@@ -259,7 +266,7 @@ class IeConfig(DriverConfig):
     """
 
     def __call__(self, config, args):
-        args['desired_capabilities'] = args.pop('desired_capabilities', {})
+        args["desired_capabilities"] = args.pop("desired_capabilities", {})
         return super(IeConfig, self).__call__(config, args)
 
 
@@ -284,7 +291,7 @@ CONFIGURATOR_MAPPER = {
     "firefox": FirefoxConfig(),
     "chrome": ChromeConfig(),
     "ie": IeConfig(),
-    "remote": RemoteConfig()
+    "remote": RemoteConfig(),
 }
 
 

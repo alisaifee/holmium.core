@@ -1,7 +1,14 @@
 from holmium.core import (
-    Page, Element, Locators, Elements, ElementMap, Section, Sections
+    Element,
+    ElementMap,
+    Elements,
+    Locators,
+    Page,
+    Section,
+    Sections,
 )
 from holmium.core.cucumber import init_steps
+
 init_steps()
 
 

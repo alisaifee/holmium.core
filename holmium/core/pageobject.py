@@ -2,24 +2,28 @@
 implementation of page objects, element(s) and sections
 """
 
-import inspect
-import weakref
-import types
-import threading
-import contextlib
 import collections
+import contextlib
+import inspect
+import threading
+import types
+import weakref
 from functools import wraps
 
 import selenium.webdriver.common.by
 from selenium.common.exceptions import (
-    NoSuchElementException, StaleElementReferenceException
+    NoSuchElementException,
+    NoSuchFrameException,
+    StaleElementReferenceException,
+    TimeoutException,
 )
-from selenium.common.exceptions import TimeoutException, NoSuchFrameException
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.support.ui import WebDriverWait
 from six import add_metaclass
-from .enhancers import get_enhancers
+
 from holmium.core.conditions import BaseCondition
+
+from .enhancers import get_enhancers
 
 if hasattr(collections, "OrderedDict"):
     OrderedDict = collections.OrderedDict  # pragma: no cover
@@ -31,7 +35,7 @@ try:
 except ImportError:
     from collections import Sequence  # pragma: no cover
 
-from .facets import Faceted, ElementFacet, CopyOnCreateFacetCollectionMeta
+from .facets import CopyOnCreateFacetCollectionMeta, ElementFacet, Faceted
 from .logger import log
 
 # pylint: disable=unnecessary-lambda,too-few-public-methods,too-many-arguments
@@ -41,6 +45,7 @@ class Locators(selenium.webdriver.common.by.By):
     """
     proxy class to access locator types
     """
+
     pass
 
 
@@ -55,8 +60,9 @@ class ElementList(list):
         list.__init__(self, *args, **kwargs)
 
     def __getitem__(self, index):
-        return list.__getitem__(self, index).__get__(self.instance(),
-                                                     self.instance().__class__)
+        return list.__getitem__(self, index).__get__(
+            self.instance(), self.instance().__class__
+        )
 
     def __iter__(self):
         for idx in range(len(self)):
@@ -74,8 +80,9 @@ class ElementDict(dict):
         dict.__init__(self, *args, **kwargs)
 
     def __getitem__(self, key):
-        return dict.__getitem__(self, key).__get__(self.instance(),
-                                                   self.instance().__class__)
+        return dict.__getitem__(self, key).__get__(
+            self.instance(), self.instance().__class__
+        )
 
     def values(self):
         return [self[key] for key in self]
@@ -88,6 +95,7 @@ class Registry(CopyOnCreateFacetCollectionMeta):
     """
     simple meta class to keep track of all page objects registered
     """
+
     pages = {}
 
     def __new__(mcs, *args, **kwargs):
@@ -116,6 +124,7 @@ class Page(Faceted):
         assert len(Google().query("page objects").submit().get_results()) > 0
 
     """
+
     local = threading.local()
 
     def __init__(self, driver, url=None, iframe=None):
@@ -141,10 +150,7 @@ class Page(Faceted):
             if issubclass(element.__class__, ElementGetter):
                 element.iframe = self.iframe
                 if element.is_facet:
-                    facet = ElementFacet(element,
-                                         name,
-                                         debug=element.is_debug_facet
-                                         )
+                    facet = ElementFacet(element, name, debug=element.is_debug_facet)
                     facet.register(self)
                 return True
             return False
@@ -210,11 +216,11 @@ class Page(Faceted):
             attr = attr_getter(key)
             # check if home url is set, else update.
             if not attr_getter("home"):
-                log.debug(
-                    "home url not set, attempting to update.")
+                log.debug("home url not set, attempting to update.")
                 attr_setter("home", attr_getter("driver").current_url)
 
             if isinstance(attr, types.MethodType):
+
                 @wraps(attr)
                 def wrap(*args, **kwargs):
                     """
@@ -237,14 +243,17 @@ class ElementGetter(object):
     """
 
     # pylint: disable=too-many-instance-attributes
-    def __init__(self, locator_type,
-                 query_string,
-                 base_element=None,
-                 timeout=0,
-                 value=lambda el: el,
-                 only_if=lambda el: el is not None,
-                 facet=False,
-                 filter_by=lambda el: el is not None):
+    def __init__(
+        self,
+        locator_type,
+        query_string,
+        base_element=None,
+        timeout=0,
+        value=lambda el: el,
+        only_if=lambda el: el is not None,
+        facet=False,
+        filter_by=lambda el: el is not None,
+    ):
         """
         :param holmium.core.Locators locator_type: selenium locator to use when
          locating the element
@@ -276,8 +285,10 @@ class ElementGetter(object):
         self.value_mapper = value
         self.root_fn = lambda: Page.get_driver()
         self.only_if = only_if
-        log.debug("locator:%s, query_string:%s, timeout:%d" %
-                  (locator_type, query_string, timeout))
+        log.debug(
+            "locator:%s, query_string:%s, timeout:%d"
+            % (locator_type, query_string, timeout)
+        )
         self.is_facet = facet
         self.is_debug_facet = False
         self.filter_by = filter_by
@@ -303,19 +314,20 @@ class ElementGetter(object):
                 _meth = getattr(_, method.__name__)
             elif isinstance(self.base_element, Element):
                 _meth = getattr(
-                    self.base_element.__get__(self, self.__class__),
-                    method.__name__
+                    self.base_element.__get__(self, self.__class__), method.__name__
                 )
             elif isinstance(self.base_element, WebElement):
                 _meth = getattr(self.base_element, "find_element")
             else:
-                raise TypeError("invalid base_element type (%s) used" % (
-                    type(self.base_element)))
+                raise TypeError(
+                    "invalid base_element type (%s) used" % (type(self.base_element))
+                )
         else:
             _meth = method
         log.debug(
-            "looking up locator:%s, query_string:%s, timeout:%d" %
-            (self.locator_type, self.query_string, self.timeout))
+            "looking up locator:%s, query_string:%s, timeout:%d"
+            % (self.locator_type, self.query_string, self.timeout)
+        )
 
         if self.iframe:
             Page.local.driver.switch_to.default_content()
@@ -323,20 +335,21 @@ class ElementGetter(object):
 
         if self.timeout:
             try:
+
                 def callback(_):
                     """
                     timeout & only_if explicit wait.
                     """
-                    return (
-                        _meth(self.locator_type, self.query_string)
-                        and (BaseCondition.get_current() or self.only_if)(
-                            _meth(self.locator_type, self.query_string)
-                        )
-                    )
+                    return _meth(self.locator_type, self.query_string) and (
+                        BaseCondition.get_current() or self.only_if
+                    )(_meth(self.locator_type, self.query_string))
 
                 WebDriverWait(
-                    self.root, self.timeout,
-                    ignored_exceptions=[StaleElementReferenceException, ]
+                    self.root,
+                    self.timeout,
+                    ignored_exceptions=[
+                        StaleElementReferenceException,
+                    ],
                 ).until(callback)
             except TimeoutException:
                 log.debug(
@@ -397,12 +410,17 @@ class Element(ElementGetter):
         if not instance:
             return self
         try:
-            return self.value_mapper(
-                self.enhance(self._get_element(self.root.find_element))
-            ) if self.root else None
+            return (
+                self.value_mapper(
+                    self.enhance(self._get_element(self.root.find_element))
+                )
+                if self.root
+                else None
+            )
         except (
-            NoSuchElementException, TimeoutException,
-            StaleElementReferenceException
+            NoSuchElementException,
+            TimeoutException,
+            StaleElementReferenceException,
         ):
             return None
 
@@ -434,22 +452,29 @@ class Elements(ElementGetter):
      A :class:`selenium.webdriver.remote.webelement.WebElement` instance is
      passed as the only argument to the function.
     """
+
     # pylint: disable=incomplete-protocol,line-too-long
 
-    def __init__(self, locator_type,
-                 query_string=None,
-                 base_element=None,
-                 timeout=0,
-                 value=lambda el: el,
-                 only_if=lambda els: len(els) > 0,
-                 facet=False,
-                 filter_by=lambda el: el is not None):
+    def __init__(
+        self,
+        locator_type,
+        query_string=None,
+        base_element=None,
+        timeout=0,
+        value=lambda el: el,
+        only_if=lambda els: len(els) > 0,
+        facet=False,
+        filter_by=lambda el: el is not None,
+    ):
         super(Elements, self).__init__(
-            locator_type, query_string,
+            locator_type,
+            query_string,
             base_element=base_element,
             timeout=timeout,
-            facet=facet, value=value,
-            only_if=only_if, filter_by=filter_by
+            facet=facet,
+            value=value,
+            only_if=only_if,
+            filter_by=filter_by,
         )
 
     def __getitem__(self, idx):
@@ -459,13 +484,18 @@ class Elements(ElementGetter):
         if not instance:
             return self
         try:
-            return [
-                self.value_mapper(self.enhance(el)) for el in
-                self._get_element(self.root.find_elements)
-            ] if self.root else []
+            return (
+                [
+                    self.value_mapper(self.enhance(el))
+                    for el in self._get_element(self.root.find_elements)
+                ]
+                if self.root
+                else []
+            )
         except (
-            NoSuchElementException, TimeoutException,
-            StaleElementReferenceException
+            NoSuchElementException,
+            TimeoutException,
+            StaleElementReferenceException,
         ):
             return []
 
@@ -502,22 +532,29 @@ class ElementMap(Elements):
      A :class:`selenium.webdriver.remote.webelement.WebElement` instance is
      passed as the only argument to the function.
     """
+
     # pylint: disable=incomplete-protocol,line-too-long
 
-    def __init__(self, locator_type,
-                 query_string=None,
-                 base_element=None,
-                 timeout=0,
-                 key=lambda el: el.text,
-                 value=lambda el: el,
-                 only_if=lambda els: len(els) > 0,
-                 facet=False,
-                 filter_by=lambda el: el is not None):
+    def __init__(
+        self,
+        locator_type,
+        query_string=None,
+        base_element=None,
+        timeout=0,
+        key=lambda el: el.text,
+        value=lambda el: el,
+        only_if=lambda els: len(els) > 0,
+        facet=False,
+        filter_by=lambda el: el is not None,
+    ):
         super(ElementMap, self).__init__(
-            locator_type, query_string,
+            locator_type,
+            query_string,
             base_element,
-            timeout, facet=facet,
-            only_if=only_if, filter_by=filter_by
+            timeout,
+            facet=facet,
+            only_if=only_if,
+            filter_by=filter_by,
         )
         self.key_mapper = key
         self.value_mapper = value
@@ -526,13 +563,18 @@ class ElementMap(Elements):
         if not instance:
             return self
         try:
-            return OrderedDict(
-                (self.key_mapper(el), self.value_mapper(self.enhance(el)))
-                for el in self._get_element(self.root.find_elements)
-            ) if self.root else {}
+            return (
+                OrderedDict(
+                    (self.key_mapper(el), self.value_mapper(self.enhance(el)))
+                    for el in self._get_element(self.root.find_elements)
+                )
+                if self.root
+                else {}
+            )
         except (
-            NoSuchElementException, TimeoutException,
-            StaleElementReferenceException
+            NoSuchElementException,
+            TimeoutException,
+            StaleElementReferenceException,
         ):
             return {}
 
@@ -568,9 +610,7 @@ class Section(Faceted):
                 self.element_members[element[0]] = element[1]
                 if element[1].is_facet:
                     facet = ElementFacet(
-                        element[1],
-                        element[0],
-                        debug=element[1].is_debug_facet
+                        element[1], element[0], debug=element[1].is_debug_facet
                     )
                     facet.register(self)
 
@@ -584,10 +624,8 @@ class Section(Faceted):
             return super(Section, self).__getattribute__(key)
 
         def attr_setter(key, value):
-            return super(Section, self).__setattr__(
-                key,
-                value
-            )
+            return super(Section, self).__setattr__(key, value)
+
         members = attr_getter("element_members")
         touched = attr_getter("touched")
         if not touched and item in members:
@@ -605,23 +643,21 @@ class Section(Faceted):
                 Page.get_driver().switch_to.default_content()
                 Page.get_driver().switch_to.frame(self.iframe)
             except NoSuchFrameException:
-                log.error(
-                    "unable to switch to iframe %s" % self.iframe
-                )
+                log.error("unable to switch to iframe %s" % self.iframe)
         try:
             if not self.__root_val:
                 WebDriverWait(Page.get_driver(), self.timeout).until(
                     lambda _: Page.get_driver().find_element(
-                        self.locator_type,
-                        self.query_string
+                        self.locator_type, self.query_string
                     )
                 )
             return self.__root_val or Page.get_driver().find_element(
                 self.locator_type, self.query_string
             )
         except (
-            NoSuchElementException, TimeoutException,
-            StaleElementReferenceException
+            NoSuchElementException,
+            TimeoutException,
+            StaleElementReferenceException,
         ):
             return None
 
@@ -640,17 +676,14 @@ class Sections(Section, Sequence):
     """
 
     def __init__(self, locator_type, query_string, iframe=None, timeout=0):
-        super(Sections, self).__init__(
-            locator_type, query_string, iframe, timeout
-        )
+        super(Sections, self).__init__(locator_type, query_string, iframe, timeout)
 
     def __getelements__(self):
         if self.timeout:
             try:
                 WebDriverWait(Page.get_driver(), self.timeout).until(
                     lambda _: Page.get_driver().find_elements(
-                        self.locator_type,
-                        self.query_string
+                        self.locator_type, self.query_string
                     )
                 )
             except TimeoutException:
@@ -658,10 +691,7 @@ class Sections(Section, Sequence):
                     "unable to find element %s after waiting for %d seconds"
                     % (self.query_string, self.timeout)
                 )
-        return Page.get_driver().find_elements(
-            self.locator_type,
-            self.query_string
-        )
+        return Page.get_driver().find_elements(self.locator_type, self.query_string)
 
     def __iter__(self):
         for element in self.__getelements__():

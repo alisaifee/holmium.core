@@ -1,13 +1,21 @@
 # -*- coding: utf-8 -*-
-import unittest
-import threading
-from holmium.core.facets import cookie, title, defer
 import os
-from selenium.webdriver.support.ui import Select
-import mock
+import threading
+import unittest
 
-from holmium.core import Element, ElementEnhancer, Page, Locators, Elements
-from holmium.core import reset_enhancers, register_enhancer
+import mock
+from selenium.webdriver.support.ui import Select
+
+from holmium.core import (
+    Element,
+    ElementEnhancer,
+    Elements,
+    Locators,
+    Page,
+    register_enhancer,
+    reset_enhancers,
+)
+from holmium.core.facets import cookie, defer, title
 from tests.utils import get_driver, make_temp_page
 
 support = os.path.join(os.path.dirname(__file__), "support")
@@ -15,10 +23,11 @@ support = os.path.join(os.path.dirname(__file__), "support")
 
 class BugReports(unittest.TestCase):
     def test_multiple_pageinstances(self):
-        """ https://github.com/alisaifee/holmium.core/issues/4
-        """
+        """https://github.com/alisaifee/holmium.core/issues/4"""
+
         class p(Page):
             el = Element(Locators.NAME, "name")
+
         d1, d2 = mock.Mock(), mock.Mock()
         p1, p2 = p(d1, "http://p1"), p(d2, "http://p2")
         e1, e2 = mock.Mock(), mock.Mock()
@@ -33,8 +42,8 @@ class BugReports(unittest.TestCase):
         self.assertEqual(d2.get.call_count, 1)
 
     def test_multiple_pageinstances_multithreaded(self):
-        """ https://github.com/alisaifee/holmium.core/issues/4
-        """
+        """https://github.com/alisaifee/holmium.core/issues/4"""
+
         class p1(Page):
             el = Element(Locators.NAME, "name")
 
@@ -58,19 +67,19 @@ class BugReports(unittest.TestCase):
                 _p.t = str(po) + str(i)
                 pages.append(_p)
             return pages
+
         pages = build_pages(p1)
         pages.extend(build_pages(p2))
 
         threads = [
-            threading.Thread(target=exec_page_in_thread, args=(p,))
-            for p in pages
+            threading.Thread(target=exec_page_in_thread, args=(p,)) for p in pages
         ]
         [k.start() for k in threads]
         [k.join() for k in threads]
 
     def test_fluent_response(self):
-        """ https://github.com/alisaifee/holmium.core/issues/8
-        """
+        """https://github.com/alisaifee/holmium.core/issues/8"""
+
         class p(Page):
             el = Element(Locators.NAME, "name")
 
@@ -88,6 +97,7 @@ class BugReports(unittest.TestCase):
 
             def f5(self):
                 return ""
+
         d1 = mock.Mock()
         p1 = p(d1, "http://p1")
         self.assertEqual(p1, p1.f1())
@@ -97,10 +107,11 @@ class BugReports(unittest.TestCase):
         self.assertEqual("", p1.f5())
 
     def test_select_element(self):
-        """ https://github.com/alisaifee/holmium.core/issues/13
-        """
+        """https://github.com/alisaifee/holmium.core/issues/13"""
+
         class SimplePage(Page):
             id_el = Element(Locators.ID, "simple_id")
+
         driver = mock.Mock()
         driver.find_element.return_value.tag_name = "select"
         self.assertTrue(isinstance(SimplePage(driver).id_el, Select))
@@ -108,8 +119,8 @@ class BugReports(unittest.TestCase):
         self.assertTrue(isinstance(SimplePage(driver).id_el, Select))
 
     def test_custom_enhancement(self):
-        """ https://github.com/alisaifee/holmium.core/issues/14
-        """
+        """https://github.com/alisaifee/holmium.core/issues/14"""
+
         class CustomSelect(ElementEnhancer):
             __TAG__ = "select"
 
@@ -120,17 +131,16 @@ class BugReports(unittest.TestCase):
 
         class SimplePage(Page):
             id_el = Element(Locators.ID, "simple_id")
+
         driver = mock.Mock()
         driver.find_element.return_value.tag_name = "select"
         driver.find_element.return_value.text = "fOo"
-        self.assertTrue(
-            issubclass(SimplePage(driver).id_el.__class__, CustomSelect)
-        )
+        self.assertTrue(issubclass(SimplePage(driver).id_el.__class__, CustomSelect))
         self.assertEquals(SimplePage(driver).id_el.get_text_upper(), "FOO")
 
     def test_class_inheritance_with_facets(self):
-        """ https://github.com/alisaifee/issues/18
-        """
+        """https://github.com/alisaifee/issues/18"""
+
         @cookie(name="foo")
         class B1(Page):
             def dance(self):
@@ -167,38 +177,42 @@ class BugReports(unittest.TestCase):
         # ensure the last title is the one used
         self.assertEquals(
             ExtThree.get_class_facets().type_map[title].pop().arguments,
-            {"title": "three"}
+            {"title": "three"},
         )
 
         self.assertEquals(len(ExtFour.get_class_facets()), 2)
 
     def test_stale_element_in_wait(self):
-        """ https://github.com/alisaifee/issues/23
-        """
+        """https://github.com/alisaifee/issues/23"""
         driver = get_driver()
 
         def rem():
-            driver.execute_script("""
+            driver.execute_script(
+                """
             if ( document.getElementsByClassName('stale').length > 1 ){
                 var f = document.getElementById('container').firstChild;
                 document.getElementById('container').removeChild(f);
             }
             """
-                                  )
+            )
 
         class P(Page):
             e = Elements(
-                Locators.CLASS_NAME, "stale",
+                Locators.CLASS_NAME,
+                "stale",
                 timeout=1,
-                only_if=lambda els: rem() or any(e.is_displayed() for e in els)
+                only_if=lambda els: rem() or any(e.is_displayed() for e in els),
             )
-        uri = make_temp_page("""
+
+        uri = make_temp_page(
+            """
 <html>
 <body>
 <div id='container'><div class="stale">1</div><div class="stale">2</div></div>
 </body>
 </html>
-        """)
+        """
+        )
         p = P(driver, uri)
         self.assertEqual(len(p.e), 1)
 

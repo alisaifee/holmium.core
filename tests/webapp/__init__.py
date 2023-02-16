@@ -1,13 +1,23 @@
 """
 
 """
-from functools import wraps
-import sqlite3
-from flask import (
-    Flask, Blueprint, request, session,
-    redirect, render_template, flash, make_response, url_for, abort, jsonify
-)
 import hashlib
+import sqlite3
+from functools import wraps
+
+from flask import (
+    Blueprint,
+    Flask,
+    abort,
+    flash,
+    jsonify,
+    make_response,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
 
 bp = Blueprint("test", __name__)
 
@@ -27,25 +37,22 @@ class DB:
     def db(self):
         if not self._db:
             self._db = sqlite3.connect(
-                self.app.config['DATABASE'], check_same_thread=False
+                self.app.config["DATABASE"], check_same_thread=False
             )
         return self._db
 
     def create_db(self):
-        with self.app.open_resource('schema.sql', mode='r') as f:
+        with self.app.open_resource("schema.sql", mode="r") as f:
             self.db.cursor().executescript(f.read())
         self.db.commit()
 
     def get_user(self, email):
         return self.db.execute(
-            "select email, password from users where email = ?",
-            (email,)
+            "select email, password from users where email = ?", (email,)
         ).fetchone()
 
     def create_user(self, email, password):
-        values = (
-            email, hashlib.md5(password.encode("utf-8")).hexdigest()
-        )
+        values = (email, hashlib.md5(password.encode("utf-8")).hexdigest())
         return self.db.execute(
             "insert into users (email, password) values(?,?)", values
         )
@@ -56,9 +63,7 @@ class DB:
         ).fetchone()
 
     def get_entries(self):
-        return dict(
-            self.db.execute("select link, title from entries").fetchall()
-        )
+        return dict(self.db.execute("select link, title from entries").fetchall())
 
 
 def create_app():
@@ -81,24 +86,31 @@ def requires_login(fn):
         def check_cookie():
             try:
                 user = db.get_user(session.get("current_user"))
-                return user and request.cookies["uid"] == hashlib.md5(
-                    session.get("current_user").encode("utf-8")
-                ).hexdigest() + ":" + user[1]
+                return (
+                    user
+                    and request.cookies["uid"]
+                    == hashlib.md5(
+                        session.get("current_user").encode("utf-8")
+                    ).hexdigest()
+                    + ":"
+                    + user[1]
+                )
             except Exception:
                 return False
+
         if not ("uid" in request.cookies and check_cookie()):
             if "current_user" in session:
                 session.pop("current_user")
             return redirect("/login?return=%s" % request.url_rule)
         return fn(*a, **kw)
+
     return __inner
 
 
 def validate_login(email, password):
     def flash_and_back(msg):
-        return flash(msg, "warning") or redirect(
-            url_for("test.login")
-        )
+        return flash(msg, "warning") or redirect(url_for("test.login"))
+
     if not email:
         return flash_and_back("Email required")
     if not password:
@@ -108,11 +120,10 @@ def validate_login(email, password):
         if hashlib.md5(password.encode("utf-8")).hexdigest() == user[1]:
             cookie = (
                 "uid",
-                hashlib.md5(
-                    email.encode("utf-8")
-                ).hexdigest() + ":" + hashlib.md5(
-                    password.encode("utf-8")
-                ).hexdigest())
+                hashlib.md5(email.encode("utf-8")).hexdigest()
+                + ":"
+                + hashlib.md5(password.encode("utf-8")).hexdigest(),
+            )
             response = make_response(redirect(request.args.get("return", "/")))
             session["current_user"] = email
             response.set_cookie(*cookie)
@@ -125,9 +136,8 @@ def validate_login(email, password):
 
 def validate_signup(email, password):
     def flash_and_back(msg):
-        return flash(msg, "warning") or redirect(
-            url_for("test.signup")
-        )
+        return flash(msg, "warning") or redirect(url_for("test.signup"))
+
     if "current_user" in session:
         flash_and_back("You are already signed in")
     if not email:
@@ -141,11 +151,10 @@ def validate_signup(email, password):
         db.create_user(email, password)
         cookie = (
             "uid",
-            hashlib.md5(
-                email.encode("utf-8")
-            ).hexdigest() + ":" + hashlib.md5(
-                password.encode("utf-8")
-            ).hexdigest())
+            hashlib.md5(email.encode("utf-8")).hexdigest()
+            + ":"
+            + hashlib.md5(password.encode("utf-8")).hexdigest(),
+        )
         response = make_response(redirect(url_for("test.index")))
         session["current_user"] = email
         response.set_cookie(*cookie)
@@ -158,16 +167,15 @@ def index():
     return render_template(
         "index.html",
         callout="Here's a few ways it can be good",
-        links=db.get_entries(), **view_vars
+        links=db.get_entries(),
+        **view_vars
     )
 
 
 @bp.route("/login", methods=["GET", "POST"])
 def login():
     if request.form:
-        return validate_login(
-            request.form["email"], request.form["password"]
-        )
+        return validate_login(request.form["email"], request.form["password"])
     return render_template("login.html", callout="Sign up", **view_vars)
 
 
@@ -176,12 +184,8 @@ def signup():
     if "current_user" in session:
         return redirect(url_for("test.index"))
     if request.form:
-        return validate_signup(
-            request.form["email"], request.form["password"]
-        )
-    return render_template(
-        "signup.html", callout="Testing is good", **view_vars
-    )
+        return validate_signup(request.form["email"], request.form["password"])
+    return render_template("signup.html", callout="Testing is good", **view_vars)
 
 
 @bp.route("/logout")

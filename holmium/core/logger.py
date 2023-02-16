@@ -2,6 +2,7 @@
 global logger
 """
 import logging
+
 #: shared stream logger for all holmium classes
 # pylint: disable=invalid-name
 log = logging.Logger("holmium.core")

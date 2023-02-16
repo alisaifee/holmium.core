@@ -1,17 +1,17 @@
 import unittest
-from holmium.core import Locators, Page, Elements, Section, Sections
+
 import mock
+
+from holmium.core import Elements, Locators, Page, Section, Sections
 from tests.utils import get_driver, make_temp_page
 
 
 class BasicSection(Section):
-    tokens = Elements(Locators.CSS_SELECTOR,
-                      "div.token")
+    tokens = Elements(Locators.CSS_SELECTOR, "div.token")
 
 
 class BasicSectionList(Sections):
-    tokens = Elements(Locators.CSS_SELECTOR,
-                      "div.token")
+    tokens = Elements(Locators.CSS_SELECTOR, "div.token")
 
 
 class BasicPage(Page):
@@ -28,7 +28,6 @@ class BasicPageWithSections(Page):
 
 
 class SectionTest(unittest.TestCase):
-
     def test_basic_po_real(self):
         driver = get_driver()
         page = """
@@ -70,15 +69,15 @@ class SectionTest(unittest.TestCase):
         self.assertEqual(len(po.section.tokens), 2)
         self.assertEqual(len(po.section_2.tokens), 2)
         for i in range(0, 2):
-            self.assertEqual(po.section.tokens[i].text,
-                             "section element %s" % (i + 1))
+            self.assertEqual(po.section.tokens[i].text, "section element %s" % (i + 1))
         for i in range(0, 2):
-            self.assertEqual(po.section_2.tokens[i].text,
-                             "section element %s" % (i + 3))
-        self.assertEqual(po.tokens[0].text, 'section element 1')
-        self.assertEqual(po.tokens[1].text, 'section element 2')
-        self.assertEqual(po.tokens[2].text, 'section element 3')
-        self.assertEqual(po.tokens[3].text, 'section element 4')
+            self.assertEqual(
+                po.section_2.tokens[i].text, "section element %s" % (i + 3)
+            )
+        self.assertEqual(po.tokens[0].text, "section element 1")
+        self.assertEqual(po.tokens[1].text, "section element 2")
+        self.assertEqual(po.tokens[2].text, "section element 3")
+        self.assertEqual(po.tokens[3].text, "section element 4")
 
     def test_basic_po_with_sections(self):
         driver = get_driver()
@@ -148,7 +147,7 @@ class SectionTest(unittest.TestCase):
         self.assertEqual("t3", po.sections[3].tokens[0].text)
 
     def test_sections_list_behavior(self):
-        with mock.patch('selenium.webdriver.Firefox') as driver:
+        with mock.patch("selenium.webdriver.Firefox") as driver:
             element1, element2 = mock.Mock(), mock.Mock()
             element1.tag_name = element2.tag_name = "div"
             element1.text = "element 1"
@@ -174,11 +173,5 @@ class SectionTest(unittest.TestCase):
             self.assertEqual("element 6", po.sections[2].tokens[1].text)
             self.assertEqual("element 6", po.sections[-1].tokens[1].text)
             self.assertEqual("element 3", po.sections[-2].tokens[1].text)
-            self.assertRaises(
-                IndexError,
-                lambda: po.sections[-4]
-            )
-            self.assertRaises(
-                IndexError,
-                lambda: po.sections[3]
-            )
+            self.assertRaises(IndexError, lambda: po.sections[-4])
+            self.assertRaises(IndexError, lambda: po.sections[3])

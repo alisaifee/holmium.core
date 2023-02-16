@@ -1,3 +1,1 @@
-config = {
-    "staging": {"foo": "bar"}
-}
+config = {"staging": {"foo": "bar"}}

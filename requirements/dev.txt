@@ -1,5 +1,7 @@
 -r test.txt
-flake8
+black
+isort
+ruff
 keyring
 twine
 wheel

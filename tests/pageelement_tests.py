@@ -1,8 +1,10 @@
-import unittest
 import time
-from holmium.core import Page, Element, Locators
-from tests.utils import get_driver, make_temp_page
+import unittest
+
 import hiro
+
+from holmium.core import Element, Locators, Page
+from tests.utils import get_driver, make_temp_page
 
 
 class ElementTest(unittest.TestCase):
@@ -22,9 +24,7 @@ class ElementTest(unittest.TestCase):
             id_el = Element(Locators.ID, "simple_id")
             class_el = Element(Locators.CLASS_NAME, "simple_class")
             selector_el = Element(Locators.CSS_SELECTOR, "div.simple_class")
-            xpath_el = Element(
-                Locators.XPATH, "//div[h3/text()='Simple XPATH']"
-            )
+            xpath_el = Element(Locators.XPATH, "//div[h3/text()='Simple XPATH']")
 
         uri = make_temp_page(ElementTest.page_content)
         page = SimplePage(self.driver, uri)
@@ -37,7 +37,7 @@ class ElementTest(unittest.TestCase):
         class SimplePage(Page):
             elements = {
                 "id": Element(Locators.ID, "simple_id"),
-                "class": Element(Locators.CLASS_NAME, "simple_class")
+                "class": Element(Locators.CLASS_NAME, "simple_class"),
             }
 
         uri = make_temp_page(ElementTest.page_content)
@@ -49,7 +49,7 @@ class ElementTest(unittest.TestCase):
         class SimplePage(Page):
             elements = [
                 Element(Locators.ID, "simple_id"),
-                Element(Locators.CLASS_NAME, "simple_class")
+                Element(Locators.CLASS_NAME, "simple_class"),
             ]
 
         uri = make_temp_page(ElementTest.page_content)
@@ -60,16 +60,19 @@ class ElementTest(unittest.TestCase):
     def test_basic_element_with_only_if(self):
         class SimplePage(Page):
             id_el = Element(Locators.ID, "simple_id")
-            id_el_changed = Element(Locators.ID, "simple_id", timeout=10,
-                                    only_if=lambda el: el.text == "changed")
+            id_el_changed = Element(
+                Locators.ID,
+                "simple_id",
+                timeout=10,
+                only_if=lambda el: el.text == "changed",
+            )
 
         uri = make_temp_page(ElementTest.page_content)
         page = SimplePage(self.driver, uri)
         self.assertEqual(page.id_el.text, "simple_id")
         script = 'document.getElementById("simple_id").firstChild.nodeValue="changed";'  # noqa: E501
         runner = hiro.run_async(
-            5,
-            lambda: time.sleep(1) or self.driver.execute_script(script)
+            5, lambda: time.sleep(1) or self.driver.execute_script(script)
         )
         with hiro.Timeline().scale(10):
             self.assertEqual(page.id_el_changed.text, "changed")
@@ -81,12 +84,10 @@ class ElementTest(unittest.TestCase):
     def test_basic_element_with_filter_by(self):
         class SimplePage(Page):
             id_el = Element(
-                Locators.ID, "simple_id",
-                filter_by=lambda el: el.text == "simple_id"
+                Locators.ID, "simple_id", filter_by=lambda el: el.text == "simple_id"
             )
             id_el_none = Element(
-                Locators.ID, "simple_id",
-                filter_by=lambda el: el.text == "changed"
+                Locators.ID, "simple_id", filter_by=lambda el: el.text == "changed"
             )
 
         uri = make_temp_page(ElementTest.page_content)

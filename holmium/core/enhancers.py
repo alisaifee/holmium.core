@@ -11,6 +11,7 @@ class ElementEnhancer(object):
     add functionality to located webelements based on the
     element type (tag name)
     """
+
     # pylint: disable=too-few-public-methods
     __TAG__ = ""
 
@@ -35,8 +36,9 @@ class ElementEnhancer(object):
                 return element.__getattribute__(key)
         except Exception:
             raise AttributeError(
-                "neither %s, nor %s object has an attribute %s" % (
-                    self.__class__.__name__, element.__class__.__name__, key))
+                "neither %s, nor %s object has an attribute %s"
+                % (self.__class__.__name__, element.__class__.__name__, key)
+            )
 
 
 class _SelectMixin(Select, object):
@@ -53,6 +55,7 @@ class SelectEnhancer(ElementEnhancer, _SelectMixin):
     """
     Enhancer for the select tag
     """
+
     __TAG__ = "select"
 
 

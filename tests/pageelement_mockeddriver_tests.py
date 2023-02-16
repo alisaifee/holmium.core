@@ -1,17 +1,19 @@
 import unittest
+
 import mock
-from holmium.core import Page, Element, Locators
 from selenium.webdriver.support.ui import Select
+
+from holmium.core import Element, Locators, Page
 
 
 class ElementWithMockDriverTest(unittest.TestCase):
-
     def setUp(self):
         self.driver = mock.Mock()
 
     def test_enhanced_elements(self):
         class SimplePage(Page):
             id_el = Element(Locators.ID, "simple_id")
+
         self.driver.find_element.return_value.tag_name = "select"
         self.assertTrue(isinstance(SimplePage(self.driver).id_el, Select))
 

@@ -1,5 +1,5 @@
-import unittest
 import json
+import unittest
 
 from holmium.core import Config
 from holmium.core.config import HolmiumConfig, configure
@@ -26,7 +26,7 @@ class ConfigTests(unittest.TestCase):
     }
     """
         cfg = Config(json.loads(json_cfg))
-        self.assertEqual(cfg["t1"], u"1")
+        self.assertEqual(cfg["t1"], "1")
         self.assertEqual(cfg["t2"], 3)
         self.assertEqual(cfg["t3"], 4)
         self.assertEqual(cfg["username"], "developmentuser")
@@ -39,21 +39,18 @@ class ConfigTests(unittest.TestCase):
 
     def test_dict_config(self):
         dct_cfg = {
-            "production":
-                {"t2": "{{default['t2']}}", "t3": 4},
-            "development":
-                {"t2": u"{{production['t2']}}"},
-            "default":
-                {"t1": 1, "t2": 2, "t3": [1, 2, 3]}
+            "production": {"t2": "{{default['t2']}}", "t3": 4},
+            "development": {"t2": "{{production['t2']}}"},
+            "default": {"t1": 1, "t2": 2, "t3": [1, 2, 3]},
         }
         cfg = Config(dct_cfg)
         self.assertEqual(cfg["t1"], 1)
-        self.assertEqual(cfg["t2"], u"2")
+        self.assertEqual(cfg["t2"], "2")
         self.assertEqual(cfg["t3"], [1, 2, 3])
         holmium_vars = {"holmium": {"environment": "production"}}
         cfg = Config(dct_cfg, holmium_vars)
         self.assertEqual(cfg["t1"], 1)
-        self.assertEqual(cfg["t2"], u"2")
+        self.assertEqual(cfg["t2"], "2")
         self.assertEqual(cfg["t3"], 4)
 
     def test_config_update(self):
@@ -73,7 +70,7 @@ class ConfigTests(unittest.TestCase):
         }
         cfg = Config(config)
         self.assertEqual(
-            cfg["registration_url"], u"http://development:3000/users/sign_up"
+            cfg["registration_url"], "http://development:3000/users/sign_up"
         )
 
     def test_config_default_reference(self):
@@ -81,37 +78,40 @@ class ConfigTests(unittest.TestCase):
             "default": {
                 "base_url": "http://{{holmium.environment}}:3000",
                 "registration_url": "{{base_url}}/users/sign_up",
-                "random_var": "{{env_random}}"
+                "random_var": "{{env_random}}",
             },
             "production": {
                 "base_url": "http://awesomesite.com",
                 "env_random": "1",
-                "extended_random": "random_{{random_var}}"
-            }
+                "extended_random": "random_{{random_var}}",
+            },
         }
         holmium_vars = {"holmium": {"environment": "production"}}
         cfg = Config(config, holmium_vars)
         self.assertEqual(
-            cfg["registration_url"], u"http://awesomesite.com/users/sign_up"
+            cfg["registration_url"], "http://awesomesite.com/users/sign_up"
         )
-        self.assertEqual(cfg["extended_random"], u"random_1")
+        self.assertEqual(cfg["extended_random"], "random_1")
         cfg = Config(config)
         self.assertEqual(
-            cfg["registration_url"], u"http://development:3000/users/sign_up"
+            cfg["registration_url"], "http://development:3000/users/sign_up"
         )
 
     def test_holmium_config_object(self):
 
         cfg = HolmiumConfig(1, 2, 3, 4, 5, 6, 7)
-        self.assertEqual(cfg, {
-            "browser": 1,
-            "remote": 2,
-            "capabilities": 3,
-            "user_agent": 4,
-            "environment": 5,
-            "ignore_ssl": 6,
-            "fresh_instance": 7,
-        })
+        self.assertEqual(
+            cfg,
+            {
+                "browser": 1,
+                "remote": 2,
+                "capabilities": 3,
+                "user_agent": 4,
+                "environment": 5,
+                "ignore_ssl": 6,
+                "fresh_instance": 7,
+            },
+        )
 
         self.assertEqual(cfg.browser, 1)
         self.assertEqual(cfg.remote, 2)
@@ -134,13 +134,5 @@ class ConfigTests(unittest.TestCase):
         self.assertEqual(cfg.foo, "bar")
 
     def test_holmium_config_unknown_browser(self):
-        cfg = HolmiumConfig(
-            "awesome",
-            "",
-            {},
-            "",
-            "development",
-            False,
-            False
-        )
+        cfg = HolmiumConfig("awesome", "", {}, "", "development", False, False)
         self.assertRaises(RuntimeError, configure, cfg)

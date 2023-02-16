@@ -5,8 +5,10 @@ environment
 import atexit
 import copy
 import sys
+
 from nose.plugins.skip import SkipTest
 from six import reraise
+
 from holmium.core.config import configure
 
 
@@ -15,6 +17,7 @@ class LazyWebDriver(object):
     lazily initializes the webdriver on the first
     attribute access
     """
+
     # pylint: disable=star-args,protected-access
 
     def __init__(self, driver_cls, holmium_config):
@@ -46,7 +49,7 @@ class LazyWebDriver(object):
                             "unable to initialize driver (name: %s)"
                             % (browser.strip() or "None")
                         ),
-                        traceback
+                        traceback,
                     )
                 safe_getter("_post_create_callback")()
                 safe_setter("_instance", instance)

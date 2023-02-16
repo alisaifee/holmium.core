@@ -5,16 +5,18 @@ try:
     import unittest2 as unittest
 except ImportError:
     import unittest
-import inspect
+
 import imp
+import inspect
 import json
 import os
+
+from nose.plugins.skip import SkipTest
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.wait import WebDriverWait
-from .config import HolmiumConfig, Config, BROWSER_MAPPING
-from .env import ENV
-from .env import LazyWebDriver, LazyWebDriverList
-from nose.plugins.skip import SkipTest
+
+from .config import BROWSER_MAPPING, Config, HolmiumConfig
+from .env import ENV, LazyWebDriver, LazyWebDriverList
 
 # pylint: disable=too-many-public-methods
 
@@ -42,8 +44,7 @@ class TestCase(unittest.TestCase):
         ignore_ssl = os.environ.get("HO_IGNORE_SSL_ERRORS", False)
         fresh_instance = bool(int(os.environ.get("HO_BROWSER_PER_TEST", 0)))
         cls.holmium_config = HolmiumConfig(
-            browser, remote, {}, user_agent,
-            environment, ignore_ssl, fresh_instance
+            browser, remote, {}, user_agent, environment, ignore_ssl, fresh_instance
         )
         config = None
         if os.path.isfile(config_path + ".json"):
@@ -126,21 +127,17 @@ class TestCase(unittest.TestCase):
         The value of the elements css property is the one returned by
         :meth:`selenium.webdriver.remote.webelement.WebElement.value_of_css_property`
         """
-        self.assertEqual(
-            element.value_of_css_property(css_property),
-            value,
-            msg
-        )
+        self.assertEqual(element.value_of_css_property(css_property), value, msg)
 
     def assertElementSize(self, element, width, height, msg=None):
-        """ Fail if the element size does not match the provided values
-        """
+        """Fail if the element size does not match the provided values"""
         _expected = {"height": height, "width": width}
         self.assertEqual(_expected, element.size, msg)
 
-    def assertConditionWithWait(self, driver, condition, timeout=0, msg=None,
-                                ignored_exceptions=None):
-        """ Fail if the condition specified does not hold for the element
+    def assertConditionWithWait(
+        self, driver, condition, timeout=0, msg=None, ignored_exceptions=None
+    ):
+        """Fail if the condition specified does not hold for the element
         within the specified timeout
 
         :param driver: the selenium driver
@@ -155,14 +152,11 @@ class TestCase(unittest.TestCase):
 
         """
         try:
-            wait = WebDriverWait(
-                driver, timeout,
-                ignored_exceptions=ignored_exceptions
-            )
+            wait = WebDriverWait(driver, timeout, ignored_exceptions=ignored_exceptions)
             wait.until(condition)
         except TimeoutException:
             _msg = self._formatMessage(
                 msg() if callable(msg) else msg,
-                "Timeout waiting on condition %s" % condition
+                "Timeout waiting on condition %s" % condition,
             )
             raise self.failureException(_msg)

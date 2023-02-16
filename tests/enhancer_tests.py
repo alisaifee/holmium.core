@@ -1,13 +1,12 @@
 import unittest
+
 import mock
-from holmium.core import (
-    Page, Element, Locators, ElementEnhancer, register_enhancer
-)
 from selenium.webdriver.support.ui import Select
+
+from holmium.core import Element, ElementEnhancer, Locators, Page, register_enhancer
 
 
 class ElementEnhancerTest(unittest.TestCase):
-
     def setUp(self):
         self.driver = mock.Mock()
 
