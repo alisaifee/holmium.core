@@ -1,6 +1,7 @@
 import unittest
 import hiro
 from holmium.core import ElementMap, Locators, Page
+from selenium.webdriver.common.by import By
 from tests.utils import get_driver, make_temp_page
 
 
@@ -13,16 +14,16 @@ class ElementMapTest(unittest.TestCase):
             el_map_default = ElementMap(Locators.CLASS_NAME, "simple_class")
             el_map_keymapper = ElementMap(
                 Locators.CLASS_NAME, "simple_class",
-                key=lambda el: el.find_element_by_tag_name("a").text
+                key=lambda el: el.find_element(By.TAG_NAME, "a").text
             )
             el_map_valuemapper = ElementMap(
                 Locators.CLASS_NAME, "simple_class",
-                value=lambda el: el.find_element_by_tag_name("a").text
+                value=lambda el: el.find_element(By.TAG_NAME, "a").text
             )
             el_map_keyvaluemapper = ElementMap(
                 Locators.CLASS_NAME, "simple_class",
-                key=lambda el: el.find_element_by_tag_name("a").text,
-                value=lambda el: el.find_element_by_tag_name("a").get_attribute("href")  # noqa: E501
+                key=lambda el: el.find_element(By.TAG_NAME, "a").text,
+                value=lambda el: el.find_element(By.TAG_NAME, "a").get_attribute("href")  # noqa: E501
             )
 
         uri = make_temp_page("""

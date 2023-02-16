@@ -5,5 +5,5 @@ hiro
 mock
 flask
 Flask-Testing
-Werkzeug<1
+Werkzeug
 fresher

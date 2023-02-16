@@ -1,6 +1,7 @@
 import unittest
 import hiro
 from holmium.core import Elements, Element, Locators, Page, conditions
+from selenium.webdriver.common.by import By
 from tests.utils import get_driver, make_temp_page
 
 
@@ -14,15 +15,15 @@ class ElementsTest(unittest.TestCase):
             el_list_valuemapper = Elements(
                 Locators.CLASS_NAME,
                 "simple_class",
-                value=lambda el: el.find_element_by_tag_name("a").text
+                value=lambda el: el.find_element(By.TAG_NAME, "a").text
             )
             el_list_valuemapper_complex = Elements(
                 Locators.CLASS_NAME, "simple_class",
                 value=lambda el: {
-                    "link": el.find_element_by_tag_name("a").get_attribute(
+                    "link": el.find_element(By.TAG_NAME, "a").get_attribute(
                         "href"
                     ),
-                    "text": el.find_element_by_tag_name("a").text
+                    "text": el.find_element(By.TAG_NAME, "a").text
                 }
             )
             first_el = Element(
@@ -101,16 +102,16 @@ class ElementsTest(unittest.TestCase):
             )
             el_list_valuemapper = Elements(
                 Locators.CLASS_NAME, "simple_class",
-                value=lambda el: el.find_element_by_tag_name("a").text,
+                value=lambda el: el.find_element(By.TAG_NAME, "a").text,
                 filter_by=conditions.VISIBLE()
             )
             el_list_valuemapper_complex = Elements(
                 Locators.CLASS_NAME, "simple_class",
                 value=lambda el: {
-                    "link": el.find_element_by_tag_name("a").get_attribute(
+                    "link": el.find_element(By.TAG_NAME, "a").get_attribute(
                         "href"
                     ),
-                    "text": el.find_element_by_tag_name("a").text
+                    "text": el.find_element(By.TAG_NAME, "a").text
                 },
                 filter_by=conditions.VISIBLE()
             )

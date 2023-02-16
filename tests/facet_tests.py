@@ -1,6 +1,8 @@
 """
 tests for facets
 """
+import multiprocessing
+import sys
 import unittest
 from flask_testing import LiveServerTestCase
 import mock
@@ -10,6 +12,10 @@ from holmium.core.facets import FacetError, defer, title, cookie, strict
 
 from . import webapp
 from tests.utils import get_driver
+
+# For LiveServerTestCase on OSX
+if sys.platform == "darwin":
+    multiprocessing.set_start_method("fork")
 
 
 class LiveTest(LiveServerTestCase):
