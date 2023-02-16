@@ -9,15 +9,11 @@ __copyright__ = "Copyright 2014, Ali-Akber Saifee"
 
 from setuptools import setup, find_packages
 import os
-import sys
 if __name__ == "__main__":
     this_dir = os.path.abspath(os.path.dirname(__file__))
     REQUIREMENTS = open(
         os.path.join(this_dir, 'requirements/main.txt'), 'rt'
     ).read()
-
-    if sys.version_info[:2] < (2, 7):
-        REQUIREMENTS += 'unittest2\n'
 
     import versioneer
     versioneer.versionfile_source = "holmium/core/_version.py"
