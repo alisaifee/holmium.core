@@ -1,6 +1,7 @@
 import unittest
 
 import mock
+from selenium.webdriver.common.by import By
 
 from holmium.core import Element, ElementMap, Elements, Locators, Page
 from tests.utils import get_driver, make_temp_page
@@ -48,7 +49,7 @@ class PageTest(unittest.TestCase):
         driver.get(uri)
         # this may appear weird, but its to test the usecase of providing
         # a WebElement as a base_element. #fml.
-        web_element = driver.find_element_by_name("e2")
+        web_element = driver.find_element(By.NAME, "e2")
 
         class ExhaustivePage(Page):
             element = Element(Locators.NAME, "e1")
