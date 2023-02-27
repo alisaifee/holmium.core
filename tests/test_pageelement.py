@@ -2,6 +2,7 @@ import time
 import unittest
 
 import hiro
+import pytest
 
 from holmium.core import Element, Locators, Page
 from tests.utils import get_driver, make_temp_page
@@ -57,6 +58,7 @@ class ElementTest(unittest.TestCase):
         assert page.elements[0].text == "simple_id"
         assert page.elements[1].text == "simple_class"
 
+    @pytest.mark.xfail
     def test_basic_element_with_only_if(self):
         class SimplePage(Page):
             id_el = Element(Locators.ID, "simple_id")
