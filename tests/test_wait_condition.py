@@ -8,7 +8,7 @@ from holmium.core.conditions import ALL, ANY, INVISIBLE, MATCHES_TEXT, VISIBLE
 from tests.utils import get_driver, make_temp_page
 
 
-class WaitConditionTests(unittest.TestCase):
+class TestWaitCondition(unittest.TestCase):
     def setUp(self):
         self.driver = get_driver()
         self.uri = make_temp_page("<div id='simple_id'>default text</div>")

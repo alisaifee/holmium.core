@@ -98,7 +98,6 @@ class ConfigTests(unittest.TestCase):
         )
 
     def test_holmium_config_object(self):
-
         cfg = HolmiumConfig(1, 2, 3, 4, 5, 6, 7)
         self.assertEqual(
             cfg,

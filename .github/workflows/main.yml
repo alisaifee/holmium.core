@@ -32,7 +32,7 @@ jobs:
         pip install -r requirements/ci.txt
     - name: Tests
       run: |
-        nosetests tests --with-cov
+        pytest tests --cov
     - name: Post Coverage
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}

@@ -1,6 +1,7 @@
 -r main.txt
 coverage
-nose-cov
+pytest
+pytest-cov
 hiro
 mock
 flask

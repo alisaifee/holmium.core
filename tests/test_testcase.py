@@ -97,9 +97,7 @@ class TestCaseTests(unittest.TestCase):
                     op.return_value.read.return_value = (
                         '{"default": {"test": 1}}'  # noqa: E501
                     )
-                    runtc(
-                        {"HO_BROWSER": "chrome"}, [lambda s: s.config["test"] == 1]
-                    )
+                    runtc({"HO_BROWSER": "chrome"}, [lambda s: s.config["test"] == 1])
 
     def test_auto_config_py(self):
         with mock.patch("os.path.isfile") as isfile:
@@ -111,9 +109,7 @@ class TestCaseTests(unittest.TestCase):
                     m_config = mock.Mock()
                     m_config.config = {"default": {"test": 1}}
                     load_source.return_value = m_config
-                    runtc(
-                        {"HO_BROWSER": "chrome"}, [lambda s: s.config["test"] == 1]
-                    )
+                    runtc({"HO_BROWSER": "chrome"}, [lambda s: s.config["test"] == 1])
 
     def test_set_useragent(self):
         with mock.patch.dict(

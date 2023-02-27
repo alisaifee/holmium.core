@@ -596,7 +596,6 @@ class Section(Faceted):
     """
 
     def __init__(self, locator_type, query_string, iframe=None, timeout=0):
-
         super(Section, self).__init__()
         self.touched = False
         self.locator_type = locator_type
