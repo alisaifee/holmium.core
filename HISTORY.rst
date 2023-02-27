@@ -12,6 +12,17 @@
 History
 *******
 
+1.0.0
+=====
+Release Date: 2023-02-27
+
+* Breaking Changes
+
+  * Remove support for python < 3
+  * Remove support for nose plugin
+  * Remove support for cucumber tests
+
+
 v0.8.5
 ======
 Release Date: 2016-09-06
@@ -283,6 +294,7 @@ Release Date: 2013-03-18
 * Bug fix
 
   - fixed phantomjs build in travis
+
 
 
 
