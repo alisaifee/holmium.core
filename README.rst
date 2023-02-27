@@ -40,14 +40,21 @@ similarly to the following code block (using seleniumhq.org).
 
         def test_header_links(self):
             self.driver.get(self.url)
-            elements = self.driver.find_elements_by_css_selector("nav>a")
+            elements = self.driver.find_elements_by_css_selector("div#main_navbar ul li>a")
             self.assertTrue(len(elements) > 0)
             for element in elements:
                 self.assertTrue(element.is_displayed())
-            expected_link_list = ["Projects", "Downloads", "Documentation",
-                                  "Support", "Blog"]
+            expected_link_list = [
+              "About",
+              "Blog",
+              "Documentation",
+              "Downloads",
+              "English",
+              "Projects",
+              "Support",
+            ]
             actual_link_list = [el.text for el in elements]
-            self.assertEquals(sorted(expected_link_list), sorted(actual_link_list))
+            self.assertEqual(sorted(expected_link_list), sorted(actual_link_list))
 
         def test_projects_selenium_heading(self):
             self.driver.get(self.url)
@@ -55,8 +62,8 @@ similarly to the following code block (using seleniumhq.org).
                 "nav>a[href='./projects']"
             )
             projects_link.click()
-            heading = self.driver.find_element_by_css_selector("section.hero>h1")
-            self.assertEquals(heading.text, "Selenium Projects")
+            heading = self.driver.find_element_by_css_selector("p.lead")
+            self.assertEqual(heading.text, "Selenium has many projects that combine to form a versatile testing system.")
 
         def tearDown(self):
             if self.driver:
@@ -89,38 +96,48 @@ Lets take the above test case for a spin with holmium. Take note of the followin
 
 .. code-block:: python
 
-    from holmium.core import TestCase, Page, Element, Locators, ElementMap
-    import unittest
+  import unittest
+
+  from holmium.core import Element, ElementMap, Locators, Page, TestCase
 
 
-    class SeleniumHQPage(Page):
-        nav_links = ElementMap(Locators.CSS_SELECTOR, "nav>a")
-        header_text = Element(Locators.CSS_SELECTOR, "section.hero>h1")
+  class SeleniumHQPage(Page):
+	  nav_links = ElementMap(Locators.CSS_SELECTOR, "div#main_navbar ul li>a")
+	  header_text = Element(Locators.CSS_SELECTOR, "p.lead")
 
 
-    class SeleniumHQTest(TestCase):
-        def setUp(self):
-            self.page = SeleniumHQPage(self.driver, "http://seleniumhq.org")
+  class SeleniumHQTest(TestCase):
+	  def setUp(self):
+		  self.page = SeleniumHQPage(self.driver, "http://seleniumhq.org")
 
-        def test_header_links(self):
-            self.assertTrue(len(self.page.nav_links) > 0)
-            self.assertElementsDisplayed(self.page.nav_links)
-            self.assertEquals(
-                sorted(
-                    ["Projects", "Downloads", "Documentation", "Support", "Blog"]
-                )
-                , sorted(self.page.nav_links.keys()))
+	  def test_header_links(self):
+		  self.assertTrue(len(self.page.nav_links) > 0)
+		  self.assertElementsDisplayed(self.page.nav_links)
+		  self.assertEqual(
+			  sorted(
+				  [
+					  "About",
+					  "Blog",
+					  "Documentation",
+					  "Downloads",
+					  "English",
+					  "Projects",
+					  "Support",
+				  ]
+			  ),
+			  sorted(self.page.nav_links.keys()),
+		  )
 
-        def test_projects_selenium_heading(self):
-            self.page.nav_links["Projects"].click()
-            self.assertElementTextEqual(
-                self.page.header_text,
-                "Selenium Projects"
-            )
+	  def test_projects_selenium_heading(self):
+		  self.page.nav_links["Projects"].click()
+		  self.assertElementTextEqual(
+			  self.page.header_text,
+			  "Selenium has many projects that combine to form a versatile testing system.",
+		  )
 
 
-    if __name__ == "__main__":
-        unittest.main()
+  if __name__ == "__main__":
+	  unittest.main()
 
 
 Which can then be executed in a few different ways as shown below.
