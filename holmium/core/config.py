@@ -14,14 +14,12 @@ class Config(dict):
     """Dictionary like helper class for maintaining test data configurations
         per environment.
 
-    :class:`holmium.core.TestCase` and :class:`holmium.core.HolmiumNose` both
-    look for either a config.json or config.py file in the same directory as the
-    test file, and will make a ``config`` object available to the test case
-    instance.
+    :class:`holmium.core.TestCase` looks for either a config.json or config.py
+    file in the same directory as the test file, and will make a ``config``
+    object available to the test case instance.
 
     The :class:`holmium.core.Config` object is aware of the environment
-    (specified with ``--holmium-env`` when using nose or ``HO_ENV`` as an
-    environment variable) and will return the config variable from that
+    and will return the config variable from that
     environment or from the `default` key.
 
     Values in the config file can use :class:`jinja2.Template` templates to access

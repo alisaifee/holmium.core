@@ -1,8 +1,8 @@
 import os
 import unittest
+from unittest import SkipTest
 
 import mock
-from nose.plugins.skip import SkipTest
 
 import holmium.core.testcase
 from holmium.core import TestCase

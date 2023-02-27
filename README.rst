@@ -127,9 +127,6 @@ Which can then be executed in a few different ways as shown below.
 
 .. code-block:: bash
 
-    # if using TestCase as the base class run as:
-    HO_BROWSER=firefox nosetests test_selenium_hq.py
-    # or..
     HO_BROWSER=firefox python test_selenium_hq.py
 
 

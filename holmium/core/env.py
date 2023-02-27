@@ -5,8 +5,8 @@ environment
 import atexit
 import copy
 import sys
+from unittest import SkipTest
 
-from nose.plugins.skip import SkipTest
 from six import reraise
 
 from holmium.core.config import configure
@@ -36,6 +36,7 @@ class LazyWebDriver(object):
             return object.__getattribute__(self, item)
         except AttributeError:
             instance = safe_getter("_instance")
+
             if not instance:
                 try:
                     args = configure(safe_getter("_holmium_config"))
@@ -71,6 +72,7 @@ class LazyWebDriver(object):
         """
         try:
             instance = object.__getattribute__(self, "_instance")
+
             if instance:
                 instance.quit()
         except SkipTest:  # pragma: no cover
@@ -110,15 +112,19 @@ class LazyWebDriverList(list):
             return list.__getitem__(self, item)
         except IndexError:
             # copy the driver[0]
+
             if ENV.get("driver", None):
                 driver = copy.copy(ENV["driver"])
                 driver._instance = None
                 self.insert(item, driver)
+
                 return driver
+
             return None  # pragma: no cover
 
     def __iter__(self):
         yield ENV["driver"]
+
         for item in self[1:]:
             yield item
 

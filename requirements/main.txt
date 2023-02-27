@@ -1,5 +1,4 @@
 selenium
 ordereddict
-nose
 six
 jinja2

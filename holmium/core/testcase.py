@@ -10,8 +10,8 @@ import imp
 import inspect
 import json
 import os
+from unittest import SkipTest
 
-from nose.plugins.skip import SkipTest
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.wait import WebDriverWait
 
