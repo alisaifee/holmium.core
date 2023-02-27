@@ -1,28 +1,23 @@
 import unittest
 
 import selenium.webdriver
-
-from holmium.core import Page, Element, Locators, ElementMap
+from holmium.core import Element, ElementMap, Locators, Page
 from holmium.core.conditions import VISIBLE
+from selenium.webdriver.common.by import By
 
 
 class WikiPedia(Page):
     languages = ElementMap(
-        Locators.CLASS_NAME, "central-featured-lang",
+        Locators.CLASS_NAME,
+        "central-featured-lang",
         key=lambda el: el.get_attribute("lang"),
-        value=lambda el: el.find_element_by_tag_name("a")
+        value=lambda el: el.find_element(By.TAG_NAME, "a"),
     )
-    search_box = Element(
-        Locators.CSS_SELECTOR, "input#searchInput"
-    )
+    search_box = Element(Locators.CSS_SELECTOR, "input#searchInput")
     article_title = Element(
-        Locators.CSS_SELECTOR, "h1#firstHeading",
-        only_if=VISIBLE(),
-        timeout=5
+        Locators.CSS_SELECTOR, "h1#firstHeading", only_if=VISIBLE(), timeout=5
     )
-    search_results = ElementMap(
-        Locators.CSS_SELECTOR, "div.mw-search-result-heading>a"
-    )
+    search_results = ElementMap(Locators.CSS_SELECTOR, "div.mw-search-result-heading>a")
 
     def search(self, query):
         self.search_box.clear()
@@ -39,10 +34,8 @@ class TextSearchArticle(unittest.TestCase):
         for language in self.page.languages:
             self.page.go_home().languages[language].click()
             self.assertTrue(
-                self.page.search("google").article_title.text.startswith(
-                    "Google"
-                ),
-                language
+                self.page.search("google").article_title.text.startswith("Google"),
+                language,
             )
 
     def tearDown(self):
