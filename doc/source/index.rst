@@ -1,13 +1,12 @@
-.. include:: ../../README.rst 
+.. include:: ../../README.rst
 
 .. toctree::
    :maxdepth: 5
-   :hidden: 
+   :hidden:
 
-   usage 
-   unittest 
-   cucumber
+   usage
+   unittest
    api
-   development 
-   history 
-   license 
+   development
+   history
+   license

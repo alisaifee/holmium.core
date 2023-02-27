@@ -11,7 +11,6 @@ from .enhancers import (
     reset_enhancers,
 )
 from .logger import log
-from .noseplugin import HolmiumNose
 from .pageobject import Element, ElementMap, Elements, Locators, Page, Section, Sections
 from .testcase import TestCase
 
@@ -23,7 +22,6 @@ __all__ = [
     "Config",
     "log",
     "TestCase",
-    "HolmiumNose",
     "Locators",
     "Page",
     "Section",
