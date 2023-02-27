@@ -62,19 +62,19 @@ class TestCaseTests(unittest.TestCase):
 
     def test_set_browser(self):
         with mock.patch.dict(
-            "holmium.core.testcase.BROWSER_MAPPING", build_mock_mapping("phantomjs")
+            "holmium.core.testcase.BROWSER_MAPPING", build_mock_mapping("chrome")
         ):
-            runtc({"HO_BROWSER": "phantomjs"}, [lambda s: s.driver is not None])
+            runtc({"HO_BROWSER": "chrome"}, [lambda s: s.driver is not None])
 
     def test_set_browser_phantom(self):
         with mock.patch.dict(
-            "holmium.core.testcase.BROWSER_MAPPING", build_mock_mapping("phantomjs")
+            "holmium.core.testcase.BROWSER_MAPPING", build_mock_mapping("chrome")
         ):
             runtc(
-                {"HO_BROWSER": "phantomjs"},
+                {"HO_BROWSER": "chrome"},
                 [
                     lambda s: s.driver is not None,
-                    lambda s: s.driver.name == "phantomjs",
+                    lambda s: s.driver.name == "chrome",
                 ],
             )
 
@@ -83,14 +83,14 @@ class TestCaseTests(unittest.TestCase):
             "holmium.core.testcase.BROWSER_MAPPING", build_mock_mapping("remote")
         ):
             runtc(
-                {"HO_BROWSER": "phantomjs", "HO_REMOTE": "http://lala.com"},
+                {"HO_BROWSER": "chrome", "HO_REMOTE": "http://lala.com"},
                 [lambda s: s.driver is not None, lambda s: s.driver.name == "remote"],
             )
 
     def test_auto_config_json(self):
         with mock.patch("os.path.isfile") as isfile:
             with mock.patch.dict(
-                "holmium.core.testcase.BROWSER_MAPPING", build_mock_mapping("phantomjs")
+                "holmium.core.testcase.BROWSER_MAPPING", build_mock_mapping("chrome")
             ):
                 isfile.side_effect = lambda name: name.find("json") > 0
                 with mock_open() as op:
@@ -98,13 +98,13 @@ class TestCaseTests(unittest.TestCase):
                         '{"default": {"test": 1}}'  # noqa: E501
                     )
                     runtc(
-                        {"HO_BROWSER": "phantomjs"}, [lambda s: s.config["test"] == 1]
+                        {"HO_BROWSER": "chrome"}, [lambda s: s.config["test"] == 1]
                     )
 
     def test_auto_config_py(self):
         with mock.patch("os.path.isfile") as isfile:
             with mock.patch.dict(
-                "holmium.core.testcase.BROWSER_MAPPING", build_mock_mapping("phantomjs")
+                "holmium.core.testcase.BROWSER_MAPPING", build_mock_mapping("chrome")
             ):
                 isfile.side_effect = lambda name: name.find("py") > 0
                 with mock.patch("imp.load_source") as load_source:
@@ -112,7 +112,7 @@ class TestCaseTests(unittest.TestCase):
                     m_config.config = {"default": {"test": 1}}
                     load_source.return_value = m_config
                     runtc(
-                        {"HO_BROWSER": "phantomjs"}, [lambda s: s.config["test"] == 1]
+                        {"HO_BROWSER": "chrome"}, [lambda s: s.config["test"] == 1]
                     )
 
     def test_set_useragent(self):
