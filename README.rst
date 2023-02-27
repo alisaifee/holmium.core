@@ -131,8 +131,6 @@ Which can then be executed in a few different ways as shown below.
     HO_BROWSER=firefox nosetests test_selenium_hq.py
     # or..
     HO_BROWSER=firefox python test_selenium_hq.py
-    # if using unittest.TestCase as the base class run as:
-    nosetests test_selenium_hq.py --with-holmium --holmium-browser=firefox
 
 
 ***************
@@ -144,10 +142,9 @@ Feature Summary
 .. _Cucumber Features: http://holmiumcore.readthedocs.org/en/latest/cucumber.html
 .. _TestCase: http://holmiumcore.readthedocs.org/en/latest/api.html#holmium.core.TestCase
 
-* Automatic provisioning and configuration of webdriver instances based either on
-  environment variables or nosetest arguments. (`Unit test integration`_)
+* Automatic provisioning and configuration of webdriver instances based on
+  environment variables
 * Shorthand assertions for web pages (`TestCase`_)
 * Declarative model for defining pages, sections, page elements and element collections (`Page Objects`_)
-* Built in cucumber step definitions for accessing and navigating pages (`Cucumber Features`_)
 
 
