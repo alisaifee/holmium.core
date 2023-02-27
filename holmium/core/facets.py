@@ -8,7 +8,6 @@ import weakref
 from abc import ABCMeta, abstractmethod
 
 # pylint: disable=no-name-in-module,abstract-class-not-used
-from nose.tools import assert_equals, assert_true
 from six import add_metaclass
 
 from .logger import log
@@ -276,9 +275,8 @@ class Title(Facet):
     __ALLOW_MULTIPLE__ = False
 
     def evaluate(self, driver):
-        assert_true(
-            re.compile(self.arguments["title"]).match(driver.title),
-            "title did not match %s" % self.arguments["title"],
+        assert re.compile(self.arguments["title"]).match(driver.title), (
+            "title did not match %s" % self.arguments["title"]
         )
 
 
@@ -305,11 +303,10 @@ class Cookie(Facet):
             if callable(self.options["value"]):
                 assert self.options["value"](cookie_value)
             else:
-                assert_equals(cookie_value, self.options["value"])
+                assert cookie_value == self.options["value"]
         else:
-            assert_true(
-                cookie_value is not None,
-                "cookie %s does not exist" % self.arguments["name"],
+            assert cookie_value is not None, (
+                "cookie %s does not exist" % self.arguments["name"]
             )
 
 
@@ -349,10 +346,9 @@ class ElementFacet(Facet):
         super(ElementFacet, self).__init__(required=True, **kwargs)
 
     def evaluate(self, driver):
-        assert_true(
-            self.element.__get__(self.parent_class, self.parent_class),
-            "No such element",
-        )
+        assert self.element.__get__(
+            self.parent_class, self.parent_class
+        ), "No such element"
 
     def get_name(self):
         return self.element_name

@@ -174,7 +174,7 @@ class TestCaseTests(unittest.TestCase):
                     s.driver, throw_first(), ignored_exceptions=MyException
                 )
             ],
-            validator=lambda c, s: s.assertRaisesRegexp(
+            validator=lambda c, s: s.assertRaisesRegex(
                 AssertionError, r"Timeout waiting on condition .*", c, s
             ),
         )
@@ -209,7 +209,7 @@ class TestCaseTests(unittest.TestCase):
                     s.driver, lambda _: False, msg="a message"
                 )
             ],
-            validator=lambda c, s: s.assertRaisesRegexp(
+            validator=lambda c, s: s.assertRaisesRegex(
                 AssertionError, "a message", c, s
             ),
         )
@@ -227,7 +227,7 @@ class TestCaseTests(unittest.TestCase):
                         msg=lambda: datetime.now().isoformat(),
                     )
                 ],
-                validator=lambda c, s: s.assertRaisesRegexp(
+                validator=lambda c, s: s.assertRaisesRegex(
                     AssertionError, expected, c, s
                 ),
             )

@@ -21,7 +21,7 @@ class ElementEnhancerTest(unittest.TestCase):
         self.assertTrue(isinstance(p.id_el, Select))
         self.assertTrue(isinstance(p.id_el, ElementEnhancer))
         self.assertRaises(AttributeError, lambda: p.id_el.jump)
-        self.assertEquals(p.id_el.text, "foo")
+        self.assertEqual(p.id_el.text, "foo")
         self.assertTrue(p.id_el.is_displayed())
 
     def test_custom_enhancer(self):
@@ -43,7 +43,7 @@ class ElementEnhancerTest(unittest.TestCase):
 
         p = SimplePage(self.driver)
 
-        self.assertEquals(p.id_el.get_class(), "div-class")
+        self.assertEqual(p.id_el.get_class(), "div-class")
 
     def test_register(self):
         class BadCls:

@@ -104,7 +104,7 @@ class PageTest(unittest.TestCase):
         )
 
         v1, v2 = page.element_map_raw.items()
-        self.assertEquals(
+        self.assertEqual(
             sorted([v1[0], v1[1].text, v2[0], v2[1].text]),
             sorted(["e4", "e4", "e6", "e6"]),
         )

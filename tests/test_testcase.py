@@ -135,7 +135,7 @@ class TestCaseTests(unittest.TestCase):
             "holmium.core.testcase.BROWSER_MAPPING", build_mock_mapping("firefox")
         ):
             runtc({"HO_BROWSER": "firefox", "HO_BROWSER_PER_TEST": "1"}, [])
-            self.assertEquals(
+            self.assertEqual(
                 holmium.core.testcase.BROWSER_MAPPING[
                     "firefox"
                 ].return_value.quit.call_count,
@@ -146,7 +146,7 @@ class TestCaseTests(unittest.TestCase):
             "holmium.core.testcase.BROWSER_MAPPING", build_mock_mapping("firefox")
         ):
             runtc({"HO_BROWSER": "firefox", "HO_BROWSER_PER_TEST": "0"}, [])
-            self.assertEquals(
+            self.assertEqual(
                 holmium.core.testcase.BROWSER_MAPPING[
                     "firefox"
                 ].return_value.quit.call_count,  # noqa: E501
@@ -158,7 +158,7 @@ class TestCaseTests(unittest.TestCase):
             "holmium.core.testcase.BROWSER_MAPPING", build_mock_mapping("firefox")
         ):
             runtc2drivers({"HO_BROWSER": "firefox", "HO_BROWSER_PER_TEST": "0"}, [])
-            self.assertEquals(
+            self.assertEqual(
                 holmium.core.testcase.BROWSER_MAPPING["firefox"].call_count, 2
             )
         ENV.clear()
@@ -166,10 +166,10 @@ class TestCaseTests(unittest.TestCase):
             "holmium.core.testcase.BROWSER_MAPPING", build_mock_mapping("firefox")
         ):
             runtc2drivers({"HO_BROWSER": "firefox", "HO_BROWSER_PER_TEST": "1"}, [])
-            self.assertEquals(
+            self.assertEqual(
                 holmium.core.testcase.BROWSER_MAPPING["firefox"].call_count, 2
             )
-            self.assertEquals(
+            self.assertEqual(
                 holmium.core.testcase.BROWSER_MAPPING[
                     "firefox"
                 ].return_value.quit.call_count,  # noqa: E501

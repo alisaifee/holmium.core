@@ -34,11 +34,11 @@ class TextSearchTest(unittest.TestCase):
     def test_text_search_first_result(self):
         # execute the page object method search
         self.page.search("selenium  testing")
-        self.assertEquals(
+        self.assertEqual(
             self.page.search_results[0]["title"],
             "Selenium"
         )
-        self.assertEquals(
+        self.assertEqual(
             self.page.search_results[0]["link"],
             "https://www.selenium.dev/"
         )

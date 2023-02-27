@@ -6,6 +6,7 @@ import sys
 import unittest
 
 import mock
+import pytest
 from flask_testing import LiveServerTestCase
 
 from holmium.core import Element, ElementMap, Elements, Locators, Page, Section
@@ -15,6 +16,7 @@ from tests.utils import get_driver
 from . import webapp
 
 # For LiveServerTestCase on OSX
+
 if sys.platform == "darwin":
     multiprocessing.set_start_method("fork")
 
@@ -247,9 +249,11 @@ class BadReactionTests(unittest.TestCase):
         self.assertEqual(p.el.text, "null")
 
 
-def test_missing_arguments():
-    for args in [{}, {"page": 1}, {"page": 1, "action": 1, "foobar": 1}]:
-        yield check_arguments, args
+@pytest.mark.parametrize(
+    "args", [{}, {"page": 1}, {"page": 1, "action": 1, "foobar": 1}]
+)
+def test_missing_arguments(args):
+    check_arguments(args)
 
 
 def check_arguments(args):

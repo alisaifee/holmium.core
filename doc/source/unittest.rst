@@ -51,7 +51,7 @@ Example test case
             self.driver.get("http://www.google.com")
 
         def test_title(self):
-            self.assertEquals(self.driver.title, "Google")
+            self.assertEqual(self.driver.title, "Google")
 
     if __name__ == "__main__":
         unittest.main()

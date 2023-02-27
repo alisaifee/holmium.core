@@ -136,7 +136,7 @@ class BugReports(unittest.TestCase):
         driver.find_element.return_value.tag_name = "select"
         driver.find_element.return_value.text = "fOo"
         self.assertTrue(issubclass(SimplePage(driver).id_el.__class__, CustomSelect))
-        self.assertEquals(SimplePage(driver).id_el.get_text_upper(), "FOO")
+        self.assertEqual(SimplePage(driver).id_el.get_text_upper(), "FOO")
 
     def test_class_inheritance_with_facets(self):
         """https://github.com/alisaifee/issues/18"""
@@ -170,17 +170,17 @@ class BugReports(unittest.TestCase):
         class ExtFour(B2, B3):
             pass
 
-        self.assertEquals(len(B1.get_class_facets()), 1)
-        self.assertEquals(len(ExtOne.get_class_facets()), 2)
-        self.assertEquals(len(ExtTwo.get_class_facets()), 2)
-        self.assertEquals(len(ExtThree.get_class_facets()), 4)
+        self.assertEqual(len(B1.get_class_facets()), 1)
+        self.assertEqual(len(ExtOne.get_class_facets()), 2)
+        self.assertEqual(len(ExtTwo.get_class_facets()), 2)
+        self.assertEqual(len(ExtThree.get_class_facets()), 4)
         # ensure the last title is the one used
-        self.assertEquals(
+        self.assertEqual(
             ExtThree.get_class_facets().type_map[title].pop().arguments,
             {"title": "three"},
         )
 
-        self.assertEquals(len(ExtFour.get_class_facets()), 2)
+        self.assertEqual(len(ExtFour.get_class_facets()), 2)
 
     def test_stale_element_in_wait(self):
         """https://github.com/alisaifee/issues/23"""
