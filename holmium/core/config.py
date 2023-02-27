@@ -200,7 +200,8 @@ class HolmiumConfig(dict):
         fresh_instance,
     ):
         data = {}
-        for arg in inspect.getargspec(HolmiumConfig.__init__).args[1:]:
+
+        for arg in inspect.getfullargspec(HolmiumConfig.__init__).args[1:]:
             setattr(self, arg, locals()[arg])
             data[arg] = locals()[arg]
         super(HolmiumConfig, self).__init__(**data)
