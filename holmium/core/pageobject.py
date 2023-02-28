@@ -2,12 +2,13 @@
 implementation of page objects, element(s) and sections
 """
 
-import collections
 import contextlib
 import inspect
 import threading
 import types
 import weakref
+from collections import OrderedDict
+from collections.abc import Sequence
 from functools import wraps
 
 import selenium.webdriver.common.by
@@ -23,17 +24,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from holmium.core.conditions import BaseCondition
 
 from .enhancers import get_enhancers
-
-if hasattr(collections, "OrderedDict"):
-    OrderedDict = collections.OrderedDict  # pragma: no cover
-else:
-    from ordereddict import OrderedDict  # pragma: no cover
-
-try:
-    from collections.abc import Sequence  # pragma: no cover
-except ImportError:
-    from collections.abc import Sequence  # pragma: no cover
-
 from .facets import CopyOnCreateFacetCollectionMeta, ElementFacet, Faceted
 from .logger import log
 

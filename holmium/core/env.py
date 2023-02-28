@@ -7,7 +7,6 @@ import copy
 import sys
 from unittest import SkipTest
 
-
 from holmium.core.config import configure
 
 
