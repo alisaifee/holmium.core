@@ -11,6 +11,16 @@
 Changelog
 =========
 
+v1.1.0
+------
+Release Date: 2023-02-28
+
+* Chores
+
+  * Remove dependency on six & ordereddict
+  * Upgrade syntax to python 3.7+
+  * Automate pypi release process
+
 v1.0.0
 ------
 Release Date: 2023-02-27
@@ -293,6 +303,7 @@ Release Date: 2013-03-18
 * Bug fix
 
   - fixed phantomjs build in travis
+
 
 
 
