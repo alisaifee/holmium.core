@@ -8,12 +8,11 @@
 .. _ElementEnhancer: http://holmiumcore.readthedocs.org/en/latest/usage.html#customizing-page-elements
 .. _conditions: http://holmiumcore.readthedocs.org/en/latest/usage.html#conditions
 
-*******
-History
-*******
+Changelog
+=========
 
-1.0.0
-=====
+v1.0.0
+------
 Release Date: 2023-02-27
 
 * Breaking Changes
@@ -24,32 +23,32 @@ Release Date: 2023-02-27
 
 
 v0.8.5
-======
+------
 Release Date: 2016-09-06
 
 * Extra options for assertConditionWithWait `#42 <https://github.com/alisaifee/holmium.core/issues/42>`_
 
 v0.8.4
-======
+------
 Release Date: 2016-09-01
 
 * Bug fix: assertConditionWithWait `#40 <https://github.com/alisaifee/holmium.core/issues/40>`_
 
 v0.8.3
-======
+------
 Release Date: 2016-08-12
 
 * Bug fix: Fix for IE with remote `#38 <https://github.com/alisaifee/holmium.core/issues/38>`_
 * Bug fix: StaleElementReferenceException handling `#33 <https://github.com/alisaifee/holmium.core/issues/33>`_
 
 v0.8.2
-======
+------
 Release Date: 2015-12-22
 
 * New filter_by argument that accepts conditions
 
 v0.8.1
-======
+------
 Release Date: 2015-10-30
 
 * Bug fix: Fix setup requirements for python 3.x #30
@@ -61,32 +60,32 @@ Release Date: 2015-06-07
 * No functional Change
 
 v0.7.9
-======
+------
 Release Date: 2015-05-30
 
 * Bug fix: Support for phantom 1.9.x `#29 <https://github.com/alisaifee/holmium.core/issues/29>`_
 
 v0.7.8
-======
+------
 Release Date: 2014-11-02
 
 * Bug fix: AttributeError when comparing with None `#26 <https://github.com/alisaifee/holmium.core/issues/26>`_
 * Bug fix: Negative indexing in sections `#27 <https://github.com/alisaifee/holmium.core/issues/27>`_
 
 v0.7.7
-======
+------
 Release Date: 2014-09-05
 
 * Bug fix: IE Driver initialization `#24 <https://github.com/alisaifee/holmium.core/issues/24>`_
 
 v0.7.6
-======
+------
 Release Date: 2014-07-14
 
 * Hot fix: broken installation due to missing requirements
 
 v0.7.5
-======
+------
 Release Date: 2014-07-14
 
 * Bug fix for ``StaleElementReferenceException`` in WebDriverWait
@@ -96,25 +95,25 @@ Release Date: 2014-07-14
 * Additional conditions ``ANY`` and ``ALL`` for element collections.
 
 v0.7.4
-======
+------
 Release Date: 2014-04-24
 
 * Bug fix: Sections weren't working for index > 1 `#22 <https://github.com/alisaifee/holmium.core/issues/22>`_
 
 v0.7.3
-======
+------
 Release Date: 2014-03-14
 
 * Add missing timeout from Section
 
 v0.7.2
-======
+------
 Release Date: 2014-02-22
 
 * exclude packaging tests
 
 v0.7.1
-======
+------
 Release Date: 2014-02-18
 
 * Fix packaging problem with versioneer
@@ -134,13 +133,13 @@ Release Date: 2014-02-10
  * Make primitive lists and maps wrapped in pageobjects behave.
 
 v0.6.2
-======
+------
 Release Date: 2014-01-15
 
 * Bug fix `issue 19 <https://github.com/alisaifee/holmium.core/issues/19>`_
 
 v0.6.1
-======
+------
 Release Date: 2013-12-23
 
 * Bug fix `issue 18 <https://github.com/alisaifee/holmium.core/issues/18>`_ for facet
@@ -167,26 +166,26 @@ Release Date: 2013-12-14
 * Bug fixes for default timeout/only_if arugment for Element/Elements/ElementMap
 
 v0.5.2
-======
+------
 Release Date: 2013-12-09
 
 * PyPy support
 * Allow customization of WebElements by exposing `ElementEnhancer`_
 
 v0.5.1
-======
+------
 Release Date: 2013-12-01
 
 * Re-added python 2.6 support
 
 v0.5.0
-======
+------
 Release Date: 2013-12-01
 
 * Python 3.3 now supported and tested.
 
 v0.4.2
-======
+------
 Release Date: 2013-12-01
 
 * New parameter **only_if** (callable that accepts the webelement that was
@@ -195,7 +194,7 @@ Release Date: 2013-12-01
   on the Element.
 
 v0.4.1
-======
+------
 Release Date: 2013-11-29
 
 * Bug fix for config module being reused between test runs.
@@ -210,7 +209,7 @@ Release Date: 2013-11-28
 * General refactoring and code cleanup.
 
 v0.3.4
-======
+------
 Release Date: 2013-11-21
 
 * Added support to ignore ssl certificate errors on chrome, firefox & phantomjs
@@ -219,7 +218,7 @@ Release Date: 2013-11-21
 
 
 v0.3.3
-======
+------
 Release Date: 2013-10-29
 
 * Improved back reference access in Config object by allowing variable references
@@ -242,13 +241,13 @@ Release Date: 2013-10-29
 
 
 v0.3.2
-======
+------
 Release Date: 2013-10-10
 
 * Fluent response from page objects only when page method returns None
 
 v0.3.1
-======
+------
 Release Date: 2013-09-17
 
 * Allow indexing of Sections objects
@@ -270,14 +269,14 @@ Release Date: 2013-09-11
 * New `Config object`_.
 
 v0.1.8.4
-========
+--------
 Release Date: 2013-09-04
 
 
 * Bug Fix : installation via pip was failing due to missing HISTORY.rst file.
 
 v0.1.8.3
-========
+--------
 Release Date: 2013-08-12
 
 
@@ -286,7 +285,7 @@ Release Date: 2013-08-12
   - improved error handling and logging for missing/malformed config file.
 
 v0.1.8
-======
+------
 Release Date: 2013-03-18
 
 
