@@ -1,4 +1,3 @@
 selenium
 ordereddict
-six
 jinja2
