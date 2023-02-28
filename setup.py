@@ -16,10 +16,6 @@ if __name__ == "__main__":
     ).read()
 
     import versioneer
-    versioneer.versionfile_source = "holmium/core/_version.py"
-    versioneer.versionfile_build = "holmium/core/version.py"
-    versioneer.tag_prefix = ""
-    versioneer.parentdir_prefix = "holmium.core-"
     long_description = open('README.rst').read() + open('HISTORY.rst').read()
     setup(
         name='holmium.core',
