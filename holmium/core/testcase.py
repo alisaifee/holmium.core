@@ -67,8 +67,8 @@ class TestCase(unittest.TestCase):
             "driver", LazyWebDriver(driver_cls, cls.holmium_config)
         )
         cls.drivers = ENV.setdefault("drivers", LazyWebDriverList())
-        if hasattr(super(TestCase, cls), "setUpClass"):
-            super(TestCase, cls).setUpClass()
+        if hasattr(super(), "setUpClass"):
+            super().setUpClass()
 
     @classmethod
     def tearDownClass(cls):
@@ -80,8 +80,8 @@ class TestCase(unittest.TestCase):
         if ENV.get("driver", None) and cls.holmium_config.fresh_instance:
             for driver in ENV["drivers"]:
                 driver.safe_quit()
-        if hasattr(super(TestCase, cls), "tearDownClass"):
-            super(TestCase, cls).tearDownClass()
+        if hasattr(super(), "tearDownClass"):
+            super().tearDownClass()
 
     def tearDown(self):
         """
@@ -90,7 +90,7 @@ class TestCase(unittest.TestCase):
         if ENV.get("driver", None):
             for driver in ENV["drivers"]:
                 driver.safe_clear()
-        super(TestCase, self).tearDown()
+        super().tearDown()
 
     # helper assertions
     # pylint: disable=invalid-name
@@ -118,7 +118,7 @@ class TestCase(unittest.TestCase):
         visible
         """
         _ = elements.values() if isinstance(elements, dict) else elements
-        self.assertTrue(all((el.is_displayed() for el in _)), msg)
+        self.assertTrue(all(el.is_displayed() for el in _), msg)
 
     def assertElementCSS(self, element, css_property, value, msg=None):
         # noqa: E501

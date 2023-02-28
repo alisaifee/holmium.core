@@ -202,19 +202,19 @@ class HolmiumConfig(dict):
         for arg in inspect.getfullargspec(HolmiumConfig.__init__).args[1:]:
             setattr(self, arg, locals()[arg])
             data[arg] = locals()[arg]
-        super(HolmiumConfig, self).__init__(**data)
+        super().__init__(**data)
 
     def __setattr__(self, key, value):
-        super(HolmiumConfig, self).__setattr__(key, value)
-        super(HolmiumConfig, self).__setitem__(key, value)
+        super().__setattr__(key, value)
+        super().__setitem__(key, value)
 
     def __setitem__(self, key, value):
-        super(HolmiumConfig, self).__setattr__(key, value)
-        super(HolmiumConfig, self).__setitem__(key, value)
+        super().__setattr__(key, value)
+        super().__setitem__(key, value)
 
 
 # pylint: disable=too-few-public-methods
-class DriverConfig(object):
+class DriverConfig:
     """
     base class for configuring a webdriver
     """
@@ -256,7 +256,7 @@ class ChromeConfig(DriverConfig):
                 "--ignore-certificate-errors"
             )
 
-        return super(ChromeConfig, self).__call__(config, args)
+        return super().__call__(config, args)
 
 
 class IeConfig(DriverConfig):
@@ -266,7 +266,7 @@ class IeConfig(DriverConfig):
 
     def __call__(self, config, args):
         args["desired_capabilities"] = args.pop("desired_capabilities", {})
-        return super(IeConfig, self).__call__(config, args)
+        return super().__call__(config, args)
 
 
 class RemoteConfig(DriverConfig):
@@ -283,7 +283,7 @@ class RemoteConfig(DriverConfig):
             args["desired_capabilities"] = args["capabilities"]
             args.pop("capabilities")
         args["command_executor"] = config.remote
-        return super(RemoteConfig, self).__call__(config, args)
+        return super().__call__(config, args)
 
 
 CONFIGURATOR_MAPPER = {

@@ -25,7 +25,7 @@ def run_command(args, cwd=None, verbose=False, hide_stderr=False):
             stdout=subprocess.PIPE,
             stderr=(subprocess.PIPE if hide_stderr else None),
         )
-    except EnvironmentError:
+    except OSError:
         e = sys.exc_info()[1]
         if verbose:
             print("unable to run %s" % args[0])
@@ -53,7 +53,7 @@ def get_expanded_variables(versionfile_abs):
     # used from _version.py.
     variables = {}
     try:
-        f = open(versionfile_abs, "r")
+        f = open(versionfile_abs)
         for line in f.readlines():
             if line.strip().startswith("git_refnames ="):
                 mo = re.search(r'=\s*"(.*)"', line)
@@ -64,7 +64,7 @@ def get_expanded_variables(versionfile_abs):
                 if mo:
                     variables["full"] = mo.group(1)
         f.close()
-    except EnvironmentError:
+    except OSError:
         pass
     return variables
 
@@ -75,11 +75,11 @@ def versions_from_expanded_variables(variables, tag_prefix, verbose=False):
         if verbose:
             print("variables are unexpanded, not using")
         return {}  # unexpanded, so not in an unpacked git-archive tarball
-    refs = set([r.strip() for r in refnames.strip("()").split(",")])
+    refs = {r.strip() for r in refnames.strip("()").split(",")}
     # starting in git-1.8.3, tags are listed as "tag: foo-1.0" instead of
     # just "foo-1.0". If we see a "tag: " prefix, prefer those.
     TAG = "tag: "
-    tags = set([r[len(TAG) :] for r in refs if r.startswith(TAG)])
+    tags = {r[len(TAG) :] for r in refs if r.startswith(TAG)}
     if not tags:
         # Either we're using git < 1.8.3, or there really are no tags. We use
         # a heuristic: assume all version tags have a digit. The old git %d
@@ -88,7 +88,7 @@ def versions_from_expanded_variables(variables, tag_prefix, verbose=False):
         # between branches and tags. By ignoring refnames without digits, we
         # filter out many common branch names like "release" and
         # "stabilization", as well as "HEAD" and "master".
-        tags = set([r for r in refs if re.search(r"\d", r)])
+        tags = {r for r in refs if re.search(r"\d", r)}
         if verbose:
             print("discarding '%s', no digits" % ",".join(refs - tags))
     if verbose:
@@ -125,7 +125,7 @@ def versions_from_vcs(tag_prefix, root, verbose=False):
         return {}
     if not stdout.startswith(tag_prefix):
         if verbose:
-            print("tag '%s' doesn't start with prefix '%s'" % (stdout, tag_prefix))
+            print("tag '{}' doesn't start with prefix '{}'".format(stdout, tag_prefix))
         return {}
     tag = stdout[len(tag_prefix) :]
     stdout = run_command([GIT, "rev-parse", "HEAD"], cwd=root)

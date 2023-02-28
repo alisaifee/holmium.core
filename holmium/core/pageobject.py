@@ -32,7 +32,7 @@ else:
 try:
     from collections.abc import Sequence  # pragma: no cover
 except ImportError:
-    from collections import Sequence  # pragma: no cover
+    from collections.abc import Sequence  # pragma: no cover
 
 from .facets import CopyOnCreateFacetCollectionMeta, ElementFacet, Faceted
 from .logger import log
@@ -98,7 +98,7 @@ class Registry(CopyOnCreateFacetCollectionMeta):
     pages = {}
 
     def __new__(mcs, *args, **kwargs):
-        page = super(Registry, mcs).__new__(mcs, *args, **kwargs)
+        page = super().__new__(mcs, *args, **kwargs)
         Registry.pages[args[0]] = page
         return page
 
@@ -127,7 +127,7 @@ class Page(Faceted, metaclass=Registry):
 
     def __init__(self, driver, url=None, iframe=None):
         # pylint: disable=too-many-branches
-        super(Page, self).__init__()
+        super().__init__()
         self.driver = driver
         self.touched = False
         self.initialized = False
@@ -233,7 +233,7 @@ class Page(Faceted, metaclass=Registry):
             return attr
 
 
-class ElementGetter(object):
+class ElementGetter:
     """
     internal class to encapsulate the logic used by
     :class:`holmium.core.Element`
@@ -464,7 +464,7 @@ class Elements(ElementGetter):
         facet=False,
         filter_by=lambda el: el is not None,
     ):
-        super(Elements, self).__init__(
+        super().__init__(
             locator_type,
             query_string,
             base_element=base_element,
@@ -545,7 +545,7 @@ class ElementMap(Elements):
         facet=False,
         filter_by=lambda el: el is not None,
     ):
-        super(ElementMap, self).__init__(
+        super().__init__(
             locator_type,
             query_string,
             base_element,
@@ -594,7 +594,7 @@ class Section(Faceted):
     """
 
     def __init__(self, locator_type, query_string, iframe=None, timeout=0):
-        super(Section, self).__init__()
+        super().__init__()
         self.touched = False
         self.locator_type = locator_type
         self.query_string = query_string
@@ -673,7 +673,7 @@ class Sections(Section, Sequence):
     """
 
     def __init__(self, locator_type, query_string, iframe=None, timeout=0):
-        super(Sections, self).__init__(locator_type, query_string, iframe, timeout)
+        super().__init__(locator_type, query_string, iframe, timeout)
 
     def __getelements__(self):
         if self.timeout:

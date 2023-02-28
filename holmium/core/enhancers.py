@@ -5,7 +5,7 @@ implementation of element enhancer base
 from selenium.webdriver.support.ui import Select
 
 
-class ElementEnhancer(object):
+class ElementEnhancer:
     """
     base class for implementing custom element enhancers to
     add functionality to located webelements based on the
@@ -17,7 +17,7 @@ class ElementEnhancer(object):
 
     def __init__(self, element):
         self.element = element
-        super(ElementEnhancer, self).__init__()
+        super().__init__()
 
     @classmethod
     def matches(cls, element):
@@ -31,7 +31,7 @@ class ElementEnhancer(object):
         element = object.__getattribute__(self, "element")
         try:
             try:
-                return super(ElementEnhancer, self).__getattribute__(key)
+                return super().__getattribute__(key)
             except AttributeError:
                 return element.__getattribute__(key)
         except Exception:
@@ -41,13 +41,13 @@ class ElementEnhancer(object):
             )
 
 
-class _SelectMixin(Select, object):
+class _SelectMixin(Select):
     """
     cooperative super version of Select
     """
 
     def __init__(self):
-        super(_SelectMixin, self).__init__(self.element)
+        super().__init__(self.element)
         Select.__init__(self, self.element)
 
 

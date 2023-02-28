@@ -7,12 +7,11 @@ import copy
 import sys
 from unittest import SkipTest
 
-from six import reraise
 
 from holmium.core.config import configure
 
 
-class LazyWebDriver(object):
+class LazyWebDriver:
     """
     lazily initializes the webdriver on the first
     attribute access
@@ -44,14 +43,10 @@ class LazyWebDriver(object):
                 except Exception:
                     traceback = sys.exc_info()[2]
                     browser = safe_getter("_holmium_config").browser
-                    reraise(
-                        SkipTest,
-                        SkipTest(
-                            "unable to initialize driver (name: %s)"
-                            % (browser.strip() or "None")
-                        ),
-                        traceback,
-                    )
+                    raise SkipTest(
+                        "unable to initialize driver (name: %s)"
+                        % (browser.strip() or "None")
+                    ).with_traceback(traceback)
                 safe_getter("_post_create_callback")()
                 safe_setter("_instance", instance)
 
@@ -125,8 +120,7 @@ class LazyWebDriverList(list):
     def __iter__(self):
         yield ENV["driver"]
 
-        for item in self[1:]:
-            yield item
+        yield from self[1:]
 
 
 ENV = {}

@@ -28,7 +28,9 @@ class Facet(metaclass=ABCMeta):
         for arg in self.__ARGS__:
             if arg not in kwargs.keys():
                 raise AttributeError(
-                    "%s is a required argument for %s" % (arg, self.__class__.__name__)
+                    "{} is a required argument for {}".format(
+                        arg, self.__class__.__name__
+                    )
                 )
             else:
                 self.arguments[arg] = kwargs[arg]
@@ -111,13 +113,13 @@ class FacetError(Exception):
     """
 
     def __init__(self, facet, exc=None):
-        self.message = "%s failed to exhibit facet %s" % (
+        self.message = "{} failed to exhibit facet {}".format(
             facet.get_parent_name(),
             facet.get_name(),
         )
         if exc:
             self.message += " with error %s" % exc
-        super(FacetError, self).__init__(self.message)
+        super().__init__(self.message)
 
 
 class FacetCollection(list):
@@ -127,7 +129,7 @@ class FacetCollection(list):
     """
 
     def __init__(self, *a):
-        super(FacetCollection, self).__init__(*a)
+        super().__init__(*a)
 
     @property
     def type_map(self):
@@ -149,7 +151,7 @@ class FacetCollection(list):
         if type(item) in self.type_map and not type(item).__ALLOW_MULTIPLE__:
             self.remove(self.type_map[type(item)].pop())
         if item not in self:
-            super(FacetCollection, self).append(item)
+            super().append(item)
 
     def evaluate_all(self, driver):
         """
@@ -178,7 +180,7 @@ class CopyOnCreateFacetCollectionMeta(ABCMeta):
     """
 
     def __init__(cls, *args):
-        super(CopyOnCreateFacetCollectionMeta, cls).__init__(*args)
+        super().__init__(*args)
         visited = {}
         for superclass in cls.__mro__:
             for key, value in vars(superclass).items():
@@ -197,7 +199,7 @@ class Faceted(metaclass=CopyOnCreateFacetCollectionMeta):
 
     def __init__(self):
         self.instance_facets = FacetCollection()
-        super(Faceted, self).__init__()
+        super().__init__()
 
     @classmethod
     def get_class_facets(cls):
@@ -338,7 +340,7 @@ class ElementFacet(Facet):
     def __init__(self, element, element_name, **kwargs):
         self.element_name = element_name
         self.element = element
-        super(ElementFacet, self).__init__(required=True, **kwargs)
+        super().__init__(required=True, **kwargs)
 
     def evaluate(self, driver):
         assert self.element.__get__(
