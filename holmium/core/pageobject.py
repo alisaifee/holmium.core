@@ -19,7 +19,6 @@ from selenium.common.exceptions import (
 )
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
-from six import add_metaclass
 
 from holmium.core.conditions import BaseCondition
 
@@ -104,8 +103,7 @@ class Registry(CopyOnCreateFacetCollectionMeta):
         return page
 
 
-@add_metaclass(Registry)
-class Page(Faceted):
+class Page(Faceted, metaclass=Registry):
     """
     Base class for all page objects to extend from.
     void Instance methods implemented by subclasses are provisioned

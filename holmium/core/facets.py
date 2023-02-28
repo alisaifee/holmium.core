@@ -7,14 +7,10 @@ import re
 import weakref
 from abc import ABCMeta, abstractmethod
 
-# pylint: disable=no-name-in-module,abstract-class-not-used
-from six import add_metaclass
-
 from .logger import log
 
 
-@add_metaclass(ABCMeta)
-class Facet(object):
+class Facet(metaclass=ABCMeta):
     """
     base class to implement an attribute of a page
     """
@@ -193,8 +189,7 @@ class CopyOnCreateFacetCollectionMeta(ABCMeta):
                     setattr(cls, key, FacetCollection(visited[key]))
 
 
-@add_metaclass(CopyOnCreateFacetCollectionMeta)
-class Faceted(object):
+class Faceted(metaclass=CopyOnCreateFacetCollectionMeta):
     """
     mixin for objects that want to have facets registered
     on them.

@@ -5,11 +5,8 @@ import re
 import threading
 from abc import ABCMeta, abstractmethod
 
-from six import add_metaclass
 
-
-@add_metaclass(ABCMeta)
-class BaseCondition(object):
+class BaseCondition(metaclass=ABCMeta):
     """
     base class to implement conditions passed
     to the ``only_if`` parameter of
