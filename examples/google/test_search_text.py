@@ -1,6 +1,8 @@
 import unittest
+
 import selenium.webdriver
-from holmium.core import Page, Element, Elements, Locators
+
+from holmium.core import Element, Elements, Locators, Page
 
 
 class GoogleMain(Page):

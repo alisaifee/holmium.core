@@ -1,9 +1,10 @@
 import unittest
 
 import selenium.webdriver
+from selenium.webdriver.common.by import By
+
 from holmium.core import Element, ElementMap, Locators, Page
 from holmium.core.conditions import VISIBLE
-from selenium.webdriver.common.by import By
 
 
 class WikiPedia(Page):
